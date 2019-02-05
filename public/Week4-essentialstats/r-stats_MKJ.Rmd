@@ -6,7 +6,7 @@ output:
 
 ```{r init, include=F}
 library(knitr)
-opts_chunk$set(fig.keep="none", cache=TRUE)
+opts_chunk$set(cache=TRUE)
 options(digits=3)
 options(max.print=200)
 .ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
@@ -190,7 +190,7 @@ It's always worth examining your data visually before you start any statistical 
 #### Histograms
 
 We can learn a lot from the data just looking at the value distributions of particular variables. Let's make some histograms with ggplot2. 
-```{r, include=FALSE}
+```{r}
 ggplot(nh, aes(BMI)) + geom_histogram(bins=30)
 ```
 Looking at BMI shows a few extreme outliers. 
