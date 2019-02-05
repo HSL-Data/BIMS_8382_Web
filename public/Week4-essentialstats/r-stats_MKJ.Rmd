@@ -1,19 +1,29 @@
 ---
 title: 'Essential Statistics with R'
-author: "Marieke K Jones, PhD"
-date: '2019-04'
 output:
   html_document
 ---
 
-**Intro Slides (UP TO SLIDE 5)**
-packages needed today are readr, dplyr, ggplot2, broom
+```{r init, include=F}
+library(knitr)
+opts_chunk$set(fig.keep="none", cache=TRUE)
+options(digits=3)
+options(max.print=200)
+.ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
 
-## Load tidyverse and broom packages
+library(ggplot2)
+theme_set(theme_bw(base_size=16) + theme(strip.background = element_blank()))
+```
+
+**Intro Slides (UP TO SLIDE 5)**
+packages needed today are readr, dplyr, ggplot2
+
+## Load tidyverse packages
 ```{r}
 library(tidyverse)
-library(broom)
 ```
+
+If you see a warning that looks like this: `Error in library(tidyverse) : there is no package called 'tidyverse'`, then you don't have the package installed correctly.
 
 ## Create new project with NHANES data
 
@@ -25,19 +35,11 @@ NHANES is a research program designed to assess the health and nutritional statu
 
 We are using a small slice of this data. We're only using a handful of variables from the 2011-2012 survey years on about 5,000 individuals. The CDC uses a [sampling strategy](http://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf) to purposefully oversample certain subpopulations like racial minorities. Naive analysis of the original NHANES data can lead to mistaken conclusions because the percentages of people from each racial group in the data are different from general population. The 5,000 individuals here are resampled from the larger NHANES study population to undo these oversampling effects, so you can treat this as if it were a simple random sample from the American population.
 
-You can download the data from Collab. The file is called **nhanes.csv**. There's also a data description (filename **nhanes_dd.csv**) that lists and describes each variable in our NHANES dataset.
+Download the data files called **nhanes.csv** and a data description file (filename **nhanes_dd.csv**) that lists and describes each variable in our NHANES dataset.
 
 ### Import & inspect
 
-First, let's load the tidyverse library.
-
-```{r loadpkgs}
-library(tidyverse)
-```
-
-If you see a warning that looks like this: `Error in library(tidyverse) : there is no package called 'tidyverse'`, then you don't have the package installed correctly.
-
-Now, let's actually load the data and take a look.
+Now, let's load the data and take a look.
 
 ```{r loaddata}
 nh <- read_csv("nhanes.csv")
@@ -226,7 +228,7 @@ rm(nh)
 1. Using the adults data set you just created (`nha`), what is the mean 60-second pulse rate for all participants in the data?
 ```{r, echo=FALSE}
 mean(nha$Pulse, na.rm=TRUE)
-nha$Pulse %>% mean(na.rm=TRUE) #dplyr way
+# nha$Pulse %>% mean(na.rm=TRUE) #dplyr way
 ```
 
 2. With the `nha` dataset, what's the range of values for diastolic blood pressure in all participants? (Hint: see help for `min()`, `max()`, and `range()` functions, e.g., enter `?range` to get help).
