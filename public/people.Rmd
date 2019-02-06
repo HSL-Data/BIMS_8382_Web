@@ -1,11 +1,8 @@
 ---
-title: "People"
+title: "Instructors"
 output: 
-  html_document:
-    toc: yes
+  html_document
 ---
-
-## Instructors
 
 #### David N Martin, MS
 
