@@ -1,20 +1,28 @@
 ---
 title: 'Essential Statistics with R'
-author: "Marieke K Jones, PhD"
-date: '2019-01-04'
 output:
-  html_document:
-    keep_md: yes
+  html_document
 ---
 
-**Intro Slides (UP TO SLIDE 5)**
-packages needed today are readr, dplyr, ggplot2, broom
+```{r init, include=F}
+library(knitr)
+opts_chunk$set(cache=TRUE)
+options(digits=3)
+options(max.print=200)
+.ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
 
-## Load tidyverse and broom packages
+library(ggplot2)
+theme_set(theme_bw(base_size=16) + theme(strip.background = element_blank()))
+```
+
+packages needed today are readr, dplyr, ggplot2
+
+## Load tidyverse packages
 ```{r}
 library(tidyverse)
-library(broom)
 ```
+
+If you see a warning that looks like this: `Error in library(tidyverse) : there is no package called 'tidyverse'`, then you don't have the package installed correctly.
 
 ## Create new project with NHANES data
 
@@ -26,19 +34,11 @@ NHANES is a research program designed to assess the health and nutritional statu
 
 We are using a small slice of this data. We're only using a handful of variables from the 2011-2012 survey years on about 5,000 individuals. The CDC uses a [sampling strategy](http://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf) to purposefully oversample certain subpopulations like racial minorities. Naive analysis of the original NHANES data can lead to mistaken conclusions because the percentages of people from each racial group in the data are different from general population. The 5,000 individuals here are resampled from the larger NHANES study population to undo these oversampling effects, so you can treat this as if it were a simple random sample from the American population.
 
-You can download the data from Collab. The file is called **nhanes.csv**. There's also a data description (filename **nhanes_dd.csv**) that lists and describes each variable in our NHANES dataset.
+Download the data files called **nhanes.csv** and a data description file (filename **nhanes_dd.csv**) that lists and describes each variable in our NHANES dataset.
 
 ### Import & inspect
 
-First, let's load the tidyverse library.
-
-```{r loadpkgs}
-library(tidyverse)
-```
-
-If you see a warning that looks like this: `Error in library(tidyverse) : there is no package called 'tidyverse'`, then you don't have the package installed correctly.
-
-Now, let's actually load the data and take a look.
+Now, let's load the data and take a look.
 
 ```{r loaddata}
 nh <- read_csv("nhanes.csv")
@@ -95,7 +95,9 @@ We can access individual variables within a data frame using the `$` operator, e
 ```{r, results="hide"}
 # Display all Race values
 nh$Race
+```
 
+```{r}
 # Get the unique values of Race
 levels(nh$Race)
 unique(nh$Race)
@@ -125,7 +127,7 @@ summary(nh$Age)
 
 You could also do the last few operations using dplyr, but remember, this returns a single-row, single-column tibble, _not_ a single scalar value like the above. This is only really useful in the context of grouping and summarizing. 
 
-```{r, results='hide'}
+```{r}
 # Compute the mean age
 nh %>% 
   summarize(mean(Age))
@@ -140,19 +142,14 @@ The `summary()` function (note, this is different from **dplyr**'s `summarize()`
 
 ```{r, results="hide"}
 summary(nh)
-#point out missings
+#check out the missings
 ```
-
 
 ### Missing data
 
-Let's try taking the mean of a different variable, either the dplyr way or the simpler `$` way.
+Let's try taking the mean of a different variable, either the dplyr way or the simpler `$` way. I'll use base r syntax.
 
-```{r, results='hide'}
-# the dplyr way: returns a single-row single-column tibble/dataframe
-nh %>% summarize(mean(Income))
-
-# returns a single value
+```{r}
 mean(nh$Income)
 ```
 
@@ -168,8 +165,11 @@ nh$Income
 
 Notice that there are lots of missing values for Income. Trying to get the mean a bunch of observations with some missing data returns a missing value by default. This is almost universally the case with all summary statistics -- a single `NA` will cause the summary to return `NA`. Now look at the help for `?mean`. Notice the `na.rm` argument. This is a logical (i.e., `TRUE` or `FALSE`) value indicating whether or not missing values should be removed prior to computing the mean. By default, it's set to `FALSE`. Now try it again.
 
-```{r}
+```{r, eval=FALSE}
 ?mean
+```
+
+```{r}
 mean(nh$Income, na.rm=TRUE)
 ```
 
@@ -189,7 +189,7 @@ It's always worth examining your data visually before you start any statistical 
 #### Histograms
 
 We can learn a lot from the data just looking at the value distributions of particular variables. Let's make some histograms with ggplot2. 
-```{r, include=FALSE}
+```{r}
 ggplot(nh, aes(BMI)) + geom_histogram(bins=30)
 ```
 Looking at BMI shows a few extreme outliers. 
@@ -225,30 +225,29 @@ rm(nh)
 ### Exercise 1
 
 1. Using the adults data set you just created (`nha`), what is the mean 60-second pulse rate for all participants in the data?
-```{r, echo=FALSE}
+```{r, include=FALSE, eval=FALSE}
 mean(nha$Pulse, na.rm=TRUE)
-nha$Pulse %>% mean(na.rm=TRUE) #dplyr way
+# nha$Pulse %>% mean(na.rm=TRUE) #dplyr way
 ```
 
 2. With the `nha` dataset, what's the range of values for diastolic blood pressure in all participants? (Hint: see help for `min()`, `max()`, and `range()` functions, e.g., enter `?range` to get help).
-```{r, echo=FALSE}
+```{r, include=FALSE, eval=FALSE}
 range(nha$BPDia, na.rm=TRUE)
 #hmm, someone has BP=0...may need to look more closely at this person to see if there are other errors
 ```
 
 3. What's the variance and standard deviation for income among the adult participants?
-```{r, echo=FALSE}
+```{r, include=FALSE, eval=FALSE}
 var(nha$Income, na.rm=TRUE)
 sd(nha$Income, na.rm=TRUE)
 ```
 
 4. Create a histogram of TotChol (Total Cholesterol).
-```{r, echo=FALSE}
+```{r, include=FALSE, eval=FALSE}
 ggplot(nha, aes(TotChol)) + geom_histogram()
 ```
 
 ## Stats with Continuous variables
-Slides 6 & 7
 
 ### T-tests
 
@@ -267,9 +266,8 @@ Normality -- ?? well, we need to assess this. We'll discuss this in a few minute
 Equal variance. Also called homoscedasticity of variances.
 ?? we could think about the populations of men and women and what we know about height and conclude reasonably that the variance is equal for height
 
+Let's start with EDA for this question. I particularly like density plots colored by group. This type of plot helps you see the shape of the distribution of the variable to assess equal variance. Also helps you see if there is a noticeable difference in groups.
 ```{r ttest_HeightGender}
-#EDA
-# I like density plots colored by group. Helps you see distribution of variable to assess equal variance. Also helps you see if there is a noticeable difference in groups.
 ggplot(nha, aes(Height, color = Gender, fill = Gender)) + geom_density(alpha = 0.5)
 #looks like there is a significant difference between the populations.
 #looks like we are safe to assume equal variance
@@ -293,7 +291,7 @@ nha %>%
 
 Learning what is a normal QQ plot looks like is a process.
 
-```{r}
+```{r, include=FALSE}
 #SKIP
 # Try graphing random draws from a normal dist with your n's and see what they look like
 x <- rnorm(n = 1700, mean = 0, sd = 1)
@@ -304,7 +302,7 @@ Certain fields love hypothesis tests of normality and sometimes reviewers will s
 
 The least awful seems to be the Shapiro-Wilk (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3693611/) but there are several options (Kolmogorov-Smirnov, Anderson-Darling, Lillefors)
 
-```{r testnormality}
+```{r testnormality, include=FALSE}
 #######SKIP
 females <- nha %>% filter(Gender == "female")
 males <- nha %>% filter(Gender == "male")
@@ -314,12 +312,14 @@ shapiro.test(males$Height) #fails normality due to large sample size
 ###########
 ```
 
-```{r, t-test}
+```{r t-test}
 # equal variance two-sample t-test
 t.test(Height~Gender, data=nha, var.equal = TRUE)
-#males are taller than females
-#t stat does not change much. DF changes
+```
 
+Males are significantly taller than females.
+
+```{r, include=FALSE}
 ####probably skip this, but just in case ########
 #df for pooled t-test n1+n2-2
 nrow(males %>% filter (Height != "NA"))
@@ -328,27 +328,27 @@ nrow(females %>% filter (Height != "NA"))
 ###
 ```
 
-If the assumption of normality is not met THEN Wilcoxon Mann Whitney U
-Does BMI differ between diabetics and non-diabetics?
+If the assumption of normality is not met, then we should perform a Wilcoxon Mann Whitney U test instead of a t-test.
+
+Let's answer the question "Does BMI differ between diabetics and non-diabetics?"
+
+First we'll look at the distributions using a density plot
 ```{r ttest_BMIDiabetes}
-#EDA for this question
 ggplot(nha, aes(BMI, color = Diabetes, fill = Diabetes)) +
   geom_density(alpha = 0.5)
-#neither dist looks very normal
-#There does seem to be a difference
-#variance seems unequal
+```
 
-#qq plots don't look good, shapiro wilk test fails...MWU
-
-#nonparametric test
+Based on what we see in our exploratory data analysis, we should conduct a WMWU.
+```{r}
 wilcox.test(BMI~Diabetes, data=nha)
+```
+
+Notice how the output from the WMWU does not include summary statistics. Let's calculate those using a grouped summary
+```{r}
 nha %>% 
   group_by(Diabetes) %>% 
   summarize(median(BMI, na.rm = TRUE))
 #people with diabetes have significantly higher BMI
-
-#If you believe CLT allows for parametric test
-t.test(BMI~Diabetes, data=nha)
 ```
 
 > <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> _**A note on one-tailed versus two-tailed tests:**_ A two-tailed test is usually more appropriate. The hypothesis you're testing here is spelled out in the results ("alternative hypothesis: true difference in means is not equal to 0"). If the p-value is very low, you can reject the null hypothesis that there's no difference in means. Because you may not know _a priori_ whether the difference in means will be positive or negative, you want to do the two-tailed test. However, if we _only_ wanted to test a very specific directionality of effect, we could use a one-tailed test and specify which direction we expect. This is more powerful if we "get it right", but much less powerful for the opposite effect. The p-value of a one-tailed test will be half of that of a two-tailed hypothesis test. BUT again, the **two-tailed test is almost always more appropriate** unless you know what direction your results will go _a priori_.
@@ -356,8 +356,8 @@ t.test(BMI~Diabetes, data=nha)
 ### Exercise 2
 Still using the adults (`nha`) dataset, use a test of 2 means to assess whether single or married/cohabitating people (using the RelationshipStatus variable) drink more alcohol (AlcoholYear). (Please feel free to ask for help)
 
-1. First, create plot to explore the distribution of the variables and the relationship between these two variables.
-```{r}
+1. First, create a plot to explore the distribution of the variables and the relationship between these two variables.
+```{r, include=FALSE, eval=FALSE}
 ggplot(nha, aes(AlcoholYear, color = RelationshipStatus, fill = RelationshipStatus)) + geom_density(alpha = 0.5)
 
 #remove NA
@@ -366,18 +366,13 @@ ggplot(nha %>% filter(RelationshipStatus != "NA"), aes(AlcoholYear, color = Rela
 ```
 
 2. Next, consider test assumptions to decide what analysis to run.
-```{r}
+```{r, include=FALSE, eval=FALSE}
 #based on distributions above, choose wilcox
 ```
 
 3. Run the analysis. Is the association between relationship status and alcohol consumption statistically significant? If so, which group drinks more often?
-```{r}
-#com <- nha %>% filter(RelationshipStatus == "Committed")
-#sing <- nha %>% filter(RelationshipStatus == "Single")
+```{r, include=FALSE, eval=FALSE}
 wilcox.test(AlcoholYear~RelationshipStatus, data=nha)
-nha %>% 
-  group_by(RelationshipStatus) %>% 
-  summarize(mean(AlcoholYear, na.rm = TRUE))
 
 #to see median and Q1 and Q3
 nha %>% 
@@ -385,20 +380,12 @@ nha %>%
   summarize(Q1 = quantile(AlcoholYear, probs = .25, na.rm = TRUE), 
             med = median(AlcoholYear, na.rm = TRUE), 
             Q3 = quantile(AlcoholYear, probs = .75, na.rm = TRUE))
-
-#TRY TO SKIP
-#median and IQR
-nha %>% 
-  group_by(RelationshipStatus) %>% 
-  summarize(med = median(AlcoholYear, na.rm = TRUE), IQR = (quantile(AlcoholYear, probs = .75, na.rm = TRUE) - quantile(AlcoholYear, probs = .25, na.rm = TRUE)))
 ```
 
 > <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> _**A note on paired versus unpaired t-tests:**_ The t-tests we performed here were unpaired tests. Males and females are different people. The diabetics and nondiabetics are different samples. The single and committed individuals are completely independent, separate observations. In these cases, an _unpaired_ test is appropriate. An alternative design might be when data is derived from samples who have been measured at two different time points or locations, e.g., before versus after treatment, left versus right hand, etc. In this case, a _**paired t-test**_ would be more appropriate. A paired test takes into consideration the intra and inter-subject variability, and is more powerful than the unpaired test. There is a paired = TRUE option for both the t-test and the Wilcoxon test.
 
 
 ### Linear models
-
-[_(See slide 8)_](slides/r-stats.html#(6))
 
 > Analysis of variance and linear modeling are complex topics that deserve an entire semester dedicated to theory, design, and interpretation. A very good resource is [_An Introduction to Statistical Learning: with Applications in R_](https://www.amazon.com/Introduction-Statistical-Learning-Applications-Statistics/dp/1461471370/ref=sr_1_1?ie=UTF8&qid=1473087847&sr=8-1&keywords=introduction+statistical+learning&tag=gettgenedone-20) by Gareth James, Daniela Witten, Trevor Hastie and Robert Tibshirani. The [PDF](http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Sixth%20Printing.pdf) of the book and all the R code used throughout are [available **free** on the author's website](http://www-bcf.usc.edu/~gareth/ISL/). What follows is a necessary over-simplification with more focus on implementation, and less on theory and design.
 
@@ -427,7 +414,7 @@ TukeyHSD(aov(fit))
 
 Go back and re-run the t-test assuming equal variances as we did before. Now notice a few things:
 
-```{r, results="hide"}
+```{r}
 t.test(BMI~RelationshipStatus, data=nha, var.equal=TRUE)
 ```
 
@@ -435,18 +422,16 @@ t.test(BMI~RelationshipStatus, data=nha, var.equal=TRUE)
 1. The p-values from all three tests (t-test, ANOVA, and linear regression) are all identical (p=0.1256). This is because they're all identical: a t-test is a specific case of ANOVA, which is a specific case of linear regression. 
 
 1. The test statistics are all related. The _t_ statistic from the t-test is **1.532**, which is the same as the t-statistic from the linear regression. If you square that, you get **2.347**, the _F_ statistic from the ANOVA. 
+
 1. The `t.test()` output shows you the means for the two groups, Committed and Single. Just displaying the `fit` object itself or running `summary(fit)` shows you the coefficients for a linear model. Here, the model assumes the "baseline" RelationshipStatus level is _Committed_ (first alphabetically), and that the _intercept_ in a regression model (e.g., $\beta_{0}$ in the model $Y = \beta_{0} +  \beta_{1}X$) is the mean of the baseline group (28.51 is the mean BMI for Committed people). Being _Single_ results in an increase in BMI of 0.3413. This is the $\beta_{1}$ coefficient in the model. You can easily change the ordering of the levels. See the help for `?factor`, and check out the new [**forcats** package](http://forcats.tidyverse.org/), which provides tools **for** manipulating **cat**egorical variables.
 
-```{r}
+```{r, include=FALSE}
 # P-value computed on a t-statistic with 3552 degrees of freedom
 # (multiply times 2 because t-test is assuming two-tailed)
 2*(1-pt(1.532, df=3552))
 # P-value computed on an F-test with 1 and 3552 degrees of freedom
 1-pf(2.347, df1=1, df2=3552)
 ```
-
-> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> _**A note on dummy coding:**_ If you have a $k$-level factor, R creates $k-1$ dummy variables, or indicator variables, by default, using the alphabetically first level as baseline. For example, the levels of RelationshipStatus are "Committed" and "Single". R creates a dummy variable called "RelationshipStatusSingle" that's **0** if you're committed, and **1** if you're Single. The linear model is saying for every unit increase in RelationshipStatusSingle, i.e., going from committed to single, results in a 0.341-unit increase in BMI. You can change the ordering of the factors to change the interpretation of the model (e.g., treating Single as baseline and going from Single to Committed). We'll do this in the next section.
-
 
 ### ANOVA
 
@@ -468,18 +453,21 @@ What if we wanted "Never" smokers to be the baseline, followed by Former, then C
 ?factor
 # Look at nha$SmokingStatus
 nha$SmokingStatus
+```
 
-# What happens if we relevel it? Let's see what that looks like.
+Let's relevel Smoking Status to make 'Never' the reference categrory. Then we'll take a look
+```{r}
 factor(nha$SmokingStatus, levels = c('Never', 'Former', 'Current'))
+```
 
-# If we're happy with that, let's change the value of nha$SmokingStatus in place. I'm showing the dplyr way
+If we're happy with that, let's change the value of nha$SmokingStatus in place. I'm showing the dplyr way
+```{r}
 nha <- nha %>% 
   mutate(SmokingStatus=factor(SmokingStatus, levels = c('Never', 'Former', 'Current')))
 ```
 
-
+Re-fit the model then look at the ANOVA and LM summaries
 ```{r}
-# Re-fit the model
 fit <- lm(BMI~SmokingStatus, data=nha)
 
 # Show the ANOVA table
@@ -490,14 +478,6 @@ summary(fit)
 ```
 
 Notice that the p-value on the ANOVA/regression didn't change, but the coefficients did. _Never_ smokers are now treated as baseline. The intercept coefficient (28.856) is now the mean for _Never_ smokers. The `SmokingStatusFormer` coefficient of .309 shows the apparent increase in BMI that former smokers have when compared to never smokers, but that difference is not significant (p=.24). The `SmokingStatusCurrent` coefficient of -1.464 shows that current smokers actually have a lower BMI than never smokers, and that this decrease is highly significant.
-
-If you need to do something downstream with the output from these models, there is a tidy function in the broom package that may help.
-```{r}
-library(broom)
-tidy(fit)
-tidy(anova(fit))
-```
-
 
 Finally, you can do the typical post-hoc ANOVA procedures on the fit object. For example, the `TukeyHSD()` function will run [_Tukey's test_](https://en.wikipedia.org/wiki/Tukey%27s_range_test) (also known as _Tukey's range test_, the _Tukey method_, _Tukey's honest significance test_, _Tukey's HSD test_ (honest significant difference), or the _Tukey-Kramer method_). Tukey's test computes all pairwise mean difference calculation, comparing each group to each other group, identifying any difference between two groups that's greater than the standard error, while controlling the type I error for all multiple comparisons. First run `aov()` (**not** `anova()`) on the fitted linear model object, then run `TukeyHSD()` on the resulting analysis of variance fit.
 
@@ -523,8 +503,6 @@ nha %>%
 
 ### Linear regression
 
-See slides
-
 Linear models are mathematical representations of the process that (_we think_) gave rise to our data. The model seeks to explain the relationship between a variable of interest, our _Y_, _outcome_, _response_, or _dependent_ variable, and one or more _X_, _predictor_, or _independent_ variables. Previously we talked about t-tests or ANOVA in the context of a simple linear regression model with only a single predictor variable, $X$:
 
 $$Y = \beta_{0} +  \beta_{1}X$$
@@ -545,14 +523,6 @@ Let's look at the relationship between height and weight.
 ```{r}
 fit <- lm(Weight~Height, data=nha)
 summary(fit)
-#for each 1 cm increase in Height, we have a .92 kg increase in weight
-#confint(fit) #to get out confidence intervals for LM
-
-# if you need to do something with the output from these, the tidy function from the broom package will clean up the output and allow you to call out certain pieces
-library(broom)
-
-tidy(fit)$statistic
-# this can be especially helpful for model selection where you need to quickly compare multiple models
 ```
 
 The relationship is highly significant (P<$2.2 \times 10^{-16}$). The intercept term is not very useful most of the time. Here it shows us what the value of Weight would be when Height=0cm, which could never happen. The Height coefficient is meaningful -- each one cm increase in height results in a 0.92 kg increase in weight. Let's visualize that relationship:
@@ -593,7 +563,7 @@ TukeyHSD(aov(fit))
 summary(fit)
 ```
     
-There is so much more to learn with regression models. Check out our regression workshop
+There is so much more to learn with regression models. Next week, we'll spend the whole lesson on regressions.
 
 We've only looked at the [`summary()`](http://stat.ethz.ch/R-manual/R-patched/library/stats/html/summary.lm.html) and [`anova()`](http://stat.ethz.ch/R-manual/R-patched/library/stats/html/anova.lm.html) functions for extracting information from an [`lm` class object](http://stat.ethz.ch/R-manual/R-patched/library/stats/html/lm.html). There are several other accessor functions that can be used on a linear model object. Check out the help page for each one of these to learn more.
 
