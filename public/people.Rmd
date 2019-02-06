@@ -1,0 +1,22 @@
+---
+title: "People"
+output: 
+  html_document:
+    toc: yes
+---
+
+## Instructors
+
+#### David N Martin, MS
+
+David is the Clinical Data Research Specialist at the Health Sciences Library where he consults with clinicians, nurses, and students on data analysis and programming in a number of languages. He is also a PhD candidate in the Curry School of Education researching the impacts of the No Child Left Behind policy.
+
+- Email: dnm5ca@virginia.edu
+- GitHub: [github.com/dnm5ca](https://github.com/dnm5ca)
+
+#### Marieke K Jones, PhD
+
+Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.
+
+- Email: marieke@virginia.edu
+- GitHub: [github.com/mariekekjones](https://github.com/mariekekjones)
