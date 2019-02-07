@@ -4,7 +4,7 @@
 #' output: html_document
 #' ---
 #'
-  knitr::opts_chunk$set(results=FALSE)
+
 #'
 #' Data analysis involves a large amount of [janitorwork](http://www.nytimes.com/2014/08/18/technology/for-big-data-scientists-hurdle-to-insights-is-janitor-work.html) -- munging and cleaning data to facilitate downstream data analysis. In fact, data scientists say that around [80%](https://www.infoworld.com/article/3228245/data-science/the-80-20-data-science-dilemma.html) of their time is taken up by data cleaning tasks compared to just 20% for the actual analyses.
 #'
