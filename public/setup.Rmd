@@ -1,0 +1,156 @@
+---
+title: 'Setup Instructions'
+output: 
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+Prior to the first class session, please follow the instructions under the **_Core Software_** heading. For future class sessions, you may also need to follow additional setup instructions under each session's heading.
+
+## Core Software
+
+Install the following software in preparation for the first class session.
+
+### R
+
+**Install R.** You'll need R version **3.5.2**.[^rversion] Download and install R for [Windows](http://cran.r-project.org/bin/windows/base/) or [Mac](http://cran.r-project.org/bin/macosx/) (download the latest R-3.x.x.pkg file for your appropriate version of Mac OS).
+
+### RStudio
+
+Download and install **[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)** version >= 1.1.463.
+
+R and RStudio are separate downloads and installations. **R** is the underlying statistical computing environment, but using R alone is no fun. **RStudio** is a graphical integrated development environment that makes using R much easier. You need R installed before you install RStudio.
+
+### CRAN packages
+
+We will need to install several core packages needed for most lessons. Launch RStudio (RStudio, *not R itself*). Ensure that you have internet access, then copy and paste the following commands, one-at-a-time, into the **Console** panel (usually the lower-left panel, by default) and hit the Enter/Return key. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and [email one of the instructors](people.html) _prior to class_ with the command you typed and the error you received.
+
+```r
+install.packages("tidyverse")
+```
+
+_A few notes_:
+
+- Commands are case-sensitive. 
+- You must be connected to the internet.
+- Even if you've installed these packages in the past, re-install the package to download the most recent version. Many of these packages are updated often, and we may use new features in the workshop that aren't available in older versions.
+- If you're using Windows you might see errors about not having permission to modify the existing libraries -- disregard these. You can avoid this by running RStudio as an administrator (right click the RStudio icon, then click "Run as Administrator").
+- These core packages are part of the "tidyverse" ecosystem (see [tidyverse.org](https://www.tidyverse.org/)). The tidyverse package is a meta-package that automatically installs/loads all of the above packages and several other commonly used packages for data analysis that all play well together.[^tidyverse]
+
+[^rversion]: R version 3.5.2 was released December 2018. If you have not updated your R installation since then, you need to upgrade to a more recent version, since several of the required packages depend on a version at least this recent. You can check your R version with the `sessionInfo()` command.
+
+[^tidyverse]: Installing/loading the tidyverse **tidyverse** will install/load the core tidyverse packages that you are likely to use in almost every analysis:
+**ggplot2** (for data visualisation), **dplyr** (for data manipulation), **tidyr** (for data tidying), **readr** (for data import), **purrr** (for functional programming), and **tibble** (for tibbles, a modern re-imagining of data frames). It also installs a selection of other tidyverse packages that you're likely to use frequently, but probably not in every analysis (these are installed, but you'll have to load them separately with `library(packageName)`). This includes: **hms** (for times), **stringr** (for strings), **lubridate** (for date/times), **forcats** (for factors), **DBI** (for databases), **haven** (for SPSS, SAS and Stata files), **httr** (for web apis), **jsonlite** (or JSON), **readxl** (for .xls and .xlsx files), **rvest** (for web scraping), **xml2** (for XML), **modelr** (for modelling within a pipeline), and **broom** (for turning models into tidy data). 
+
+Check that you've installed everything correctly by closing and reopening RStudio and entering the following command at the console window (don't worry about any messages that look something like `the following objects are masked from ...`[^masking], or `Warning message: package ... was build under R version ...`[^oldversion]):
+
+```r
+library(tidyverse)
+```
+
+[^masking]: We'll talk about this in class. It's not a concern.
+
+[^oldversion]: This means the version of R you have installed is older than the version that the package author used when they built the package you're trying to use. 99% of the time it isn't a problem, unless your R version is very old (you should be using 3.4.0 or later for this course).
+
+This may produce some notes or other output, but as long as you don't get an error message, you're good to go. If you get a message that says something like: `Error in library(somePackageName) : there is no package called 'somePackageName'`, then the required packages did not install correctly. Please do not hesitate to [email one of the instructors](people.html) _prior to class_ if you are still having difficulty. In your email, please copy and paste what you typed in the console, and all of the output that streams by in the console.
+
+After installing tidyverse with `install.packages("tidyverse")` and loading it with `library(tidyverse)`, you can use `tidyverse_update()` to update all the tidyverse packages installed on your system at once.
+
+
+### RMarkdown
+
+Several additional setup steps are required to enable us to produce RMarkdown documents
+
+1. First, install R, RStudio, and the tidyverse CRAN package as described above. Also install the knitr and rmarkdown packages.
+
+```r
+install.packages("knitr")
+install.packages("rmarkdown")
+```
+1. Next, launch RStudio (not R). Click File, New File, R Markdown. This may tell you that you need to install additional packages (`knitr`, `yaml`, `htmltools`, `caTools`, `bitops`, `rmarkdown`, and maybe a few others). Click "Yes" to install these.
+1. **_Optional_:** If you want to convert to PDF, you will need to install a **$\LaTeX$** typesetting engine. This differs on Mac and Windows. _Note that this part of the installation may take up to several hours, and isn't strictly required for the class._
+    - **Windows**: Download and install MiKTeX: <https://miktex.org/download>. Read the installation tutorial first at <https://miktex.org/howto/install-miktex>.
+    - **Mac**: Download and install MacTeX.pkg at <http://www.tug.org/mactex/mactex-download.html>. This is a very large download (>2 gigabytes), and may take a while depending on your network speed. Do this _prior to the course_.
+
+## Regression
+
+Set-up instructions will be posted here.
+
+## RNA Seq
+
+### Bioconductor
+
+To install packages from Bioconductor ([more information here](https://www.bioconductor.org/install/)) we will need to access the Bioconductor package repository rather than the CRAN. These packages are installed differently than "regular" R packages from CRAN. Copy and paste these lines of code into your R console **one at a time**. 
+
+```r
+if (!requireNamespace("BiocManager"))
+    install.packages("BiocManager")
+BiocManager::install("name-of-package")
+```
+
+A few notes:
+
+- We will be using the latest versions of Bioconductor from the 3.8 release. This requires R version 3.5.0 or higher. If you have R 3.5.0 installed, running the commands above will install Bioconductor 3.8.
+- If at any point in the Bioconductor package installations you get prompts in the console asking you to update any existing packages, type `n` at the prompt at hit enter.
+- If you see a note long the lines of "_binary version available but the source version is later_", followed by a question, "_Do you want to install from sources the package which needs compilation? y/n_", type **`n` for no**, and hit enter.
+
+Check that you've installed everything correctly by closing and reopening RStudio and entering the following command at the console window:
+
+```r
+library(BiocManager)
+```
+
+If you get a message that says something like: `Error in library(BiocManager) : there is no package called 'BiocManager'`, then the required packages did not install correctly. Please do not hesitate to [email one of the instructors](people.html) _prior to the course_ if you are still having difficulty. In this email, please copy and paste what you typed in the console, and all of the output that streams by in the console.
+
+## Predictive Analytics
+
+For this session, we will need several packages described below. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and [email us](people.html) _prior to class_ with the command you typed and the error you received.
+
+First, install the **[caret](https://cran.r-project.org/package=caret)** package, which provides a unified interface to hundreds of data mining and machine learning algorithms and a framework for model training and evaluation. This command will also install all the additional packages that **caret** recommends. 
+
+```r
+install.packages("caret", dependencies = c("Depends", "Suggests"))
+```
+
+When you do this, you may get a note asking you about installing source packages that need compilation. If you get this message, type `n` and hit `Enter` at the prompt for "no."
+
+```
+There are binary versions available but the source versions are later:
+                binary  source  needs_compilation
+somePackage1    ....    ....               TRUE
+somePackage1    ....    ....               FALSE
+
+Do you want to install from sources the package which needs compilation?
+```
+
+Similarly, if you get a message that looks like this, type `n` and hit `Enter` for "no."
+
+```
+Packages which are only available in source form, and may need compilation of C/C++/Fortran: ‘Rpoppler’ ‘Rmpi’
+Do you want to attempt to install these from sources?
+```
+
+The **caret** package provides the utilities for interfacing with many other packages' machine learning algorithms. We're going to fit models using Random Forest, stochastic gradient boosting, k-Nearest Neighbors, Lasso and Elastic-Net Regularized Generalized Linear Models. These require the packages [randomForest](https://cran.r-project.org/package=randomForest), [gbm](https://cran.r-project.org/package=gbm), [kknn](https://cran.r-project.org/package=kknn), and [glmnet](https://cran.r-project.org/package=glmnet), respectively. We will also need the [mice](https://cran.r-project.org/package=mice) package for multiple imputation. The following commands will install these packages.
+
+```r
+install.packages("recipes")
+install.packages("randomForest")
+install.packages("kknn")
+install.packages("glmnet")
+```
+
+Check that you've installed everything correctly by closing and reopening RStudio and entering the following commands one-at-a-time in the console pane. If you get an error telling you that the package isn't installed, try re-installing it as demonstrated above. If you're still having trouble, [email us](people.html) _prior to class_ with the command you typed to install and the error(s) you received.
+
+```r
+library(caret)
+library(recipes)
+library(randomForest)
+library(kknn)
+library(glmnet)
+`````
+
+----
+
+----
+
