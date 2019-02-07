@@ -7,6 +7,8 @@ output:
 
 ## General Information
 
+This is the course content for students enrolled in BIMS8382 at The University of Virginia.
+
 ### Logistics
 
 **_Instructors:_**
