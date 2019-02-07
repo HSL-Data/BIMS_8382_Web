@@ -189,71 +189,14 @@ $(document).ready(function () {
 
 
 <p><a href="Week_1_Intro.html">Part 1 of Week 1, Introduction to R</a>.</p>
-<p><a href="bims8382.netlify.com">Back to the main page</a></p>
+<p><a href="https://bims8382.netlify.com">Back to the main page</a></p>
 <p>Contemporary life science is plagued by reproducibility issues. This presentation covers some of the barriers to reproducible research and how to start to address some of those problems during the data management and analysis phases of the research life cycle. In this workshop we will cover using R and dynamic document generation with RMarkdown and RStudio to weave together reporting text with executable R code to automatically generate reports in the form of PDF, Word, or HTML documents.</p>
-<div id="who-cares-about-reproducible-research" class="section level2">
-<h2>Who cares about reproducible research?</h2>
-<p>Science is plagued by reproducibility problems. Especially genomics!</p>
-<ul>
-<li>Scientists in the United States spend <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002165">$28 billion</a> each year on basic biomedical research that cannot be repeated successfully.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></li>
-<li>A reproducibility study in psychology found that only <a href="http://www.nature.com/news/first-results-from-psychology-s-largest-reproducibility-test-1.17433">39 of 100 studies could be reproduced</a>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a></li>
-<li>The Journal <em>Nature</em> on the <a href="http://www.nature.com/news/reproducibility-1.17552">issue of reproducibility</a>:<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>
-<ul>
-<li>“<em>Nature</em> and the Nature research journals will introduce editorial measures to address the problem by improving the consistency and quality of reporting in life-sciences articles… <strong>we will give more space to methods sections. We will examine statistics more closely and encourage authors to be transparent, for example by including their raw data.</strong>”<br />
-</li>
-<li><em>Nature</em> also released a <a href="http://www.nature.com/authors/policies/checklist.pdf">checklist</a>, unfortunately with <em>wimpy</em> computational check <em>(see #18)</em>.</li>
-</ul></li>
-<li>On microarray reproducibility:<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>
-<ul>
-<li>18 Nat. Genet. microarray experiments</li>
-<li>Less than 50% reproducible</li>
-<li>Problems:
-<ul>
-<li>Missing data (38%)</li>
-<li>Missing software/hardware details (50%)</li>
-<li>Missing method/processing details (66%)</li>
-</ul></li>
-</ul></li>
-<li>NGS: run-of-the-mill variant calling (align, process, call variants):<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>
-<ul>
-<li>299 articles published in 2011 citing the 1000 Genomes project pilot publication</li>
-<li>Only 19 were NGS studies with similar design</li>
-<li>Only 10 used tools recommended by 1000G.</li>
-<li>Only 4 used full 1000G workflow (realignment &amp; quality score recalibration).</li>
-</ul></li>
-</ul>
-<p>Consider this figure:</p>
-<p>How do we reproduce it? What do we need?</p>
-<ul>
-<li>The data.
-<ul>
-<li>Data points themselves.</li>
-<li>Other metadata.</li>
-</ul></li>
-<li>The code.
-<ul>
-<li>Should be readable.</li>
-<li>Comments in the code / well-documented so a normal person can figure out how it runs.</li>
-<li>How were the trend lines drawn?</li>
-<li>What version of software / packages were used?</li>
-</ul></li>
-</ul>
-<p>This kind of information is rarely available in scientific publications, but it’s now extraordinarly easy to put this kind of information on the web.</p>
-<p>Could I replicate Figure 1 from your last publication? If not, what would <em>you and your co-authors</em> need to provide or do so I could replicate Figure 1 from your last publication?</p>
-<p><strong>As scientists we should aim for <em>robust</em> and <em>reproducible</em> research</strong></p>
-<ul>
-<li>“<strong>Robust research</strong> is about doing small things that stack the deck in your favor to prevent mistakes.”<br />
-<em>—Vince Buffalo, author of Bioinformatics Data Skills (2015)</em>.</li>
-<li><strong>Reproducible research</strong> can be repeated by other researchers with the same results.</li>
-</ul>
 <div id="reproducibility-is-hard" class="section level3">
 <h3>Reproducibility is hard!</h3>
-<ol style="list-style-type: decimal">
-<li>Genomics data is too large and high dimensional to easily inspect or visualize. Workflows involve multiple steps and it’s hard to inspect every step.</li>
-<li>Unlike in the wet lab, we don’t always know what to expect of our genomics data analysis.</li>
-<li>It can be hard to distinguish <em>good</em> from <em>bad</em> results.</li>
-<li>Scientific code is usually only run once to generate results for a publication, and is more likely to contain silent bugs. (code that may produces unknowingly incorrect output rather than stopping with an error message).</li>
-</ol>
+<p>Genomics data is too large and high dimensional to easily inspect or visualize. Workflows involve multiple steps and it’s hard to inspect every step.</p>
+<p>Unlike in the wet lab, we don’t always know what to expect of our genomics data analysis.</p>
+<p>It can be hard to distinguish <em>good</em> from <em>bad</em> results.</p>
+<p>Scientific code is usually only run once to generate results for a publication, and is more likely to contain silent bugs. (code that may produces unknowingly incorrect output rather than stopping with an error message).</p>
 </div>
 <div id="whats-in-it-for-you" class="section level3">
 <h3>What’s in it for <em>you?</em></h3>
@@ -277,7 +220,7 @@ $(document).ready(function () {
 </li>
 <li>Make names/variables consistent, distinctive and meaningful.<br />
 </li>
-<li>Adopt a <a href="http://adv-r.had.co.nz/Style.html">style</a> be consistent.<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a></li>
+<li>Adopt a <a href="http://adv-r.had.co.nz/Style.html">style</a> be consistent.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></li>
 <li>Write concise and clear comments.</li>
 </ul></li>
 <li><strong>Make incremental changes.</strong> Work in small steps with frequent feedback. Use version control. See <a href="http://swcarpentry.github.io/git-novice/" class="uri">http://swcarpentry.github.io/git-novice/</a> for resources on version control.</li>
@@ -294,7 +237,7 @@ $(document).ready(function () {
 </ul></li>
 <li><strong>Write code that uses relative paths.</strong>
 <ul>
-<li>Don’t use hard-coded absolute paths (i.e. <code>/Users/stephen/Data/seq-data.csv</code> or <code>C:\Stephen\Documents\Data\Project1\data.txt</code>).</li>
+<li>Don’t use hard-coded absolute paths (i.e. <code>/Users/David/Data/seq-data.csv</code> or <code>C:\David\Documents\Data\Project1\data.txt</code>).</li>
 <li>Put the data in the project directory and reference it <em>relative</em> to where the code is, e.g., <code>data/gapminder.csv</code>, etc.<br />
 </li>
 </ul></li>
@@ -310,7 +253,6 @@ $(document).ready(function () {
 <li>Use dynamic documentation to make your life easier.</li>
 </ul></li>
 </ol>
-</div>
 </div>
 <div id="rmarkdown" class="section level2">
 <h2>RMarkdown</h2>
@@ -469,12 +411,7 @@ output:
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Freedman, et al. “The economics of reproducibility in preclinical research.” <em>PLoS Biol</em> 13.6 (2015): e1002165.<a href="#fnref1">↩</a></p></li>
-<li id="fn2"><p><a href="http://www.nature.com/news/first-results-from-psychology-s-largest-reproducibility-test-1.17433" class="uri">http://www.nature.com/news/first-results-from-psychology-s-largest-reproducibility-test-1.17433</a><a href="#fnref2">↩</a></p></li>
-<li id="fn3"><p><a href="http://www.nature.com/news/reproducibility-1.17552" class="uri">http://www.nature.com/news/reproducibility-1.17552</a><a href="#fnref3">↩</a></p></li>
-<li id="fn4"><p>Ioannidis, John PA, et al. “Repeatability of published microarray gene expression analyses.” <em>Nature genetics</em> 41.2 (2009): 149-155.<a href="#fnref4">↩</a></p></li>
-<li id="fn5"><p>Nekrutenko, Anton, and James Taylor. “Next-generation sequencing data interpretation: enhancing reproducibility and accessibility.” <em>Nature Reviews Genetics</em> 13.9 (2012): 667-672.<a href="#fnref5">↩</a></p></li>
-<li id="fn6"><p><a href="http://adv-r.had.co.nz/Style.html" class="uri">http://adv-r.had.co.nz/Style.html</a><a href="#fnref6">↩</a></p></li>
+<li id="fn1"><p><a href="http://adv-r.had.co.nz/Style.html" class="uri">http://adv-r.had.co.nz/Style.html</a><a href="#fnref1">↩</a></p></li>
 </ol>
 </div>
 

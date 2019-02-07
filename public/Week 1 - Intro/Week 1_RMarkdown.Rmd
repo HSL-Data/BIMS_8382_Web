@@ -7,7 +7,7 @@ output:
 
 [Part 1 of Week 1, Introduction to R](Week_1_Intro.html).
 
-[Back to the main page](bims8382.netlify.com)
+[Back to the main page](https://bims8382.netlify.com)
 
 ```{r init, include=F}
 library(knitr)
@@ -16,70 +16,21 @@ options(digits=3)
 options(max.print=200)
 .ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
 
-# See http://rpubs.com/turnersd/embedding-rmarkdown-chunk-into-rmarkdown
 catn <- function(x="") cat("    ", x, "\n")
 ```
 
 Contemporary life science is plagued by reproducibility issues. This presentation covers some of the barriers to reproducible research and how to start to address some of those problems during the data management and analysis phases of the research life cycle. In this workshop we will cover using R and dynamic document generation with RMarkdown and RStudio to weave together reporting text with executable R code to automatically generate reports in the form of PDF, Word, or HTML documents.
 
-## Who cares about reproducible research?
-
-Science is plagued by reproducibility problems. Especially genomics!
-
-- Scientists in the United States spend [$28 billion](http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002165) each year on basic biomedical research that cannot be repeated successfully.[^spending]
-- A reproducibility study in psychology found that only [39 of 100 studies could be reproduced](http://www.nature.com/news/first-results-from-psychology-s-largest-reproducibility-test-1.17433).[^psych]
-- The Journal _Nature_ on the [issue of reproducibility](http://www.nature.com/news/reproducibility-1.17552):[^natureonrep]
-    - "_Nature_ and the Nature research journals will introduce editorial measures to address the problem by improving the consistency and quality of reporting in life-sciences articles... **we will give more space to methods sections. We will examine statistics more closely and encourage authors to be transparent, for example by including their raw data.**"  
-    - _Nature_ also released a [checklist](http://www.nature.com/authors/policies/checklist.pdf), unfortunately with _wimpy_ computational check _(see #18)_.
-- On microarray reproducibility:[^microarrayrep]
-    - 18 Nat. Genet. microarray experiments
-    - Less than 50% reproducible
-    - Problems: 
-        - Missing data (38%)
-        - Missing software/hardware details (50%)
-        - Missing method/processing details (66%)
-- NGS: run-of-the-mill variant calling (align, process, call variants):[^ngsrep]
-    - 299 articles published in 2011 citing the 1000 Genomes project pilot publication
-    - Only 19 were NGS studies with similar design
-    - Only 10 used tools recommended by 1000G.
-    - Only 4 used full 1000G workflow (realignment & quality score recalibration).
-
-[^spending]: Freedman, et al. "The economics of reproducibility in preclinical research." _PLoS Biol_ 13.6 (2015): e1002165.
-[^psych]: <http://www.nature.com/news/first-results-from-psychology-s-largest-reproducibility-test-1.17433>
-[^natureonrep]: <http://www.nature.com/news/reproducibility-1.17552>
-[^microarrayrep]: Ioannidis, John PA, et al. "Repeatability of published microarray gene expression analyses." _Nature genetics_ 41.2 (2009): 149-155.
-[^ngsrep]: Nekrutenko, Anton, and James Taylor. "Next-generation sequencing data interpretation: enhancing reproducibility and accessibility." _Nature Reviews Genetics_ 13.9 (2012): 667-672.
-
-Consider this figure:
-
-
-How do we reproduce it? What do we need?
-
-- The data.
-    - Data points themselves.
-    - Other metadata.
-- The code.
-    - Should be readable.
-    - Comments in the code / well-documented so a normal person can figure out how it runs.
-    - How were the trend lines drawn?
-    - What version of software / packages were used?
-    
-This kind of information is rarely available in scientific publications, but it's now extraordinarly easy to put this kind of information on the web.
-
-Could I replicate Figure 1 from your last publication? If not, what would _you and your co-authors_ need to provide or do so I could replicate Figure 1 from your last publication?
-
-**As scientists we should aim for _robust_ and _reproducible_ research**
-
-- "**Robust research** is about doing small things that stack the deck in your favor to prevent mistakes."  
-  _---Vince Buffalo, author of Bioinformatics Data Skills (2015)_.
-- **Reproducible research** can be repeated by other researchers with the same results. 
 
 ### Reproducibility is hard!
 
-1. Genomics data is too large and high dimensional to easily inspect or visualize. Workflows involve multiple steps and it's hard to inspect every step.
-1. Unlike in the wet lab, we don't always know what to expect of our genomics data analysis.
-1. It can be hard to distinguish *good* from *bad* results.
-1. Scientific code is usually only run once to generate results for a publication, and is more likely to contain silent bugs. (code that may produces unknowingly incorrect output rather than stopping with an error message).
+Genomics data is too large and high dimensional to easily inspect or visualize. Workflows involve multiple steps and it's hard to inspect every step.
+
+Unlike in the wet lab, we don't always know what to expect of our genomics data analysis.
+
+It can be hard to distinguish *good* from *bad* results.
+
+Scientific code is usually only run once to generate results for a publication, and is more likely to contain silent bugs. (code that may produces unknowingly incorrect output rather than stopping with an error message).
 
 ### What's in it for _you?_  
 
@@ -109,7 +60,7 @@ Yeah, it takes a lot of effort to be robust and reproducible.  However, *it will
     - Figshare (<http://figshare.com/>) and Zenodo (<https://zenodo.org/>) allow you to upload any kind of research output, publishable or not, free and unlimited. Instantly get permanently available, citable DOI for your research output.
     - _"Data/code is available upon request"_ or _"Data/code is available at the lab's website"_ are completely unacceptable in the 21st century.
 1. **Write code that uses relative paths.**
-    - Don't use hard-coded absolute paths (i.e. `/Users/stephen/Data/seq-data.csv` or `C:\Stephen\Documents\Data\Project1\data.txt`). 
+    - Don't use hard-coded absolute paths (i.e. `/Users/David/Data/seq-data.csv` or `C:\David\Documents\Data\Project1\data.txt`). 
     - Put the data in the project directory and reference it _relative_ to where the code is, e.g., `data/gapminder.csv`, etc.  
 1. **Always set your seed.** If you're doing anything that involves random/monte-carlo approaches, always use `set.seed()`.
 1. **Document everything and use code as documentation.**

@@ -6,7 +6,8 @@ output:
 ---
 [Part 2 of Week 1, using RMarkdown](Week_1_RMarkdown.html).
 
-[Back to the main page](bims8382.netlify.com)
+[Back to the main page](https://bims8382.netlify.com)
+
 ```{r, echo=FALSE, message=FALSE, eval=TRUE}
 library(knitr)
 opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, results="hide", cache=TRUE)
@@ -110,19 +111,19 @@ rm(list = ls())
 
 1.	You have a patient with a height (inches) of 73 and a weight (lbs) of 203. Create r objects labeled 'height' and 'weight'.
 
-```{r}
+```{r, echo = FALSE}
 height <- 73
 weight <- 203
 ```
 
 2.	Convert 'weight' to 'weight_kg' by dividing by 2.2. Convert 'height' to 'height_m' by dividing by 39.37
-```{r}
+```{r, echo = FALSE}
 weight_kg <- weight /2.2
 height_m <- height/39.37
 ```
 
 3.	Calculate a new object 'bmi' where BMI = weight_kg / (height_m*height_m)
-```{r}
+```{r, echo = FALSE}
 bmi <- weight_kg / (height_m * height_m)
 bmi <- weight_kg / (height_m ^ 2)
 ```
@@ -174,7 +175,7 @@ sqrt(myval)
 
 See `?abs` and calculate the square root of the log-base-10 of the absolute value of `-4*(2550-50)`. Answer should be 
 `2`.
-```{r}
+```{r, echo = FALSE}
 sqrt(log(abs(-4*(2550 - 50)), 10))
 ```
 
@@ -358,23 +359,23 @@ mean(gm$lifeExp, na.rm = TRUE)
 ###EXERCISE `r .ex``r .ex=.ex+1`
 
 1. What's the standard deviation of the life expectancy (hint: get help on the `sd` function with `?sd`).
-```{r}
+```{r, echo = FALSE}
  ?sd
  sd(gm$lifeExp, na.rm = TRUE)
 ```
 
 2. What's the mean population size in millions? (hint: divide by `1000000`, or alternatively, `1e6`).
-```{r}
+```{r, echo = FALSE}
  mean(gm$pop, na.rm = TRUE) / 1e6
 ```
 
 3. What's the range of years represented in the data? (hint: `range()`).
-```{r}
+```{r, echo = FALSE}
  range(gm$year)
  range(gm$pop)
 ```
 4.	Run a correlation between life expectancy and GDP per capita (hint: ?cor())
-```{r}
+```{r, echo = FALSE}
  cor(gm$lifeExp, gm$gdpPercap, method = "kendall")
 ```
 
