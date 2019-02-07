@@ -81,7 +81,7 @@ title: "Further Resources"
 
 ## Predictive Analytics
 
-- - [Introduction to Statistical Learning](https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/)
+- [Introduction to Statistical Learning](https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/)
 - [caret package vignette](https://cran.r-project.org/web/packages/caret/vignettes/caret.html)
 - [detailed caret e-book](http://topepo.github.io/caret/)
 - [recipes package documentation](https://tidymodels.github.io/recipes/)
