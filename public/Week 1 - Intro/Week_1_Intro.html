@@ -189,7 +189,7 @@ $(document).ready(function () {
 
 
 <p><a href="Week_1_RMarkdown.html">Part 2 of Week 1, using RMarkdown</a>.</p>
-<p><a href="bims8382.netlify.com">Back to the main page</a></p>
+<p><a href="https://bims8382.netlify.com">Back to the main page</a></p>
 <div id="introduction-to-rstudio" class="section level2">
 <h2>Introduction to RStudio</h2>
 <p>This section introduces the R environment and some of the most basic funcionality aspects of R that are used through the remainder of the class. This section assumes little to no experience with statistical computing with R. We will introduce the R statistical computing environment, RStudio, and the dataset that we will work with for the remainder of the lesson. We will cover very basic functionality in R, including variables, functions, and importing/inspecting data frames.</p>
@@ -264,20 +264,10 @@ rm(list = ls())</code></pre>
 <div id="exercise-1" class="section level3">
 <h3>EXERCISE 1</h3>
 <ol style="list-style-type: decimal">
-<li>You have a patient with a height (inches) of 73 and a weight (lbs) of 203. Create r objects labeled ‘height’ and ‘weight’.</li>
+<li><p>You have a patient with a height (inches) of 73 and a weight (lbs) of 203. Create r objects labeled ‘height’ and ‘weight’.</p></li>
+<li><p>Convert ‘weight’ to ‘weight_kg’ by dividing by 2.2. Convert ‘height’ to ‘height_m’ by dividing by 39.37</p></li>
+<li><p>Calculate a new object ‘bmi’ where BMI = weight_kg / (height_m*height_m)</p></li>
 </ol>
-<pre class="r"><code>height &lt;- 73
-weight &lt;- 203</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Convert ‘weight’ to ‘weight_kg’ by dividing by 2.2. Convert ‘height’ to ‘height_m’ by dividing by 39.37</li>
-</ol>
-<pre class="r"><code>weight_kg &lt;- weight /2.2
-height_m &lt;- height/39.37</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Calculate a new object ‘bmi’ where BMI = weight_kg / (height_m*height_m)</li>
-</ol>
-<pre class="r"><code>bmi &lt;- weight_kg / (height_m * height_m)
-bmi &lt;- weight_kg / (height_m ^ 2)</code></pre>
 </div>
 </div>
 <div id="section" class="section level1">
@@ -315,7 +305,6 @@ sqrt(myval)</code></pre>
 <div id="exercise-2" class="section level3">
 <h3>EXERCISE 2</h3>
 <p>See <code>?abs</code> and calculate the square root of the log-base-10 of the absolute value of <code>-4*(2550-50)</code>. Answer should be <code>2</code>.</p>
-<pre class="r"><code>sqrt(log(abs(-4*(2550 - 50)), 10))</code></pre>
 </div>
 </div>
 <div id="section-2" class="section level1">
@@ -448,23 +437,11 @@ mean(gm$lifeExp, na.rm = TRUE)</code></pre>
 <div id="exercise-3" class="section level3">
 <h3>EXERCISE 3</h3>
 <ol style="list-style-type: decimal">
-<li>What’s the standard deviation of the life expectancy (hint: get help on the <code>sd</code> function with <code>?sd</code>).</li>
+<li><p>What’s the standard deviation of the life expectancy (hint: get help on the <code>sd</code> function with <code>?sd</code>).</p></li>
+<li><p>What’s the mean population size in millions? (hint: divide by <code>1000000</code>, or alternatively, <code>1e6</code>).</p></li>
+<li><p>What’s the range of years represented in the data? (hint: <code>range()</code>).</p></li>
+<li><p>Run a correlation between life expectancy and GDP per capita (hint: ?cor())</p></li>
 </ol>
-<pre class="r"><code> ?sd
- sd(gm$lifeExp, na.rm = TRUE)</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>What’s the mean population size in millions? (hint: divide by <code>1000000</code>, or alternatively, <code>1e6</code>).</li>
-</ol>
-<pre class="r"><code> mean(gm$pop, na.rm = TRUE) / 1e6</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>What’s the range of years represented in the data? (hint: <code>range()</code>).</li>
-</ol>
-<pre class="r"><code> range(gm$year)
- range(gm$pop)</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Run a correlation between life expectancy and GDP per capita (hint: ?cor())</li>
-</ol>
-<pre class="r"><code> cor(gm$lifeExp, gm$gdpPercap, method = &quot;kendall&quot;)</code></pre>
 <p><a href="Week_1_RMarkdown.html">Let’s move on to learning about using R Markdown</a>.</p>
 </div>
 </div>
