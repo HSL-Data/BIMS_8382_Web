@@ -73,9 +73,21 @@ install.packages("rmarkdown")
     - **Windows**: Download and install MiKTeX: <https://miktex.org/download>. Read the installation tutorial first at <https://miktex.org/howto/install-miktex>.
     - **Mac**: Download and install MacTeX.pkg at <http://www.tug.org/mactex/mactex-download.html>. This is a very large download (>2 gigabytes), and may take a while depending on your network speed. Do this _prior to the course_.
 
+## Dealing with Data
+
+tidyverse package
+
+## Data Visualization
+
+tidyverse package
+
+## Essential Statistics
+
+tidyverse package
+
 ## Regression
 
-Set-up instructions will be posted here.
+Set-up instructions will be posted here closer to the session.
 
 ## RNA Seq
 
