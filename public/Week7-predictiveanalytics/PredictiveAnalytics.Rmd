@@ -1,5 +1,6 @@
 ---
-title: "Regression"
+title: "Predictive Analytics"
+output: html_document
 ---
 
 Content will be posted here as we get closer to the session.
