@@ -5,9 +5,11 @@ output:
   pdf_document: default
 ---
 
+[Back to the main page](https://bims8382.netlify.com)
+
 [Part 1 of Week 1, Introduction to R](Week_1_Intro.html).
 
-[Back to the main page](https://bims8382.netlify.com)
+[RMarkdown Resources](https://bims8382.netlify.com/help.html)
 
 ```{r init, include=F}
 library(knitr)
