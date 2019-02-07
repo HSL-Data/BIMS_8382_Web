@@ -48,7 +48,6 @@ mph <- miles/hours
 ```
 
 
-#------------------------------------------------
 ##EXERCISE `r .ex``r .ex=.ex+1`
 
 Calculate the cosine of the square root of the absolute value of (2^(25-21) - 40). 
@@ -58,7 +57,6 @@ cos(sqrt(abs(2^(25 - 21) - 40)))
 ```
 
 
-#------------------------------------------------------
 ##EXERCISE `r .ex``r .ex=.ex+1`
 ###Working with vectors
 
@@ -87,7 +85,7 @@ seqVec3[1:5]
 ```{r, echo = FALSE}
 seqVec3[c(3, 5, 8)] * seqVec3[c(7, 15, 23)]
 ```
-#------------------------------------------------------
+
 ##EXERCISE `r .ex``r .ex=.ex+1`
 ###Working with real data
 

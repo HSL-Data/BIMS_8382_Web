@@ -1,7 +1,7 @@
 #Intro to R
 #------------------------------------------------------
 #this is a comment and will not be run as code
-mylist <- "1, 2, 3"
+
 #R is the underlying statistical computing environment
 #RStudio sits on top of R and makes writing code a lot easier.
 
@@ -39,7 +39,7 @@ Weight_kg <- 30
 weight_kg <- 57.5
 2.2 * weight_kg
 
-#we can re-name 2.2*weight_kg as weight_lb
+#we can rename 2.2*weight_kg as weight_lb
 weight_lb <- 2.2 * weight_kg
 
 #change value of weight_kg
@@ -225,100 +225,3 @@ range(gm$pop)
 
 #4.	Run a correlation between life expectancy and GDP per capita (hint: ?cor())
 cor(gm$lifeExp, gm$gdpPercap, method = "kendall")
-
-attach(gm)
-  lifeExp
-detach(gm)
-
-#-------------------------------------------------------
-
-#Filtering a data frame using subset()
-
-#There are six operators in total for conditions
-#-equal to ==
-#-not equal to !=
-#-greater than >
-#-greater than or equal to >=
-#-less than <
-#-less than or equal to <=
-
-#get data from 1982
-  subset(gm, subset = year == 1982)
-  
-#Chain multiple conditions together with an AND operator & or an OR | operator
-  
-#get data from 1982 and USA
-subset(gm, subset = year == 1982 & country == "United States")
-
-#get data where pop is bigger than the mean(pop)
-  subset(gm, subset = pop > mean(pop))
-
-#Filtering using filter() from dplyr package
-#first install dplyr
-install.packages("dplyr")
-
-#load dyplr
-library(dplyr)
-
-#get data from 1982
-filter(gm, year == 1982)
-
-#get data from US
-filter(gm, country == "United States")
-filter(gm, country == "United States" & year == 1982)
-
-#data with gdpPercap was less than 300 or the life Expectancy was less than 30
-filter(gm, gdpPercap < 300 | lifeExp < 30)
-
-# what was the average GDP for the two countries in Oceania in 2002?
-mean(filter(gm, continent == "Oceania" & year == 2002)$gdpPercap)
-
-select(gm, continent, country, year)
-
-#-------------------------------------------------------
-#EXERCISE 4
-  
-#1. Which countries and years have life expectancies of more than 80 years (>80)?
-unique(filter(gm, lifeExp > 80)$country)
-unique(filter(gm, lifeExp > 80)$year)
-
-#2. Which countries had a low GDP per capita (< 500) in 2007?
-filter(gm, (gdpPercap < 500 & year == 2007))
-
-#------------------------------------------------------
-#Base plotting -- histogram and scatterplot
-plot(gm$lifeExp)
-hist(gm$lifeExp)
-
-#change number of bins and color
-hist(gm$lifeExp, breaks = 100, col = "blue")
-
-#scatterplot
-plot(gm$gdpPercap, gm$lifeExp)
-
-plot(gm$gdpPercap, gm$lifeExp, pch = 16)
-
-plot(gm$gdpPercap, gm$lifeExp, pch = 16, col = "red")
-
-plot(gm$gdpPercap, gm$lifeExp, pch = 16, col = "red", main = "Life Exp vs. GDP")
-
-#add axes labels
-plot(gm$gdpPercap, gm$lifeExp, pch = 16, col = "red", main = "Life Exp vs. GDP", ylab = "Life Expectancy (years)", xlab = "Per-capita GDP ($)")
-
-#if you forget how to modify a parameter ... Google it
-
-#Write out csv file of filtered dataframe
-#create filtered df
-gm97 <- filter(gm, year == 1997)
-
-#write out data frame into csv file
-write.csv(gm97, file = "gm97.csv")
-
-#-------------------------------------------------------
-#EXERCISE 5
-
-#Create a plot to show the relationship between continent and life expectancy. If there is time add color, axis labels, and a title
-
-plot(gm$continent, gm$lifeExp)
-
-#-------------------------------------------------------
