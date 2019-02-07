@@ -1,0 +1,128 @@
+---
+title: 'R: An Introduction - Homework'
+output: pdf_document
+---
+
+```{r, echo=FALSE, message=FALSE, eval=TRUE}
+library(knitr)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, results="hide", cache=TRUE)
+options(digits=3)
+options(max.print=200)
+.ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
+```
+
+##Homework 1
+
+Before you start, create a project folder that includes the brauer2007_tidy.csv dataset and your r script.
+
+###EXERCISE `r .ex``r .ex=.ex+1`
+##R as a Calculator
+I want to calculate how fast I drove from one location to another, however, for some odd reason I only know how many kilometers I traveled and the number of minutes it took me. I really only understand speed when it comes at me in the form of miles per hour. Can you show me how fast I traveled in miles per hour? Was I driving too fast?
+
+1.	Create a variable called `kilometers` and set it equal to 120
+
+```{r}
+kilometers <- 120
+```
+
+2.	Create a variable called `minutes` and set it equal to 40
+```{r}
+minutes <- 40
+```
+
+3.	Convert `minutes` to `hours` by dividing `minutes` by 60
+```{r}
+hours <- minutes/60
+```
+
+4.	Convert `kilometers` to `miles` by multiplying  `kilometers` by .62
+```{r}
+miles <- kilometers * .62
+```
+
+5. Calculate the `mph` (miles per hour) 
+```{r}
+mph <- miles/hours
+```
+
+
+#------------------------------------------------
+###EXERCISE `r .ex``r .ex=.ex+1`
+
+Calculate the cosine of the square root of the absolute value of (2^(25-21) - 40). 
+`2`.
+```{r}
+cos(sqrt(abs(2^(25 - 21) - 40)))
+```
+
+
+#------------------------------------------------------
+###EXERCISE `r .ex``r .ex=.ex+1`
+Working with vectors
+
+1. Create a vector that starts at 3 and goes to 300, increasing by 7 at each step.
+
+```{r}
+seqVec <- seq(3, 300, 7)
+```
+
+2. Multiply the above vector by 3 and save it as a new vector
+```{r}
+seqVec2 <- seqVec * 3
+```
+
+3. Calculate the square root of the vector created in question 2. Store this object in a new vector.
+```{r}
+seqVec3 <- sqrt(seqVec2)
+```
+
+4. Return the first 5 elements of the vector from the object created in question 3.
+```{r}
+seqVec3[1:5]
+```
+
+5. Return the result of elements 3, 5, and 8 multiplied by elements 7, 15, and 23 from the vector created in question 3.
+```{r}
+seqVec3[c(3, 5, 8)] * seqVec3[c(7, 15, 23)]
+```
+#------------------------------------------------------
+###EXERCISE `r .ex``r .ex=.ex+1`
+Working with real data
+
+The data we're going to look at is cleaned up version of a gene expression dataset from [Brauer et al. Coordination of Growth Rate, Cell Cycle, Stress Response, and Metabolic Activity in Yeast (2008) _Mol Biol Cell_ 19:352-367](http://www.ncbi.nlm.nih.gov/pubmed/17959824). This data is from a gene expression microarray, and in this paper the authors are examining the relationship between growth rate and gene expression in yeast cultures limited by one of six different nutrients (glucose, leucine, ammonium, sulfate, phosphate, uracil). If you give yeast a rich media loaded with nutrients except restrict the supply of a _single_ nutrient, you can control the growth rate to any rate you choose. By starving yeast of specific nutrients you can find genes that: 
+
+1. **Raise or lower their expression in response to growth rate**. Growth-rate dependent expression patterns can tell us a lot about cell cycle control, and how the cell responds to stress. The authors found that expression of >25% of all yeast genes is linearly correlated with growth rate, independent of the limiting nutrient. They also found that the subset of negatively growth-correlated genes is enriched for peroxisomal functions, and positively correlated genes mainly encode ribosomal functions. 
+2. **Respond differently when different nutrients are being limited**. If you see particular genes that respond very differently when a nutrient is sharply restricted, these genes might be involved in the transport or metabolism of that specific nutrient.
+
+
+1. Open up the `brauer2007_tidy.csv` data and inspect the data.
+
+2. Import the data into R, saving it as `brauer`. 
+```{r}
+ brauer <- read.csv("C:/Users/dnm5ca/Documents/GitHub/BIMS_8382_Web/public/Week 1 - Intro/Data/brauer2007_tidy.csv", header = TRUE)
+```
+
+3. What's the range of `expression` values represented in the data?
+```{r}
+ range(brauer$expression)
+```
+
+4. What class of variable are the `bp` and `mf` columns?
+```{r}
+   class(brauer$bp)
+   class(brauer$mf)
+```
+5. What is the mean `expression` value?
+```{r}
+   mean(brauer$expression)
+```
+
+6. How many times does Uracil show up in the `nutrient` column?
+```{r}
+   summary(brauer$nutrient)
+```
+
+7. How many missing values are there in the `mf` column?
+```{r}
+   summary(brauer$mf)
+```

@@ -1,0 +1,725 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={R: An Introduction},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{R: An Introduction}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+\href{Week_1_RMarkdown.html}{Part 2 of Week 1, using RMarkdown}.
+
+\subsection{Introduction to RStudio}\label{introduction-to-rstudio}
+
+This section introduces the R environment and some of the most basic
+funcionality aspects of R that are used through the remainder of the
+class. This section assumes little to no experience with statistical
+computing with R. We will introduce the R statistical computing
+environment, RStudio, and the dataset that we will work with for the
+remainder of the lesson. We will cover very basic functionality in R,
+including variables, functions, and importing/inspecting data frames.
+
+R is the underlying statistical computing environment RStudio sits on
+top of R and makes writing code a lot easier.
+
+\subsubsection{R Studio Panes}\label{r-studio-panes}
+
+On the top left is the script or editor window. This is where we are
+going to write all of our code. On the lower left there's the console
+window. This is where R tells us what it thinks we told it and then the
+answer. This is basically the same kind of interface as the terminal The
+top right has the environment and history tabs \ldots{} environment is a
+list of all objects that are saved in memory \ldots{} history is the
+history of all commands that have been run \ldots{} On the bottom right
+hand side there's a window with Files / Plots / Help
+
+\subsection{Creating projects}\label{creating-projects}
+
+Projects provide a way for the user to organize their data, code, and
+any other documents in one place. To create a project you go to File
+-\textgreater{} New Project and then create a new project which will
+create a new folder for your data/script, etc. or you can choose an
+existing project which will allow you to point to a folder that already
+has all of your resources.
+
+\subsection{Comments}\label{comments}
+
+Comments are an essential part in understanding what your code does and
+why something was coded a specific way. Comments are notes to yourself
+or to others that are made to explain what is going on in the code. They
+are not read by R and will only be seen when looking at the script.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Intro to R}
+\CommentTok{#------------------------------------------------------}
+\CommentTok{#this is a comment and will not be run as code}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Basics of R}\label{basics-of-r}
+
+R can be used to do very advanced calculations, statistics, and data
+wrangling, however, it can also be used to do some very basic
+calculations and functions. R can act like a typical calculator, but it
+can also store the values that are run for later. To run lines of code
+in R you can put the cursor on the line of code you wish to run and hit
+the ``Run'' button. Alternatively you can highlight the line or lines of
+code you want to run and hit the ``Run'' button. You can also use the
+keyboard shortcut of \texttt{Ctrl}+\texttt{Enter} on Windows or
+\texttt{CMD}+\texttt{Enter} on a MAC.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# R can be used as a calculator}
+\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{2}
+\DecValTok{5} \NormalTok{*}\StringTok{ }\DecValTok{3}
+\DecValTok{2} \NormalTok{^}\StringTok{ }\DecValTok{5}
+
+\CommentTok{# R knows order of operations}
+\DecValTok{2} \NormalTok{+}\StringTok{ }\DecValTok{3}\NormalTok{/}\DecValTok{4} \NormalTok{*}\StringTok{ }\DecValTok{4} \NormalTok{*}\StringTok{ }\NormalTok{(}\DecValTok{4+4}\NormalTok{)/}\DecValTok{4}\NormalTok{^}\DecValTok{2}
+\end{Highlighting}
+\end{Shaded}
+
+As mentioned before, to do useful and interesting things, we need to
+assign \emph{values} to \emph{objects}. To create objects, we need to
+give it a name followed by the assignment operator \texttt{\textless{}-}
+and the value we want to give it:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Assign objects using <-}
+\NormalTok{weight_kg <-}\StringTok{ }\DecValTok{55}
+\end{Highlighting}
+\end{Shaded}
+
+\texttt{\textless{}-} is the assignment operator. Assigns values on the
+right to objects on the left, it is like an arrow that points from the
+value to the object. Mostly similar to \texttt{=} but not always. Learn
+to use \texttt{\textless{}-} as it is good programming practice. Using
+\texttt{=} in place of \texttt{\textless{}-} can lead to issues down the
+line. The keyboard shortcut for inserting the \texttt{\textless{}-}
+operator is \texttt{Alt-dash}.
+
+Objects can be given any name such as \texttt{x},
+\texttt{current\_temperature}, or \texttt{subject\_id}. You want your
+object names to be explicit and not too long. They cannot start with a
+number (\texttt{2x} is not valid but \texttt{x2} is). R is case
+sensitive (e.g., \texttt{weight\_kg} is different from
+\texttt{Weight\_kg}). There are some names that cannot be used because
+they represent the names of fundamental functions in R (e.g.,
+\texttt{if}, \texttt{else}, \texttt{for}, see
+\href{https://stat.ethz.ch/R-manual/R-devel/library/base/html/Reserved.html}{here}
+for a complete list). In general, even if it's allowed, it's best to not
+use other function names, which we'll get into shortly (e.g.,
+\texttt{c}, \texttt{T}, \texttt{mean}, \texttt{data}, \texttt{df},
+\texttt{weights}). In doubt check the help to see if the name is already
+in use. It's also best to avoid dots (\texttt{.}) within a variable name
+as in \texttt{my.dataset}. It is also recommended to use nouns for
+variable names, and verbs for function names.
+
+When assigning a value to an object, R does not print anything. You can
+force to print the value by typing the name:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{weight_kg}
+
+\CommentTok{# R is case sensitive}
+\NormalTok{Weight_kg <-}\StringTok{ }\DecValTok{60}
+\NormalTok{Weight_kg <-}\StringTok{ }\DecValTok{30}
+
+
+\CommentTok{#we can do arithmetic with R objects}
+\FloatTok{2.2} \NormalTok{*}\StringTok{ }\NormalTok{weight_kg}
+
+\CommentTok{#modify R object by reassigning object to new number}
+\NormalTok{weight_kg <-}\StringTok{ }\FloatTok{57.5}
+\FloatTok{2.2} \NormalTok{*}\StringTok{ }\NormalTok{weight_kg}
+
+\CommentTok{#we can re-name 2.2*weight_kg as weight_lb}
+\NormalTok{weight_lb <-}\StringTok{ }\FloatTok{2.2} \NormalTok{*}\StringTok{ }\NormalTok{weight_kg}
+
+\CommentTok{#change value of weight_kg}
+\NormalTok{weight_kg <-}\StringTok{ }\DecValTok{100}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Working with the
+Environment}\label{working-with-the-environment}
+
+You can see what objects (variables) are stored by viewing the
+Environment tab in Rstudio. You can also use the \texttt{ls()} function.
+You can remove objects (variables) with the \texttt{rm()} function. You
+can do this one at a time or remove several objects at once. You can
+also use the little broom button in your environment pane to remove
+everything from your environment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#list objects in environment}
+\KeywordTok{ls}\NormalTok{()}
+
+\CommentTok{#remove objects from environment}
+\KeywordTok{rm}\NormalTok{(weight_lb, weight_kg)}
+\KeywordTok{ls}\NormalTok{()}
+
+\NormalTok{weight_lb <-}\StringTok{ }\DecValTok{20}
+\NormalTok{weight_lb}
+
+\CommentTok{#Removes all objects from the environment}
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list =} \KeywordTok{ls}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{EXERCISE 1}\label{exercise-1}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  You have a patient with a height (inches) of 73 and a weight (lbs) of
+  203. Create r objects labeled `height' and `weight'.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{height <-}\StringTok{ }\DecValTok{73}
+\NormalTok{weight <-}\StringTok{ }\DecValTok{203}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  Convert `weight' to `weight\_kg' by dividing by 2.2. Convert `height'
+  to `height\_m' by dividing by 39.37
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{weight_kg <-}\StringTok{ }\NormalTok{weight /}\FloatTok{2.2}
+\NormalTok{height_m <-}\StringTok{ }\NormalTok{height/}\FloatTok{39.37}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  Calculate a new object `bmi' where BMI = weight\_kg /
+  (height\_m*height\_m)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bmi <-}\StringTok{ }\NormalTok{weight_kg /}\StringTok{ }\NormalTok{(height_m *}\StringTok{ }\NormalTok{height_m)}
+\NormalTok{bmi <-}\StringTok{ }\NormalTok{weight_kg /}\StringTok{ }\NormalTok{(height_m ^}\StringTok{ }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{--------------------------------------------------}\label{section}
+
+\section{Built-in Functions}\label{built-in-functions}
+
+R has built-in functions that allow you to do more than simple math.
+Functions take in arguments within the parenthesis and return a value of
+a specific type.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sqrt}\NormalTok{(}\DecValTok{144}\NormalTok{)}
+\KeywordTok{log}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Get help with function}\label{get-help-with-function}
+
+To get help with a function (or anything in R) you can use the
+\texttt{?} mark followed by the name of the function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{?log}
+\end{Highlighting}
+\end{Shaded}
+
+Note syntax highlighting when typing this into the editor. Also note how
+we pass \emph{arguments} to functions. The \texttt{base=} part inside
+the parentheses is called an argument, and most functions use arguments.
+Arguments modify the behavior of the function. Functions some input
+(e.g., some data, an object) and other options to change what the
+function will return, or how to treat the data provided. Finally, see
+how you can \emph{next} one function inside of another (here taking the
+square root of the log-base-10 of 1000).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{log10}\NormalTok{(}\DecValTok{1000}\NormalTok{)}
+\KeywordTok{log}\NormalTok{(}\DecValTok{1000}\NormalTok{, }\DataTypeTok{base =} \DecValTok{10}\NormalTok{)}
+\CommentTok{#The base= part inside the parentheses is called an argument. Arguments are the inputs to functions}
+\end{Highlighting}
+\end{Shaded}
+
+We can write functions without labeling arguments as long as they come
+in the same order as in the help file
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{log}\NormalTok{(}\DecValTok{1000}\NormalTok{, }\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Nesting Functions}\label{nesting-functions}
+
+Oftentimes you will want to do several functions at once, which allows
+you to use less lines of code. Nesting functions allows you to use the
+output of one function as the input of the next function. This works as
+long as the type of output returned from the first function is the same
+as the type of input allowed from the second function. (e.g.~both are
+numeric, both are characters, etc.)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\DecValTok{1000}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+\CommentTok{#Because sqrt() takes a number and because log() outputs a number we can nest the two together}
+
+\CommentTok{#create intermediate object to make nesting easier to decipher}
+\NormalTok{myval <-}\StringTok{ }\KeywordTok{log}\NormalTok{(}\DecValTok{1000}\NormalTok{, }\DecValTok{10}\NormalTok{)}
+\KeywordTok{sqrt}\NormalTok{(myval)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{------------------------------------------------}\label{section-1}
+
+\subsubsection{EXERCISE 2}\label{exercise-2}
+
+See \texttt{?abs} and calculate the square root of the log-base-10 of
+the absolute value of \texttt{-4*(2550-50)}. Answer should be
+\texttt{2}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{log}\NormalTok{(}\KeywordTok{abs}\NormalTok{(-}\DecValTok{4}\NormalTok{*(}\DecValTok{2550} \NormalTok{-}\StringTok{ }\DecValTok{50}\NormalTok{)), }\DecValTok{10}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{------------------------------------------------}\label{section-2}
+
+\subsection{Vectors}\label{vectors}
+
+Vectors are one of the most basic data types in R. They are a sequence
+of data elemnets of the same type. This can be numeric (2, 3.2, etc.),
+character (``a'', ``a sentence is here'', ``548-4241''), logical
+(``TRUE'', ``FALSE''), etc, they just all have to be of the same type.
+
+Using the \texttt{:} operator allows you to create a consecutive
+sequence of numbers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DecValTok{1}\NormalTok{:}\DecValTok{5}
+\DecValTok{6}\NormalTok{:}\DecValTok{10}
+\DecValTok{1}\NormalTok{:}\DecValTok{5} \NormalTok{+}\StringTok{ }\DecValTok{6}\NormalTok{:}\DecValTok{10}
+
+\CommentTok{#Careful, they must be multiples of each other}
+\CommentTok{#1:5 + 6:8 #(Will not work)}
+\DecValTok{1}\NormalTok{:}\DecValTok{6} \NormalTok{+}\StringTok{ }\DecValTok{6}\NormalTok{:}\DecValTok{8}
+
+\CommentTok{#This will add 3 to each element of the vector}
+\DecValTok{1}\NormalTok{:}\DecValTok{5} \NormalTok{+}\StringTok{ }\DecValTok{3}
+\end{Highlighting}
+\end{Shaded}
+
+To create vectors that not necessilary consecutive you use the c()
+function (concatenate / combine). This allows you to enter in as many
+different values into a vector.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{)}
+\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{:}\DecValTok{5}\NormalTok{, }\DecValTok{1}\NormalTok{:}\DecValTok{6}\NormalTok{)}
+
+\CommentTok{#What if we wanted to created a vector from to 2 to 200 by 4s?}
+\end{Highlighting}
+\end{Shaded}
+
+The seq function allows you to create a vector of values that are
+increase from one value to another by a designated increment.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{?seq}
+
+\KeywordTok{seq}\NormalTok{(}\DataTypeTok{from =} \DecValTok{2}\NormalTok{, }\DataTypeTok{to =} \DecValTok{200}\NormalTok{, }\DataTypeTok{by =} \DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Just like other objects, you can assign a vector a name.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#assign vectors to object name}
+\NormalTok{animal_weights <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{50}\NormalTok{, }\DecValTok{60}\NormalTok{, }\DecValTok{66}\NormalTok{)}
+\NormalTok{animal_weights}
+
+\CommentTok{#vectors can also be character type}
+\NormalTok{animals <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"mouse"}\NormalTok{, }\StringTok{"rat"}\NormalTok{, }\StringTok{"dog"}\NormalTok{)}
+\NormalTok{animals}
+\end{Highlighting}
+\end{Shaded}
+
+When creating vectors or looking at data from other sources, you may
+want to inspect the vector more closely. You will want to know things
+like how long vector is, the number elements, which type of object it
+is, etc. There are a series of functions that can be used to inspect
+vectors.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Inspecting vectors}
+\CommentTok{#Length provides the number of elements}
+\KeywordTok{length}\NormalTok{(animals)}
+
+\CommentTok{#Class shows the type of vector}
+\KeywordTok{class}\NormalTok{(animals)}
+\KeywordTok{class}\NormalTok{(animal_weights)}
+
+\CommentTok{#str shows the structure of the vector}
+\KeywordTok{str}\NormalTok{(animals)}
+\KeywordTok{str}\NormalTok{(animal_weights)}
+\end{Highlighting}
+\end{Shaded}
+
+Oftentimes we will want to add to a vector. To do this, we can again use
+the c() function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#appending to vectors using c()}
+\NormalTok{animal_weights <-}\StringTok{ }\KeywordTok{c}\NormalTok{(animal_weights, }\DecValTok{80}\NormalTok{)}
+\NormalTok{animal_weights <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{49}\NormalTok{, animal_weights)}
+\NormalTok{animal_weights}
+\end{Highlighting}
+\end{Shaded}
+
+We can also use functions on vectors, just like we did before.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Make sure that you are using the correct input type}
+\CommentTok{#sum(animals)}
+\KeywordTok{sum}\NormalTok{(animal_weights)}
+\KeywordTok{mean}\NormalTok{(animal_weights)}
+\end{Highlighting}
+\end{Shaded}
+
+One key thing to learn in R is how to access individual elements within
+a vector. Sometimes you might just want to look at the first 5 elements
+of a vector or you want to return the 8th, 12th, and 20th elements. To
+access these elements, we will use brackets {[}{]} and the c() function.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Indexing vectors}
+\NormalTok{x <-}\StringTok{ }\DecValTok{100}\NormalTok{:}\DecValTok{150}
+\CommentTok{#Using [1] allows you to see the very first element of a vector}
+\NormalTok{x[}\DecValTok{1}\NormalTok{]}
+\NormalTok{animals[}\DecValTok{1}\NormalTok{]}
+
+\CommentTok{#You can also look through a sequence of elements.}
+\CommentTok{#fifth through 10th elements}
+\NormalTok{x[}\DecValTok{5}\NormalTok{:}\DecValTok{10}\NormalTok{]}
+\NormalTok{animals[}\DecValTok{2}\NormalTok{:}\DecValTok{3}\NormalTok{]}
+
+\CommentTok{#Using the c() function allows you to look at the elements in a non-sequential manner.}
+\CommentTok{#40th and 48th elements (non-sequential)}
+\NormalTok{x[}\KeywordTok{c}\NormalTok{(}\DecValTok{40}\NormalTok{, }\DecValTok{48}\NormalTok{)]}
+\NormalTok{animals[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{)] }
+
+\CommentTok{#what happens when we call an index beyond the vector}
+\NormalTok{x[}\DecValTok{1}\NormalTok{:}\DecValTok{150}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+You can also use the indexing features to add or change elements within
+a vector by placing the vector on the left hand side of the assignment
+operator.
+
+Adding an element to a vector will increase its size by 1 and will
+increment the position (if not placed at the end) by 1 of any element
+that follows.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{animals[}\KeywordTok{c}\NormalTok{(}\DecValTok{4}\NormalTok{)] <-}\StringTok{ "lizard"}
+
+\NormalTok{animals[}\KeywordTok{c}\NormalTok{(}\DecValTok{15}\NormalTok{)] <-}\StringTok{ "bat"}
+\NormalTok{animals}
+\NormalTok{animals[}\KeywordTok{c}\NormalTok{(}\DecValTok{1500}\NormalTok{)] <-}\StringTok{ "horse"}
+\NormalTok{animals}
+\NormalTok{animals[}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{)] <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"anteater"}\NormalTok{, }\StringTok{"koala"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{--------------------------------------------------}\label{section-3}
+
+\subsection{Data frames}\label{data-frames}
+
+Data frames store heterogeneous tabular data in R: tabular, meaning that
+individuals or observations are typically represented in rows, while
+variables or features are represented as columns; heterogeneous, meaning
+that columns/features/variables can be different classes (on variable,
+e.g.~age, can be numeric, while another, e.g., cause of death, can be
+text)
+
+The first step is reading in data from an external source. The first way
+we will do that is through the read.csv function which allows you to
+read in a csv file as a data frame. The first argument is the file name
+and the second option \texttt{header\ =} allows you to specify whether
+column names are present in the first column of the csv file or not.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{##load data using read.csv}
+ \NormalTok{gm <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(}\StringTok{"Data/gapminder.csv"}\NormalTok{, }\DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{)}
+ 
+\CommentTok{#another option is read_csv in the readr package}
+\end{Highlighting}
+\end{Shaded}
+
+As with a vector, one of the most important things to do is to inspect
+your dataframe to ensure that everything was read in in a way that makes
+sense.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Class shows the type of object}
+\KeywordTok{class}\NormalTok{(gm)}
+
+\CommentTok{#Head shows the first group of rows and tail the last bunch of rows (the number can be changed in the options)}
+\KeywordTok{head}\NormalTok{(gm)}
+\KeywordTok{tail}\NormalTok{(gm, }\DecValTok{10}\NormalTok{)}
+
+\CommentTok{#Dim provides the number of rows and columns, nrow the number of rows, and ncol the number of columns.}
+\KeywordTok{dim}\NormalTok{(gm)}
+\KeywordTok{nrow}\NormalTok{(gm)}
+\KeywordTok{ncol}\NormalTok{(gm)}
+
+\CommentTok{#The names function shows the column/variable names}
+\KeywordTok{names}\NormalTok{(gm)}
+
+\CommentTok{#The summary function provides a quick descriptive overview of each column. The output is based upon the type of data that is stored in the column.}
+\KeywordTok{summary}\NormalTok{(gm)}
+
+\CommentTok{#The str function shows the detailed structure of the dataframe}
+\KeywordTok{str}\NormalTok{(gm)}
+\end{Highlighting}
+\end{Shaded}
+
+To access a single column in a dataframe, you use the dataset name
+followed by the \texttt{\$} symbol and then the name of the dataframe
+you want to look at.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Using the $ to access variables}
+\NormalTok{gm$pop}
+
+\CommentTok{#This allows you to provide a function that simply looks at one column (just like we did with a vector)}
+\CommentTok{#The na.rm function removes any missing values from the analysis, since the result of this function would be na if any missing values were in that variable.}
+\KeywordTok{mean}\NormalTok{(gm$lifeExp, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{------------------------------------------------------}\label{section-4}
+
+\subsubsection{EXERCISE 3}\label{exercise-3}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What's the standard deviation of the life expectancy (hint: get help
+  on the \texttt{sd} function with \texttt{?sd}).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \NormalTok{?sd}
+ \KeywordTok{sd}\NormalTok{(gm$lifeExp, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  What's the mean population size in millions? (hint: divide by
+  \texttt{1000000}, or alternatively, \texttt{1e6}).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \KeywordTok{mean}\NormalTok{(gm$pop, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{) /}\StringTok{ }\FloatTok{1e6}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  What's the range of years represented in the data? (hint:
+  \texttt{range()}).
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \KeywordTok{range}\NormalTok{(gm$year)}
+ \KeywordTok{range}\NormalTok{(gm$pop)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  Run a correlation between life expectancy and GDP per capita (hint:
+  ?cor())
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \KeywordTok{cor}\NormalTok{(gm$lifeExp, gm$gdpPercap, }\DataTypeTok{method =} \StringTok{"kendall"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\href{Week_1_RMarkdown.html}{Let's move on to learning about using R
+Markdown}.
+
+
+\end{document}

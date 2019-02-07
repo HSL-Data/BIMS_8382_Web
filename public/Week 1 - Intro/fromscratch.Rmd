@@ -1,0 +1,51 @@
+---
+title: "Untitled"
+author: "David Martin"
+date: "February 7, 2019"
+output: 
+  html_document: 
+    toc: yes  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This is my first RMarkdown document!
+
+# Let's embed some R code
+
+Let's load the **Gapminder** data:
+
+```{r}
+gm <- read.csv("Data/gapminder.csv")
+head(gm)
+summary(gm$lifeExp)
+```
+
+The mean life expectancy is `r mean(gm$lifeExp)` years.
+
+The years surveyed in this data include: `r unique(gm$year)`.
+
+### Chunk options
+
+You can modify the behavior of an R chunk with [options](http://yihui.name/knitr/options/). Options are passed in after a comma on the fence, as shown below. 
+
+```{r optionalChunkName, echo=TRUE, results='hide'}
+# R code here
+```
+
+Some commonly used options include:
+
+- `echo`: (`TRUE` by default) whether to include R source code in the output file.
+- `results` takes several possible values:
+    - `markup` (the default) takes the result of the R evaluation and turns it into markdown that is rendered as usual.
+    - `hide` will hide results.
+    - `hold` will hold all the output pieces and push them to the end of a chunk. Useful if you're running commands that result in lots of little pieces of output in the same chunk.
+    - `asis` writes the raw results from R directly into the document. Only really useful for tables.
+- `include`: (`TRUE` by default) if this is set to `FALSE` the R code is still evaluated, but neither the code nor the results are returned in the output document. 
+- `fig.width`, `fig.height`: used to control the size of graphics in the output.
+
+Try modifying your first R chunk to use different values for `echo`, `results`, and `include`.
