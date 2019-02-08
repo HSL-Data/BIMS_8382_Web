@@ -8,10 +8,6 @@ output:
 
 [Back to the main page](https://bims8382.netlify.com)
 
-[Data for the Week]
- 
-[R Script for this week]
-
 [Part 2 of Week 1, using RMarkdown](Week_1_RMarkdown.html).
 
 ```{r, echo=FALSE, message=FALSE, eval=TRUE}
