@@ -2,7 +2,9 @@
 title: "Dealing with Data"
 author: "David Martin"
 date: "February 18, 2019"
-output: html_document
+output: 
+  html_document:
+code_folding: show
 ---
 
 ```{r setup, include=FALSE}
