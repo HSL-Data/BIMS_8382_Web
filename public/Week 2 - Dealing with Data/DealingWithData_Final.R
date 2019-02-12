@@ -18,7 +18,6 @@
 #'
 #' This lesson demonstrates techniques for data cleaning and manipulation using the split-apply-combine strategy. We will make use of the tidyr package to clean the data. The dplyr package will help us effectively manipulate and conditionally compute summary statistics over subsets of data, while the stringr package will help us interact with string data.
 
-#' **This lesson assumes a [basic familiarity with R](r-basics.html) and [data frames](r-dataframes.html).**
 #'
 #' **Recommended Resources**
 #' 
