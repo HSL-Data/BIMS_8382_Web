@@ -1,8 +1,6 @@
 ---
 title: "Dealing with Data Homework"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
 
 ```{r inithw, echo=FALSE, results = "hide"}

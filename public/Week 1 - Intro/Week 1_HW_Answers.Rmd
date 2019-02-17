@@ -1,11 +1,12 @@
 ---
 title: 'R: An Introduction - Homework'
-output: pdf_document
+output:
+  html_document
 ---
 
 ```{r, echo=FALSE, message=FALSE, eval=TRUE}
 library(knitr)
-opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, results="hide", cache=TRUE)
+opts_chunk$set(message=FALSE, warning=FALSE, eval=TRUE, echo=TRUE, cache=TRUE)
 options(digits=3)
 options(max.print=200)
 .ex <- 1 # Track ex numbers w/ hidden var. Increment each ex: `r .ex``r .ex=.ex+1`
@@ -99,7 +100,7 @@ The data we're going to look at is cleaned up version of a gene expression datas
 
 2. Import the data into R, saving it as `brauer`. 
 ```{r}
- brauer <- read.csv("C:/Users/dnm5ca/Documents/GitHub/BIMS_8382_Web/public/Week 1 - Intro/Data/brauer2007_tidy.csv", header = TRUE)
+ brauer <- read.csv("Data/brauer2007_tidy.csv", header = TRUE)
 ```
 
 3. What's the range of `expression` values represented in the data?
