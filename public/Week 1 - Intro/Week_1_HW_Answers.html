@@ -213,11 +213,15 @@ $(document).ready(function () {
 <ol start="4" style="list-style-type: decimal">
 <li>Convert <code>kilometers</code> to <code>miles</code> by multiplying <code>kilometers</code> by .62</li>
 </ol>
-<pre class="r"><code>miles &lt;- kilometers * .62</code></pre>
+<pre class="r"><code>miles &lt;- kilometers * .62
+miles</code></pre>
+<pre><code>## [1] 74.4</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>Calculate the <code>mph</code> (miles per hour)</li>
 </ol>
-<pre class="r"><code>mph &lt;- miles/hours</code></pre>
+<pre class="r"><code>mph &lt;- miles/hours
+mph</code></pre>
+<pre><code>## [1] 112</code></pre>
 </div>
 <div id="section" class="section level1">
 <h1>————————————————</h1>
@@ -240,11 +244,20 @@ $(document).ready(function () {
 <ol start="2" style="list-style-type: decimal">
 <li>Multiply the above vector by 3 and save it as a new vector</li>
 </ol>
-<pre class="r"><code>seqVec2 &lt;- seqVec * 3</code></pre>
+<pre class="r"><code>seqVec2 &lt;- seqVec * 3
+seqVec2</code></pre>
+<pre><code>##  [1]   9  30  51  72  93 114 135 156 177 198 219 240 261 282 303 324 345
+## [18] 366 387 408 429 450 471 492 513 534 555 576 597 618 639 660 681 702
+## [35] 723 744 765 786 807 828 849 870 891</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Calculate the square root of the vector created in question 2. Store this object in a new vector.</li>
 </ol>
-<pre class="r"><code>seqVec3 &lt;- sqrt(seqVec2)</code></pre>
+<pre class="r"><code>seqVec3 &lt;- sqrt(seqVec2)
+seqVec3</code></pre>
+<pre><code>##  [1]  3.00  5.48  7.14  8.49  9.64 10.68 11.62 12.49 13.30 14.07 14.80
+## [12] 15.49 16.16 16.79 17.41 18.00 18.57 19.13 19.67 20.20 20.71 21.21
+## [23] 21.70 22.18 22.65 23.11 23.56 24.00 24.43 24.86 25.28 25.69 26.10
+## [34] 26.50 26.89 27.28 27.66 28.04 28.41 28.77 29.14 29.50 29.85</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Return the first 5 elements of the vector from the object created in question 3.</li>
 </ol>

@@ -39,11 +39,13 @@ hours <- minutes/60
 4.	Convert `kilometers` to `miles` by multiplying  `kilometers` by .62
 ```{r}
 miles <- kilometers * .62
+miles
 ```
 
 5. Calculate the `mph` (miles per hour) 
 ```{r}
 mph <- miles/hours
+mph
 ```
 
 
@@ -70,11 +72,13 @@ seqVec <- seq(3, 300, 7)
 2. Multiply the above vector by 3 and save it as a new vector
 ```{r}
 seqVec2 <- seqVec * 3
+seqVec2
 ```
 
 3. Calculate the square root of the vector created in question 2. Store this object in a new vector.
 ```{r}
 seqVec3 <- sqrt(seqVec2)
+seqVec3
 ```
 
 4. Return the first 5 elements of the vector from the object created in question 3.

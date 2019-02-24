@@ -123,7 +123,6 @@ iris %>%
   select(Species) %>%
   table()
 
-
 # ## EXERCISE 1 ######
 # 1. Use filter to find how many plants of the versicolor species were observed with Sepal.Length >= 6.5. Answer should be 9.
 
@@ -144,6 +143,8 @@ yeast
 #
 # One of the first problems I see is that there are multiple pieces of data encoded into the column called `NAME`. Luckily, the 3 pieces of data are each separated neatly by `::`. Let's use the separate function from the tidyr package to create 3 new columns from the original `NAME` column.
 #
+yeast$NAME
+
 # If the separator was not as neat as this, you can input any [regular expression](https://en.wikipedia.org/wiki/Regular_expression) into the separator argument. 
 #
 # ### Resources for Regular Expressions ######
@@ -184,6 +185,7 @@ yeast <- yeast %>%
 #
 # To accomplish this, we'll use a function from the stringr package that will count the length of strings in a character vector.
 # 
+
 # str_length
 str_length(yeast$nutrientrate)
 
@@ -244,9 +246,10 @@ yeast <- yeast %>%
 sn2go <- read_csv("Data/brauer2007_sysname2go.csv")
 #
 # inner join sn2go with original
+# inner join - return all rows from x where there are matching values in y, and all columns from x and y. If there are multiple matches between x and y, all combination of the matches are returned.
 
 joined <- inner_join(yeast, sn2go, by = "systematic_name")
-
+#?inner_join
 # ## Fix Nutrient names ######
 # To make the nutrient names more descriptive, we will first create a dataframe that matches the nutrient character to its full name.
 
@@ -258,6 +261,8 @@ nutrient_lookup <- tibble(nutrient = c("G", "L", "N", "P", "S", "U"),
                               nutrient_name = c("Glucose", "Leucine", "Ammonia", "Phosphate", "Sulfate", "Uracil"))
 
 # Now we will use left join to merge our joined dataset with the new nutrient labels.
+# Left join - return all rows from x, and all columns from x and y. Rows in x with no match in y will have NA values in the new columns. If there are multiple matches between x and y, all combinations of the matches are returned.
+
 joined %>%
   left_join(nutrient_lookup, by = "nutrient")
 
@@ -282,6 +287,7 @@ joined %>%
 # Next, we will use select to remove the nutrient column and then a second call to select to move the nutrient name column into the place and variable name nutrient
 # 
 # 
+
 joined %>%
   mutate(symbol = ifelse(symbol == "NA", NA, symbol)) %>%
   select(-nutrient) %>%
@@ -368,7 +374,7 @@ clean %>%
   filter(str_detect(nutrient, "Leu") & str_detect(bp, "[Ll]eucine"))
 
 #  Other things you can do with stringr and regular expressions
-unique(joined$nutrient)
+  unique(joined$nutrient)
 
   unique(filter(joined, str_detect(joined$nutrient, "uc"))$nutrient)
   unique(filter(joined, str_detect(joined$nutrient, "e$"))$nutrient)
@@ -541,3 +547,55 @@ clean %>%
   summarize(meanexp=mean(expression)) %>% 
   mutate(meanexp=round(meanexp, 2)) %>% 
   arrange(desc(meanexp))
+
+
+### IF MORE TIME ###
+test <- "Here is a string that we could change. I suppose we could change it 3 times, maybe 4??"
+### str_replace
+str_replace(test, "is", "are")
+str_replace_all(test, "a", "AHHH")
+### str_detect
+str_detect(test, "we")
+str_detect(test, "this")
+
+### str_to_upper
+### str_to_lower
+### str_to_title
+str_to_upper("whispers")
+str_to_lower("YELLS")
+str_to_title("a book Title should look like this")
+### str_sub
+str_sub(test, 4, 15)
+### str_count
+str_count(test, "a")
+
+#Using regular expressions
+### [[:alpha:]]
+str_count(test, "[[:alpha:]]")
+### [[:digit:]]
+str_count(test, "[[:digit:]]")
+
+### \\w
+str_count(test, "\\w*")
+str_extract_all(test, "\\w*")
+
+### [[:space:]]
+str_count(test, "[[:space:]]")
+### [[:upper:]]
+### [[:lower:]]
+### [[:punct:]]
+
+### Exactly n -       {n} 
+### N or More -       {n, } 
+### Between N and M - {n, m} 
+### One or More -      +
+### Zero or More -     *
+### Zero or One -      ?
+str_detect(test, "p{2}")
+str_detect("helllllo", "l{3}")
+
+str_count("hahaha", "a|b|h")
+str_count("abcdefghijklmnop", "[c-i]")
+
+
+
