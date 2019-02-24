@@ -5,7 +5,8 @@ date: "February 25, 2019"
 output: html_document
 ---
 
-[Back to the main page](bims8382.netlify.com)
+[Back to the main page](https://bims8382.netlify.com/)
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -326,7 +327,7 @@ p + geom_boxplot()
 ```
 
 ##Exercise 3
-1. Make a jittered strip plot of `GDP per capita` against `continent`.
+1. Make a jittered strip plot of `GDP per capita` against `continent` .
 
 2. Make a box plot of `GDP per capita` against `continent`.
 
