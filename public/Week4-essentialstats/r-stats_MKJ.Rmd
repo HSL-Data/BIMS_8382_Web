@@ -244,6 +244,12 @@ sd(nha$Income, na.rm=TRUE)
 ggplot(nha, aes(TotChol)) + geom_histogram()
 ```
 
+## Statistics orientation
+
+Take a good long look at the flowchart for basic statisitical tests. We will mention most of these today. This is new, so if you have any ideas for improvement, please let me know
+
+![flowchart](HypothesisTestingFlowChart.png)
+
 ## Stats with Continuous variables
 
 ### T-tests
