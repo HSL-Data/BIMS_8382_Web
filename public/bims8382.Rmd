@@ -29,6 +29,14 @@ This is the course content for students enrolled in BIMS8382 at The University o
 
 <small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.</small>
 
+**Katie Owsiany**
+
+- Email: ko8xh@virginia.edu
+
+- Lab: [Owen's Lab CVRC](https://www.cvrc.virginia.edu/Owens/team.html)
+
+<small>Katie is an MD/PhD student conducting her research in the Owen's lab at the Cardiovascular Research Center. She took BIMS8382 last year and is excited to return to share her expertise in RNA seq analysis</small>
+
 **_Where:_** BIMS Education Center (McKim Hall 1023)
 
 **_When:_**  
@@ -56,8 +64,6 @@ After installing and testing the software we'll be using, please download the da
 
 ## Course Schedule
 
-_(Subject to change)_
-
 ### Week 1: Intro to R (David)
 
 This novice-level introduction is directed toward life scientists with little to no experience with statistical computing or bioinformatics. This interactive introduction will introduce the R statistical computing environment. The first part of this session will demonstrate very basic functionality in R, including functions, functions, vectors, creating variables, getting help, filtering, data frames, plotting, and reading/writing files. The final part of the session covers some of the barriers to reproducible research and how to start to address some of those problems. We will cover using RMarkdown and RStudio to combine text and executable code to create readable and shareable reports.
@@ -78,14 +84,14 @@ This workshop will provide hands-on instruction and exercises covering basic sta
 
 This session will focus solely on conducting regression analyses in R. It will begin with an overview of regression analysis and then move on to specific techniques which include: linear models, logistic regression, multiple regression, mixed effects modeling, and others. We will also focus on methods to check model assumptions and to select the "best" model.
 
-### Week 6: RNASeq (Guest)
-
-Description TBD
-
-
-### Week 7: Predictive Modeling (Marieke)
+### Week 6: Predictive Modeling (Marieke)
 
 This session will provide hands-on instruction for using machine learning algorithms for prediction. We will cover data cleaning, feature extraction, imputation, and using a variety of models to try to predict disease outcome. We will use resampling strategies to assess the performance of predictive modeling procedures such as Random Forest, elastic net regularized regression (LASSO), and k-nearest neighbors.
+
+
+### Week 7: RNASeq (Katie)
+
+Description TBD
 
 ## Homework
 
