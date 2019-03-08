@@ -87,9 +87,12 @@ tidyverse package
 
 ## Regression
 
-* tidyverse package
-* lme4 package
-* lmerTest package
+Packages:
+
+* tidyverse
+* broom
+* lme4
+* lmerTest
 
 ## Predictive Analytics
 
