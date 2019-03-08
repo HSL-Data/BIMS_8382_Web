@@ -5,6 +5,8 @@ output:
   html_document
 ---
 
+[Back to the main page](https://bims8382.netlify.com/)
+
 Please set up by downloading necessary packages as detailed on the [Set-up page](https://bims8382.netlify.com/setup.html#regression)
 
 Next, download the **nhanes.csv** dataset, the skeleton script, and optionally the lecture slides from our Collab page and create a new project in RStudio with the class materials
