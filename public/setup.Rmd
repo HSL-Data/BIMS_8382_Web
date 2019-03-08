@@ -87,20 +87,21 @@ tidyverse package
 
 ## Regression
 
-tidyverse package
-lme4 package
-lmerTest package
+* tidyverse package
+* lme4 package
+* lmerTest package
 
 ## Predictive Analytics
 
 Packages:
-tidyverse
-AmesHousing
-caret
-recipes
-randomForest
-kknn
-glmnet
+
+* tidyverse
+* AmesHousing
+* caret
+* recipes
+* randomForest
+* kknn
+* glmnet
 
 For this session, besides the tidyverse package, we will need several new packages described below. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and [email us](people.html) _prior to class_ with the command you typed and the error you received.
 
