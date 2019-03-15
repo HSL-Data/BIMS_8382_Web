@@ -555,9 +555,9 @@ test_flu</code></pre>
 <h4>But first, a note on reproducibility and <code>set.seed()</code></h4>
 <p>When we train a model using resampling, that sampling is going to happen <em>pseudo</em>-randomly. Try running this function which generates five numbers from a random uniform distribution between 0 and 1.</p>
 <pre class="r"><code>runif(5)</code></pre>
-<pre><code>## [1] 0.94552497 0.38255236 0.84450889 0.03452124 0.40191960</code></pre>
+<pre><code>## [1] 0.3868322 0.2611096 0.3569191 0.1237772 0.9779856</code></pre>
 <pre class="r"><code>runif(5)</code></pre>
-<pre><code>## [1] 0.6985197 0.7279838 0.3557250 0.8417648 0.0813285</code></pre>
+<pre><code>## [1] 0.9246724 0.6999547 0.2108141 0.6143566 0.3607779</code></pre>
 <p>If you run that function over and over again, you’ll get different results. But, we can set the random number seed generator with any value we choose, and we’ll get the same result. Try setting the seed, drawing the random numbers, then re-setting the same seed, and re-running the <code>runif</code> function again. You should get identical results.</p>
 <pre class="r"><code>set.seed(190131)
 runif(5)</code></pre>
@@ -958,33 +958,7 @@ set.seed(190318)
 
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage &lt;- capture.output(
-  modglmnet &lt;- train(rec_ames, data=ames_train, method=&quot;glmnet&quot;, trControl = ctrl))
-
-modglmnet</code></pre>
-<pre><code>## glmnet 
-## 
-## 2346 samples
-##   73 predictor
-## 
-## Recipe steps: log, other, dummy, scale 
-## Resampling: Cross-Validated (10 fold) 
-## Summary of sample sizes: 2112, 2111, 2110, 2112, 2111, 2112, ... 
-## Resampling results across tuning parameters:
-## 
-##   alpha  lambda        RMSE       Rsquared   MAE      
-##   0.10   0.0001315709  0.1444728  0.3279804  0.1058298
-##   0.10   0.0013157091  0.1444767  0.3279137  0.1058414
-##   0.10   0.0131570910  0.1448030  0.3263323  0.1062094
-##   0.55   0.0001315709  0.1444712  0.3279898  0.1058259
-##   0.55   0.0013157091  0.1445063  0.3276074  0.1058837
-##   0.55   0.0131570910  0.1461417  0.3211492  0.1077275
-##   1.00   0.0001315709  0.1444710  0.3279895  0.1058253
-##   1.00   0.0013157091  0.1445607  0.3271509  0.1059425
-##   1.00   0.0131570910  0.1480259  0.3163538  0.1099097
-## 
-## RMSE was used to select the optimal model using the smallest value.
-## The final values used for the model were alpha = 1 and lambda
-##  = 0.0001315709.</code></pre>
+  modglmnet &lt;- train(rec_ames, data=ames_train, method=&quot;glmnet&quot;, trControl = ctrl))</code></pre>
 <p>Alpha (between 0 and 1) tunes between LASSO and ridge (smaller alpha means more Ridge, larger alpha means more LASSO)</p>
 <p>Lambda (amount of regularization). Larger lambda means more coefficients shrunk toward zero.</p>
 <p>Let’s check out the final model.</p>

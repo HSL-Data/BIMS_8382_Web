@@ -622,8 +622,6 @@ set.seed(190318)
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage <- capture.output(
   modglmnet <- train(rec_ames, data=ames_train, method="glmnet", trControl = ctrl))
-
-modglmnet
 ```
 
 Alpha (between 0 and 1) tunes between LASSO and ridge (smaller alpha means more Ridge, larger alpha means more LASSO)
