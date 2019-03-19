@@ -399,6 +399,8 @@ ames_train_zero %>%
   select(contains("Neighborhood"))
 ```
 
+------
+
 Review what we have done and then **Take a break**
 
 Now that we have a recipe that will preprocess our data such that the training and testing sets are preprocessed in exactly the same way, we are ready to jump into the caret package to fit some models inside a resampling loop.
@@ -528,6 +530,9 @@ set.seed(190131)
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage <- capture.output(
   modknn <- train(flu_rec, data=train_flu, method="kknn", trControl = ctrl))
+
+# Take a look at the output
+modknn
 ```
 
 Notice that we are trying k = 5, 7, and 9. And the best is where k = 9. If we want to fit the models trying more neighbors, I would suggest setting up a tuning grid. We can read about the parameters in the train help menu and the kknn help menus.
@@ -539,6 +544,9 @@ knn_grid <- expand.grid(kmax = seq(8, 15, by = 1), distance = 2, kernel = c("rec
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage <- capture.output(
   modknn <- train(flu_rec, data=train_flu, method="kknn", trControl = ctrl, tuneGrid = knn_grid))
+
+# Take a look at the output
+modknn
 ```
 
 This takes a little longer since we are fitting more models on each fold. 

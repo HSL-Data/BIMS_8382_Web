@@ -623,9 +623,9 @@ test_flu</code></pre>
 <h4>But first, a note on reproducibility and <code>set.seed()</code></h4>
 <p>When we train a model using resampling, that sampling is going to happen <em>pseudo</em>-randomly. Try running this function which generates five numbers from a random uniform distribution between 0 and 1.</p>
 <pre class="r"><code>runif(5)</code></pre>
-<pre><code>## [1] 0.9845099 0.2313149 0.6766308 0.9519795 0.3905511</code></pre>
+<pre><code>## [1] 0.40815500 0.01312592 0.74229455 0.74181877 0.35802447</code></pre>
 <pre class="r"><code>runif(5)</code></pre>
-<pre><code>## [1] 0.9779392 0.2966154 0.9420453 0.7352031 0.7032078</code></pre>
+<pre><code>## [1] 0.5598206 0.1437117 0.3817482 0.3603366 0.6958718</code></pre>
 <p>If you run that function over and over again, you’ll get different results. But, we can set the random number seed generator with any value we choose, and we’ll get the same result. Try setting the seed, drawing the random numbers, then re-setting the same seed, and re-running the <code>runif</code> function again. You should get identical results.</p>
 <pre class="r"><code>set.seed(190131)
 runif(5)</code></pre>
@@ -771,6 +771,7 @@ ames_train_prep</code></pre>
 <h2>EXERCISE 2</h2>
 <p><strong>YOUR TURN</strong></p>
 <p>Look up the documentation for the recipes package and find how to add a step to eliminate any near zero-variance predictors. Create a recipe to predict Sale_Price ~ Longitude + Latitude + Neighborhood and add in this step. Investigate the effect on the Neighborhoods variables.</p>
+<hr />
 <p>Review what we have done and then <strong>Take a break</strong></p>
 <p>Now that we have a recipe that will preprocess our data such that the training and testing sets are preprocessed in exactly the same way, we are ready to jump into the caret package to fit some models inside a resampling loop.</p>
 </div>
@@ -909,14 +910,69 @@ modrf</code></pre>
 set.seed(190131)
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage &lt;- capture.output(
-  modknn &lt;- train(flu_rec, data=train_flu, method=&quot;kknn&quot;, trControl = ctrl))</code></pre>
+  modknn &lt;- train(flu_rec, data=train_flu, method=&quot;kknn&quot;, trControl = ctrl))
+
+# Take a look at the output
+modknn</code></pre>
+<pre><code>## k-Nearest Neighbors 
+## 
+## 77 samples
+##  7 predictor
+##  2 classes: 'Death', 'Recover' 
+## 
+## Recipe steps: bagimpute, dummy 
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 69, 70, 69, 70, 70, 70, ... 
+## Resampling results across tuning parameters:
+## 
+##   kmax  Accuracy   Kappa    
+##   5     0.6515873  0.2772266
+##   7     0.6515873  0.2772266
+##   9     0.6515873  0.2772266
+## 
+## Tuning parameter 'distance' was held constant at a value of 2
+## 
+## Tuning parameter 'kernel' was held constant at a value of optimal
+## Accuracy was used to select the optimal model using the largest value.
+## The final values used for the model were kmax = 9, distance = 2 and
+##  kernel = optimal.</code></pre>
 <p>Notice that we are trying k = 5, 7, and 9. And the best is where k = 9. If we want to fit the models trying more neighbors, I would suggest setting up a tuning grid. We can read about the parameters in the train help menu and the kknn help menus.</p>
 <pre class="r"><code>#kknn needs tuning parameters kmax, distance, and kernel
 knn_grid &lt;- expand.grid(kmax = seq(8, 15, by = 1), distance = 2, kernel = c(&quot;rectangular&quot;))
 
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage &lt;- capture.output(
-  modknn &lt;- train(flu_rec, data=train_flu, method=&quot;kknn&quot;, trControl = ctrl, tuneGrid = knn_grid))</code></pre>
+  modknn &lt;- train(flu_rec, data=train_flu, method=&quot;kknn&quot;, trControl = ctrl, tuneGrid = knn_grid))
+
+# Take a look at the output
+modknn</code></pre>
+<pre><code>## k-Nearest Neighbors 
+## 
+## 77 samples
+##  7 predictor
+##  2 classes: 'Death', 'Recover' 
+## 
+## Recipe steps: bagimpute, dummy 
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 69, 68, 70, 69, 69, 70, ... 
+## Resampling results across tuning parameters:
+## 
+##   kmax  Accuracy   Kappa     
+##    8    0.5460317  0.05554547
+##    9    0.5460317  0.05554547
+##   10    0.5599206  0.08684584
+##   11    0.5599206  0.08684584
+##   12    0.5974206  0.16851250
+##   13    0.5974206  0.16851250
+##   14    0.5849206  0.13554547
+##   15    0.5849206  0.13554547
+## 
+## Tuning parameter 'distance' was held constant at a value of 2
+## 
+## Tuning parameter 'kernel' was held constant at a value of rectangular
+## Accuracy was used to select the optimal model using the largest value.
+## The final values used for the model were kmax = 13, distance = 2
+##  and kernel = rectangular.</code></pre>
 <p>This takes a little longer since we are fitting more models on each fold.</p>
 <p>Once the model has finished being fit, let’s check it out</p>
 <pre class="r"><code>modknn</code></pre>
