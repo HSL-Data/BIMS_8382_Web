@@ -551,11 +551,6 @@ modknn
 
 This takes a little longer since we are fitting more models on each fold. 
 
-Once the model has finished being fit, let's check it out
-
-```{r}
-modknn
-```
 k = 13 is the best
 
 #### Model comparison: Random Forest vs K-Nearest Neighbors
