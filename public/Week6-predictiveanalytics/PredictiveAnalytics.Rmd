@@ -287,7 +287,7 @@ Eventually we are going to compare different models to each other, so we want to
 
 Let's hold out 20% for testing and use the other 80% for training. To accomplish the split there is an easy function in the {caret} package `createDataPartition()`. If you need to stratify sampling into training and testing such that an equal proportion of say diseased and healthy make it into the training / testing sets, createDataPartition does this automatically. You can also specify stratification on predictors if needed.
 ```{r}
-set.seed(190318)
+set.seed(190131)
 inTrainAmes <- createDataPartition(ames$Sale_Price, p=0.8, list=FALSE)
 
 ames_train <- ames[inTrainAmes, ]
@@ -452,7 +452,7 @@ First we'll set up the resampling procedure using `trainControl()`. I'll set up 
 ```{r, cache=TRUE}
 # Set the random number seed generator
 ?train
-set.seed(190318)
+set.seed(190131)
 
 # Create trainControl object to specify resampling
 ctrl <- trainControl(
@@ -486,7 +486,7 @@ See the help for `?train` and click on the link therein to see what abbreviation
 
 ```{r, flu_rf, cache=TRUE, message=FALSE}
 library(randomForest)
-set.seed(190318)
+set.seed(190131)
 # Fit a random forest model using the recipe for preprocessing, the trainControl object
 
 #note: to hide iterations through train(), I wrapped it in capture.output
@@ -524,7 +524,7 @@ We can't see from this plot whether being older or younger is more risky. We SHO
 
 ```{r, flu_kknn, cache=TRUE, message=FALSE}
 library(kknn)
-set.seed(190318)
+set.seed(190131)
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage <- capture.output(
   modknn <- train(flu_rec, data=train_flu, method="kknn", trControl = ctrl))
@@ -617,7 +617,7 @@ Elastic net combines both of those to control for overfitting and make models mo
 ```{r, ames_glmnet, cache=TRUE, message=FALSE}
 library(glmnet)
 
-set.seed(190318)
+set.seed(190131)
 
 #note: to hide iterations through train(), I wrapped it in capture.output
 garbage <- capture.output(
@@ -645,7 +645,7 @@ Create a tuning grid of alpha and lambda where alpha ranges seq(0, 1, by = .25) 
 ```{r, echo=FALSE, results="hide", cache = TRUE, message=FALSE, fig.keep="none", warning=FALSE}
 glmn_grid <- expand.grid(alpha = seq(0, 1, by = .25), lambda = 10^seq(-3, -1, length = 20))
 
-set.seed(190318)
+set.seed(190131)
 
 modglmnet <- train(rec_ames, data=ames_train, method="glmnet", trControl = ctrl, tuneGrid = glmn_grid)
 
