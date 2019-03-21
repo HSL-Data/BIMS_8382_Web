@@ -3,5 +3,5 @@ title: "RNASeq"
 ---
 [Back to the main page](https://bims8382.netlify.com/)
 
-see preprocessing steps [here](RNAseq_preprocessing_on_Rivanna.html) and [here](RNAseq_preprocessing_2-_transcript_quantification.html)
+see preprocessing steps [here](RNAseq_preprocessing_on_Rivanna.html) and [here](RNAseq_preprocessing_2-_transcript_quantification_.html)
 
