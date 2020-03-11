@@ -183,5 +183,50 @@ library(BiocManager)
 
 If you get a message that says something like: `Error in library(BiocManager) : there is no package called 'BiocManager'`, then the required packages did not install correctly. Please do not hesitate to [email one of the instructors](people.html) _prior to the course_ if you are still having difficulty. In this email, please copy and paste what you typed in the console, and all of the output that streams by in the console.
 
+
+#Recommended reading and manuals: 
+[DESeq2 paper](https://www.ncbi.nlm.nih.gov/pubmed/25516281)
+[source paper for our data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4903174)
+papers for [STAR](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4631051/) and  [featureCounts](https://www.ncbi.nlm.nih.gov/pubmed/24227677) , [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf) 
+
+#Setting up
+Make a new R project for this workshop. Add files from the collab website: 
+
+* endo_counts.csv
+* endo_metadata.csv
+* RNAseq preprocessing on Rivanna.rmd
+* RNAseq preprocessing 2: transcript quantification.rmd
+* RNAseq with DESeq2_skeleton_final.R
+
+Also download the ppt "Intro to RNAseq_BIMS8382."
+
+Install the following packages using BiocManager, example `BiocManager::install("DESeq2")`
+
+- DESeq2
+- recount
+- biomaRt
+- gage
+ -gageData
+- pathview
+
+```
+BiocManager::install('recount')
+library(recount)
+
+BiocManager::install('biomaRt')
+library(biomaRt)
+
+BiocManager::install("gage")
+library(gage)
+
+BiocManager::install("pathveiw")
+library(pathview)
+
+BiocManager::install("gageData")
+library(gageData)
+```
+
+
+
 ----
 
