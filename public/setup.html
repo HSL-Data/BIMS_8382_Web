@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 
@@ -254,9 +254,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -270,7 +268,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -281,22 +278,81 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -327,28 +383,28 @@ $(document).ready(function () {
 <p>Install the following software in preparation for the first class session.</p>
 <div id="r" class="section level3">
 <h3>R</h3>
-<p><strong>Install R.</strong> You’ll need R version <strong>3.5.2</strong>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Download and install R for <a href="http://cran.r-project.org/bin/windows/base/">Windows</a> or <a href="http://cran.r-project.org/bin/macosx/">Mac</a> (download the latest R-3.x.x.pkg file for your appropriate version of Mac OS).</p>
+<p><strong>Install R.</strong> You’ll need R version <strong>3.6.2</strong>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Download and install R for <a href="http://cran.r-project.org/bin/windows/base/">Windows</a> or <a href="http://cran.r-project.org/bin/macosx/">Mac</a> (download the latest R-3.x.x.pkg file for your appropriate version of Mac OS).</p>
 </div>
 <div id="rstudio" class="section level3">
 <h3>RStudio</h3>
-<p>Download and install <strong><a href="https://www.rstudio.com/products/rstudio/download/">RStudio Desktop</a></strong> version &gt;= 1.1.463.</p>
+<p>Download and install <strong><a href="https://www.rstudio.com/products/rstudio/download/">RStudio Desktop</a></strong> version &gt;= 1.2.xxxx</p>
 <p>R and RStudio are separate downloads and installations. <strong>R</strong> is the underlying statistical computing environment, but using R alone is no fun. <strong>RStudio</strong> is a graphical integrated development environment that makes using R much easier. You need R installed before you install RStudio.</p>
 </div>
 <div id="cran-packages" class="section level3">
 <h3>CRAN packages</h3>
-<p>We will need to install several core packages needed for most lessons. Launch RStudio (RStudio, <em>not R itself</em>). Ensure that you have internet access, then copy and paste the following commands, one-at-a-time, into the <strong>Console</strong> panel (usually the lower-left panel, by default) and hit the Enter/Return key. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and <a href="people.html">email one of the instructors</a> <em>prior to class</em> with the command you typed and the error you received.</p>
+<p>We will need to install several core packages needed for most lessons. Launch RStudio (RStudio, <em>not R itself</em>). Ensure that you have internet access, then copy and paste the following commands, one-at-a-time, into the <strong>Console</strong> panel (usually the lower-left panel, by default) and hit the Enter/Return key. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and <a href="people.html">email the instructors</a> <em>prior to class</em> with the command you typed and the error you received.</p>
 <pre class="r"><code>install.packages(&quot;tidyverse&quot;)</code></pre>
 <p><em>A few notes</em>:</p>
 <ul>
 <li>Commands are case-sensitive.</li>
 <li>You must be connected to the internet.</li>
-<li>Even if you’ve installed these packages in the past, re-install the package to download the most recent version. Many of these packages are updated often, and we may use new features in the workshop that aren’t available in older versions.</li>
+<li>Even if you’ve installed these packages in the past, re-install the package to download the most recent version. Many of these packages are updated often, and we may use new features in the course that aren’t available in older versions.</li>
 <li>If you’re using Windows you might see errors about not having permission to modify the existing libraries – disregard these. You can avoid this by running RStudio as an administrator (right click the RStudio icon, then click “Run as Administrator”).</li>
 <li>These core packages are part of the “tidyverse” ecosystem (see <a href="https://www.tidyverse.org/">tidyverse.org</a>). The tidyverse package is a meta-package that automatically installs/loads all of the above packages and several other commonly used packages for data analysis that all play well together.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></li>
 </ul>
-<p>Check that you’ve installed everything correctly by closing and reopening RStudio and entering the following command at the console window (don’t worry about any messages that look something like <code>the following objects are masked from ...</code><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, or <code>Warning message: package ... was build under R version ...</code><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>):</p>
+<p>Check that you’ve installed everything correctly by closing and reopening RStudio and entering the following command at the console window. Don’t worry about any messages that look something like <code>the following objects are masked from ...</code><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>, or <code>Warning message: package ... was build under R version ...</code><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>:</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<p>This may produce some notes or other output, but as long as you don’t get an error message, you’re good to go. If you get a message that says something like: <code>Error in library(somePackageName) : there is no package called 'somePackageName'</code>, then the required packages did not install correctly. Please do not hesitate to <a href="people.html">email one of the instructors</a> <em>prior to class</em> if you are still having difficulty. In your email, please copy and paste what you typed in the console, and all of the output that streams by in the console.</p>
+<p>This may produce some notes or other output, but as long as you don’t get an error message, you’re good to go. If you get a message that says something like: <code>Error in library(somePackageName) : there is no package called 'somePackageName'</code>, then the required packages did not install correctly. Please do not hesitate to <a href="people.html">email the instructors</a> <em>prior to class</em> if you are still having difficulty. In your email, please copy and paste what you typed in the console, and all of the output that streams by in the console.</p>
 <p>After installing tidyverse with <code>install.packages(&quot;tidyverse&quot;)</code> and loading it with <code>library(tidyverse)</code>, you can use <code>tidyverse_update()</code> to update all the tidyverse packages installed on your system at once.</p>
 </div>
 <div id="rmarkdown" class="section level3">
@@ -361,11 +417,7 @@ $(document).ready(function () {
 install.packages(&quot;rmarkdown&quot;)</code></pre>
 <ol style="list-style-type: decimal">
 <li>Next, launch RStudio (not R). Click File, New File, R Markdown. This may tell you that you need to install additional packages (<code>knitr</code>, <code>yaml</code>, <code>htmltools</code>, <code>caTools</code>, <code>bitops</code>, <code>rmarkdown</code>, and maybe a few others). Click “Yes” to install these.</li>
-<li><strong><em>Optional</em>:</strong> If you want to convert to PDF, you will need to install a <strong><span class="math inline">\(\LaTeX\)</span></strong> typesetting engine. This differs on Mac and Windows. <em>Note that this part of the installation may take up to several hours, and isn’t strictly required for the class.</em>
-<ul>
-<li><strong>Windows</strong>: Download and install MiKTeX: <a href="https://miktex.org/download" class="uri">https://miktex.org/download</a>. Read the installation tutorial first at <a href="https://miktex.org/howto/install-miktex" class="uri">https://miktex.org/howto/install-miktex</a>.</li>
-<li><strong>Mac</strong>: Download and install MacTeX.pkg at <a href="http://www.tug.org/mactex/mactex-download.html" class="uri">http://www.tug.org/mactex/mactex-download.html</a>. This is a very large download (&gt;2 gigabytes), and may take a while depending on your network speed. Do this <em>prior to the course</em>.</li>
-</ul></li>
+<li>To render to PDF, you will need to install a <strong><span class="math inline">\(\LaTeX\)</span></strong> typesetting engine. We have found that the best option with the fewest problems is <strong>tinyTex</strong> available from within R. See the <a href="https://yihui.org/tinytex/">tinyTex Website</a> for installation instructions.</li>
 </ol>
 </div>
 </div>
@@ -456,10 +508,10 @@ BiocManager::install(&quot;name-of-package&quot;)</code></pre>
 <div class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>R version 3.5.2 was released December 2018. If you have not updated your R installation since then, you need to upgrade to a more recent version, since several of the required packages depend on a version at least this recent. You can check your R version with the <code>sessionInfo()</code> command.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>R version 3.6.2 was released December 2019. If you have not updated your R installation since then, you need to upgrade to a more recent version, since several of the required packages depend on a version at least this recent. You can check your R version with the <code>sessionInfo()</code> command.<a href="#fnref1" class="footnote-back">↩</a></p></li>
 <li id="fn2"><p>Installing/loading the tidyverse <strong>tidyverse</strong> will install/load the core tidyverse packages that you are likely to use in almost every analysis: <strong>ggplot2</strong> (for data visualisation), <strong>dplyr</strong> (for data manipulation), <strong>tidyr</strong> (for data tidying), <strong>readr</strong> (for data import), <strong>purrr</strong> (for functional programming), and <strong>tibble</strong> (for tibbles, a modern re-imagining of data frames). It also installs a selection of other tidyverse packages that you’re likely to use frequently, but probably not in every analysis (these are installed, but you’ll have to load them separately with <code>library(packageName)</code>). This includes: <strong>hms</strong> (for times), <strong>stringr</strong> (for strings), <strong>lubridate</strong> (for date/times), <strong>forcats</strong> (for factors), <strong>DBI</strong> (for databases), <strong>haven</strong> (for SPSS, SAS and Stata files), <strong>httr</strong> (for web apis), <strong>jsonlite</strong> (or JSON), <strong>readxl</strong> (for .xls and .xlsx files), <strong>rvest</strong> (for web scraping), <strong>xml2</strong> (for XML), <strong>modelr</strong> (for modelling within a pipeline), and <strong>broom</strong> (for turning models into tidy data).<a href="#fnref2" class="footnote-back">↩</a></p></li>
 <li id="fn3"><p>We’ll talk about this in class. It’s not a concern.<a href="#fnref3" class="footnote-back">↩</a></p></li>
-<li id="fn4"><p>This means the version of R you have installed is older than the version that the package author used when they built the package you’re trying to use. 99% of the time it isn’t a problem, unless your R version is very old (you should be using 3.4.0 or later for this course).<a href="#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>This means the version of R you have installed is older than the version that the package author used when they built the package you’re trying to use. 99% of the time it isn’t a problem, unless your R version is very old (you should be using 3.5.0 or later for this course).<a href="#fnref4" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
 
@@ -480,6 +532,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

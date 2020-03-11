@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Introduction to Data Science for Biomedical Scientists" />
@@ -255,9 +255,7 @@ h6 {
 </style>
 
 
-</head>
 
-<body>
 
 <style type="text/css">
 .main-container {
@@ -271,7 +269,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -282,22 +279,81 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
 
-<div class="container-fluid main-container">
-
 <!-- tabsets -->
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-</script>
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
 
 <!-- code folding -->
 
 
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
 
 
 
@@ -307,7 +363,7 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">BIMS8382 Syllabus</h1>
-<h4 class="author"><em>Introduction to Data Science for Biomedical Scientists</em></h4>
+<h4 class="author">Introduction to Data Science for Biomedical Scientists</h4>
 
 </div>
 
@@ -323,24 +379,17 @@ $(document).ready(function () {
 <li><p>Email: <a href="mailto:dnm5ca@virginia.edu" class="email">dnm5ca@virginia.edu</a></p></li>
 <li><p>GitHub: <a href="https://github.com/dnm5ca">github.com/dnm5ca</a></p></li>
 </ul>
-<p><small>David is the Clinical Data Research Specialist at the Health Sciences Library where he consults with clinicians, nurses, and students on data analysis and programming in a number of languages. He is also a PhD candidate in the Curry School of Education researching the impacts of the No Child Left Behind policy.</small></p>
+<p><small>David is the Clinical Data Research Specialist at the Health Sciences Library where he consults with clinicians, nurses, and students on data analysis and programming in a number of languages. With Marieke, he co-teaches the BIMS8380 statistics course. He is also a PhD candidate in the Curry School of Education researching the impacts of the No Child Left Behind policy.</small></p>
 <p><strong>Marieke K Jones</strong></p>
 <ul>
 <li><p>Email: <a href="mailto:marieke@virginia.edu" class="email">marieke@virginia.edu</a></p></li>
 <li><p>GitHub: <a href="https://github.com/mariekekjones">github.com/mariekekjones</a></p></li>
 </ul>
-<p><small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.</small></p>
-<p><strong>Katie Owsiany</strong></p>
-<ul>
-<li><p>Email: <a href="mailto:ko8xh@virginia.edu" class="email">ko8xh@virginia.edu</a></p></li>
-<li><p>Lab: <a href="https://www.cvrc.virginia.edu/Owens/team.html">Owen’s Lab CVRC</a></p></li>
-</ul>
-<p><small>Katie is an MD/PhD student conducting her research in the Owen’s lab at the Cardiovascular Research Center. She took BIMS8382 last year and is excited to return to share her expertise in RNA seq analysis</small></p>
+<p><small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and co-teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.</small></p>
 <p><strong><em>Where:</em></strong> BIMS Education Center (McKim Hall 1023)</p>
 <p><strong><em>When:</em></strong><br />
-Spring 2019 Module S1<br />
-February 11 – March 25 <small><em>(No exam – final class period will be held March 25.)</em></small><br />
-2:00pm - 5:00pm</p>
+Spring 2020 Module S2 March 26 – May 7 <small><em>(No exam – final class period will be held May 7)</em></small><br />
+9:00 - 10:30am Tuesdays and Thursdays</p>
 </div>
 <div id="about-this-course" class="section level3">
 <h3>About this course</h3>
@@ -352,46 +401,61 @@ February 11 – March 25 <small><em>(No exam – final class period will be held
 <div id="setup" class="section level2">
 <h2><a href="setup.html">Setup</a></h2>
 <p><strong>Prior to the first class session</strong>: You should set aside a couple hours to download, install, and test all the software needed for the course. All the software we’re using in class is open-source and freely available online. This setup must be completed <em>prior to class</em>, as we will not have much time for troubleshooting software installation issues during class. <a href="people.html">Email us</a> if you’re having difficulty.</p>
-<p>After installing and testing the software we’ll be using, please download the data as instructed, and review any required reading <em>prior to class</em>.</p>
 </div>
 <div id="course-schedule" class="section level2">
 <h2>Course Schedule</h2>
-<div id="week-1-intro-to-r-david" class="section level3">
-<h3>Week 1: Intro to R (David)</h3>
-<p>This novice-level introduction is directed toward life scientists with little to no experience with statistical computing or bioinformatics. This interactive introduction will introduce the R statistical computing environment. The first part of this session will demonstrate very basic functionality in R, including functions, functions, vectors, creating variables, getting help, filtering, data frames, plotting, and reading/writing files. The final part of the session covers some of the barriers to reproducible research and how to start to address some of those problems. We will cover using RMarkdown and RStudio to combine text and executable code to create readable and shareable reports.</p>
+<div id="march-26-intro-to-r-david" class="section level3">
+<h3>March 26: Intro to R (David)</h3>
+<p>This novice-level introduction is directed toward life scientists with little to no experience with statistical computing or bioinformatics. This interactive introduction will introduce the R statistical computing environment. The first part of this session will demonstrate very basic functionality in R, including functions, vectors, creating variables, getting help, and reading/writing files.</p>
 </div>
-<div id="week-2-dealing-with-data-david" class="section level3">
-<h3>Week 2: Dealing with Data (David)</h3>
-<p>Data analysis involves a large amount of janitor work – munging and cleaning data to facilitate downstream data analysis. This session assumes a basic familiarity with R and covers tools and techniques for data cleaning and manipulation. It will cover “tidy data”, and will introduce R packages that enable data manipulation and analysis using split-apply-combine strategies. Upon completing this lesson, students will be able to use the <em>tidyr</em>, <em>stringr</em> and <em>dplyr</em> package in R to effectively manipulate and conditionally compute summary statistics over subsets of a “big” dataset containing many observations.</p>
+<div id="march-31-rmarkdown-and-dplyr-david" class="section level3">
+<h3>March 31: RMarkdown and dplyr (David)</h3>
+<p>This session covers some of the barriers to reproducible research and how to start to address some of those problems. We will cover using RMarkdown and RStudio to combine text and executable code to create readable and shareable reports. In the process of writing RMarkdown documents we will also explore the <em>dplyr</em> package. The <em>dplyr</em> package in R will help us to effectively manipulate and conditionally compute summary statistics over subsets of a “big” dataset containing many observations.</p>
 </div>
-<div id="week-3-data-visualization-with-ggplot2-david" class="section level3">
-<h3>Week 3: Data Visualization with ggplot2 (David)</h3>
+<div id="april-2-exploratory-data-analysis-david" class="section level3">
+<h3>April 2: Exploratory Data Analysis (David)</h3>
+<p>This session will introduce the idea of “tidy data”, and will introduce R packages that enable data manipulation and plotting to explore a dataset and understand what steps must be taken to clean the data.</p>
+</div>
+<div id="april-7-data-visualization-with-ggplot2-david" class="section level3">
+<h3>April 7: Data Visualization with ggplot2 (David)</h3>
 <p>This session will cover fundamental concepts for creating effective data visualization and will introduce tools and techniques for visualizing large, high-dimensional data using R. We will review fundamental concepts for visually displaying quantitative information, such as using series of small multiples, avoiding “chart-junk,” and maximizing the data-ink ratio. After briefly covering data visualization using base R graphics, we will introduce the <em>ggplot2</em> package for advanced high-dimensional visualization. We will cover the grammar of graphics (geoms, aesthetics, stats, and faceting), and using ggplot2 to create plots layer-by-layer. Upon completing this lesson, students will be able to use R to explore a high-dimensional dataset by faceting and scaling arbitrarily complex plots in small multiples.</p>
 </div>
-<div id="week-4-essential-statistics-marieke" class="section level3">
-<h3>Week 4: Essential Statistics (Marieke)</h3>
+<div id="april-9-advanced-exploratory-analysis-david" class="section level3">
+<h3>April 9: Advanced Exploratory Analysis (David)</h3>
+<p>Riffing off of Tolstoy, Hadley Wickham, the writer of many of the R packages we will use, says “Like families, tidy datasets are all alike but every messy dataset is messy in its own way”. Upon completing this lesson, students will be able to use the <em>tidyr</em>, <em>stringr</em>, <em>dplyr</em>, and <em>ggplot2</em> packages in R to clean and explore their data.</p>
+</div>
+<div id="april-14-tidytuesday-challenge-1" class="section level3">
+<h3>April 14: TidyTuesday Challenge 1</h3>
+<p>Each week RStudio releases a new dataset in a TidyTuesday challenge so we will each load the dataset, manipulate it as needed, and create a data visualization that tells a story. At the end of the session we will share our viz with each other and look at some other coders’ contributions on Twitter to get some fresh ideas.</p>
+</div>
+<div id="april-16-essential-statistics-marieke" class="section level3">
+<h3>April 16: Essential Statistics (Marieke)</h3>
 <p>This workshop will provide hands-on instruction and exercises covering basic statistical analyses in R. This will cover descriptive statistics, exploratory data analysis, t-tests, ANOVA, linear models, and methods for discrete variable analysis. We will cover hypothesis testing and assessing the assumptions of the tests.</p>
 </div>
-<div id="week-5-regression-marieke" class="section level3">
-<h3>Week 5: Regression (Marieke)</h3>
-<p>This session will focus solely on conducting regression analyses in R. It will begin with an overview of regression analysis and then move on to specific techniques which include: linear models, logistic regression, multiple regression, mixed effects modeling, and others. We will also focus on methods to check model assumptions and to select the “best” model.</p>
+<div id="april-21-tidytuesday-challenge-2" class="section level3">
+<h3>April 21: TidyTuesday Challenge 2</h3>
+<p>Each week RStudio releases a new dataset in a TidyTuesday challenge so we will each load the dataset, manipulate it as needed, and create a data visualization that tells a story. At the end of the session we will share our viz with each other and look at some other coders’ contributions on Twitter to get some fresh ideas.</p>
 </div>
-<div id="week-6-predictive-modeling-marieke" class="section level3">
-<h3>Week 6: Predictive Modeling (Marieke)</h3>
-<p>This session will provide hands-on instruction for using machine learning algorithms for prediction. We will cover data cleaning, feature extraction, imputation, and using a variety of models to try to predict disease outcome. We will use resampling strategies to assess the performance of predictive modeling procedures such as Random Forest, elastic net regularized regression (LASSO), and k-nearest neighbors.</p>
+<div id="april-23-regression-marieke" class="section level3">
+<h3>April 23: Regression (Marieke)</h3>
+<p>This session will focus solely on conducting regression analyses in R. It will begin with an overview of regression analysis and then move on to specific techniques which include: linear models, logistic regression, and multiple regression. We will also focus on methods to check model assumptions and to select the “best” model.</p>
 </div>
-<div id="week-7-rnaseq-katie" class="section level3">
-<h3>Week 7: RNASeq (Katie)</h3>
+<div id="april-28-30-rnaseq" class="section level3">
+<h3>April 28 &amp; 30: RNASeq</h3>
 <p>Description TBD</p>
+</div>
+<div id="may-5-7-student-presentations" class="section level3">
+<h3>May 5 &amp; 7: Student Presentations</h3>
+<p>So much of learning biomedical datascience will be up to you. You each are studying a different topic with varying computational needs. As such, we would like you to choose a package we did not cover at length in class and create a vignette demoing for the class what the package is for and a few of its functions. You will turn in a rendered PDF of your vignette and will provide a 15min presentation with a partner, allowing time for audience questions. This assignment is worth 20% of your course grade. As an example of a vignette, please see UVA Library’s Clay Ford’s vignette of the <a href="https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html">pwr package</a></p>
 </div>
 </div>
 <div id="homework" class="section level2">
 <h2>Homework</h2>
-<p>Each week’s lesson will be followed by an independent homework assignment that will be posted to our course’s Collab site. The HW will be due the following Sunday at 11:59pm. Homework assignments should be completed in RMarkdown and should be submitted as a single PDF file to our course’s Collab site</p>
+<p>Each week’s lesson will be followed by an independent homework assignment that will be posted to our course’s Collab site. The HW will be due the following Monday at 11:59pm. Homework assignments should be completed in RMarkdown and should be submitted as a single PDF file to our course’s Collab site. In total there will be 5 homework assignments due April 6, April 13, April 20, April 27, and May 4.</p>
 </div>
 <div id="grading-policy" class="section level2">
 <h2>Grading Policy</h2>
-<p>This course will be graded as Pass / Fail. As long as you make a good faith effort to learn the material and submit high-quality homeworks on time, you will pass this course.</p>
+<p>80% Homeworks – each worth 16% 20% Presentation and vignette</p>
 </div>
 <div id="faq" class="section level2">
 <h2>FAQ</h2>
@@ -401,7 +465,7 @@ February 11 – March 25 <small><em>(No exam – final class period will be held
 </div>
 <div id="do-i-need-a-laptop" class="section level3">
 <h3>Do I need a laptop?</h3>
-<p><strong>YES.</strong> You must have access to a computer on which you can install software. The class will be a mix of lecture, discussion, but primarily live coding. You must bring your laptop to the course every day. Bring your charging cable also. Please follow the <a href="setup.html">setup instructions</a> prior to the workshop.</p>
+<p><strong>YES.</strong> You must have access to a computer on which you can install software. The class will be primarily live coding with activities for you to independently code. You must bring your laptop to the course every day. Bring your charging cable also. Please follow the <a href="setup.html">setup instructions</a> prior to the workshop.</p>
 </div>
 <div id="where-can-i-get-more-help" class="section level3">
 <h3>Where can I get more help?</h3>
@@ -426,6 +490,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
