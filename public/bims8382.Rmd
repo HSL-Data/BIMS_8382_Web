@@ -60,11 +60,11 @@ Because of this course's format as an online module, here we provide best option
 
 ## Course Schedule
 
-### March 26: Intro to R (David)
+### March 26: Intro to R
 
 This novice-level introduction is directed toward life scientists with little to no experience with statistical computing or bioinformatics. This interactive introduction will introduce the R statistical computing environment. The first part of this session will demonstrate very basic functionality in R, including functions, vectors, creating variables, getting help, and reading/writing files. 
 
-### March 31: RMarkdown and dplyr (David)
+### March 31: RMarkdown and dplyr
 
 This session covers some of the barriers to reproducible research and how to start to address some of those problems. We will cover using RMarkdown and RStudio to combine text and executable code to create readable and shareable reports. In the process of writing RMarkdown documents we will also explore the _dplyr_ package. The _dplyr_ package in R will help us to effectively manipulate and conditionally compute summary statistics over subsets of a "big" dataset containing many observations.
 
@@ -96,7 +96,7 @@ This session will focus solely on conducting regression analyses in R. It will b
 
 In this session we will investigate techniques for inspecting, visualizing, and reducing dimensions for high-dimensional data. We will examine techniques like PCA, clustering, and heatmaps that are useful for any number of large datasets.
 
-### April 28 & 30: RNASeq
+### April 28 & 30: RNASeq (guest)
 
 Description TBD
 
