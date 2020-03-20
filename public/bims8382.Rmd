@@ -29,7 +29,7 @@ This is the course content for students enrolled in BIMS8382 at The University o
 
 <small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and co-teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.</small>
 
-**_Where:_** BIMS Education Center (McKim Hall 1023)
+**_Where:_** This course will be taught synchronously online using videoconferencing tools, this course website, and email
 
 **_When:_**  
 Spring 2020 Module S2 
@@ -50,6 +50,13 @@ This course introduces methods, tools, and software for reproducibly managing, m
 
 **Prior to the first class session**:
 You should set aside a couple hours to download, install, and test all the software needed for the course. All the software we're using in class is open-source and freely available online. This setup must be completed _prior to class_, as we will not have much time for troubleshooting software installation issues during class. [Email us](people.html) if you're having difficulty.
+
+Because of this course's format as an online module, here we provide best options for following along during class sessions. Most of the course consists of live coding, so the challenge will be how to simultaneously view the instructor's screen and your screen given that the RStudio window is large.
+
+1. _Best option_ Dual monitors side-by-side
+2. Two computers side-by-side
+3. One computer (you) and one tablet (instructor)
+4. One computer (you & instructor) and PDF of printed codes
 
 ## Course Schedule
 
@@ -81,13 +88,13 @@ Each week RStudio releases a new dataset in a TidyTuesday challenge so we will e
 
 This workshop will provide hands-on instruction and exercises covering basic statistical analyses in R. This will cover descriptive statistics, exploratory data analysis, t-tests, ANOVA, linear models, and methods for discrete variable analysis. We will cover hypothesis testing and assessing the assumptions of the tests.
 
-### April 21: TidyTuesday Challenge 2
-
-Each week RStudio releases a new dataset in a TidyTuesday challenge so we will each load the dataset, manipulate it as needed, and create a data visualization that tells a story. At the end of the session we will share our viz with each other and look at some other coders' contributions on Twitter to get some fresh ideas.
-
-### April 23: Regression (Marieke)
+### April 21: Regression (Marieke)
 
 This session will focus solely on conducting regression analyses in R. It will begin with an overview of regression analysis and then move on to specific techniques which include: linear models, logistic regression, and multiple regression. We will also focus on methods to check model assumptions and to select the "best" model.
+
+### April 23: Dimension Reduction (Marieke)
+
+In this session we will investigate techniques for inspecting, visualizing, and reducing dimensions for high-dimensional data. We will examine techniques like PCA, clustering, and heatmaps that are useful for any number of large datasets.
 
 ### April 28 & 30: RNASeq
 
@@ -114,7 +121,7 @@ _There are none!_ This course does not assume any knowledge of programming or us
 
 ### Do I need a laptop?
 
-**YES.** You must have access to a computer on which you can install software. The class will be primarily live coding with activities for you to independently code. You must bring your laptop to the course every day. Bring your charging cable also. Please follow the [setup instructions](setup.html) prior to the workshop.
+**YES.** You must have access to a computer on which you can install software. The class will be primarily live coding with activities for you to independently code. As such, ideally you would have 2 monitors allowing you to follow along with the instructor in one screen while you code in a second. Please follow the [setup instructions](setup.html) prior to the workshop.
 
 ### Where can I get more help?
 

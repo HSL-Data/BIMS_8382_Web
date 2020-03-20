@@ -82,6 +82,7 @@ tidyverse package
 ## Essential Statistics
 
 tidyverse package
+broom package
 
 ## Regression
 
@@ -89,71 +90,9 @@ Packages:
 
 * tidyverse
 * broom
+* modelr
 * lme4
 * lmerTest
-
-## Predictive Analytics
-
-Packages:
-
-* tidyverse
-* AmesHousing
-* caret
-* recipes
-* randomForest
-* kknn
-* glmnet
-
-For this session, besides the tidyverse package, we will need several new packages described below. If you receive an error message when trying to install any particular package, please make note of which one you had trouble with, and [email us](people.html) _prior to class_ with the command you typed and the error you received.
-
-First, install the **[AmesHousing](https://cran.r-project.org/web/packages/AmesHousing/AmesHousing.pdf)** package, which provides a dataset of houses in Ames, Iowa. We will use it to predict house prices.
-
-Next, install the **[caret](https://cran.r-project.org/package=caret)** package, which provides a unified interface to hundreds of data mining and machine learning algorithms and a framework for model training and evaluation. This command will also install all the additional packages that **caret** recommends. 
-
-```r
-install.packages("caret", dependencies = c("Depends", "Suggests"))
-```
-
-When you do this, you may get a note asking you about installing source packages that need compilation. If you get this message, type `n` and hit `Enter` at the prompt for "no."
-
-```
-There are binary versions available but the source versions are later:
-                binary  source  needs_compilation
-somePackage1    ....    ....               TRUE
-somePackage1    ....    ....               FALSE
-
-Do you want to install from sources the package which needs compilation?
-```
-
-Similarly, if you get a message that looks like this, type `n` and hit `Enter` for "no."
-
-```
-Packages which are only available in source form, and may need compilation of C/C++/Fortran: ‘Rpoppler’ ‘Rmpi’
-Do you want to attempt to install these from sources?
-```
-
-To carry out our data preprocessing steps, we are going to use the **[recipes](https://tidymodels.github.io/recipes/)** package. **Recipes** interfaces seamlessly with the **caret** package for model fitting and resampling.
-
-The **caret** package provides the utilities for interfacing with many other packages' machine learning algorithms. We're going to fit models using Random Forest, k-Nearest Neighbors, Lasso and Elastic-Net Regularized Generalized Linear Models. These require the packages [randomForest](https://cran.r-project.org/package=randomForest),  [kknn](https://cran.r-project.org/package=kknn), and [glmnet](https://cran.r-project.org/package=glmnet), respectively. The following commands will install these packages.
-
-```r
-install.packages("recipes")
-install.packages("randomForest")
-install.packages("kknn")
-install.packages("glmnet")
-```
-
-Check that you've installed everything correctly by closing and reopening RStudio and entering the following commands one-at-a-time in the console pane. If you get an error telling you that the package isn't installed, try re-installing it as demonstrated above. If you're still having trouble, [email us](people.html) _prior to class_ with the command you typed to install and the error(s) you received.
-
-```r
-library(tidyverse)
-library(AmesHousing)
-library(caret)
-library(recipes)
-library(randomForest)
-library(kknn)
-library(glmnet)
-`````
 
 ----
 
@@ -161,72 +100,7 @@ library(glmnet)
 
 ### Bioconductor
 
-To install packages from Bioconductor ([more information here](https://www.bioconductor.org/install/)) we will need to access the Bioconductor package repository rather than the CRAN. These packages are installed differently than "regular" R packages from CRAN. Copy and paste these lines of code into your R console **one at a time**. 
-
-```r
-if (!requireNamespace("BiocManager"))
-    install.packages("BiocManager")
-BiocManager::install("name-of-package")
-```
-
-A few notes:
-
-- We will be using the latest versions of Bioconductor from the 3.8 release. This requires R version 3.5.0 or higher. If you have R 3.5.0 installed, running the commands above will install Bioconductor 3.8.
-- If at any point in the Bioconductor package installations you get prompts in the console asking you to update any existing packages, type `n` at the prompt at hit enter.
-- If you see a note long the lines of "_binary version available but the source version is later_", followed by a question, "_Do you want to install from sources the package which needs compilation? y/n_", type **`n` for no**, and hit enter.
-
-Check that you've installed everything correctly by closing and reopening RStudio and entering the following command at the console window:
-
-```r
-library(BiocManager)
-```
-
-If you get a message that says something like: `Error in library(BiocManager) : there is no package called 'BiocManager'`, then the required packages did not install correctly. Please do not hesitate to [email one of the instructors](people.html) _prior to the course_ if you are still having difficulty. In this email, please copy and paste what you typed in the console, and all of the output that streams by in the console.
-
-
-#Recommended reading and manuals: 
-[DESeq2 paper](https://www.ncbi.nlm.nih.gov/pubmed/25516281)
-[source paper for our data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4903174)
-papers for [STAR](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4631051/) and  [featureCounts](https://www.ncbi.nlm.nih.gov/pubmed/24227677) , [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf) 
-
-#Setting up
-Make a new R project for this workshop. Add files from the collab website: 
-
-* endo_counts.csv
-* endo_metadata.csv
-* RNAseq preprocessing on Rivanna.rmd
-* RNAseq preprocessing 2: transcript quantification.rmd
-* RNAseq with DESeq2_skeleton_final.R
-
-Also download the ppt "Intro to RNAseq_BIMS8382."
-
-Install the following packages using BiocManager, example `BiocManager::install("DESeq2")`
-
-- DESeq2
-- recount
-- biomaRt
-- gage
- -gageData
-- pathview
-
-```
-BiocManager::install('recount')
-library(recount)
-
-BiocManager::install('biomaRt')
-library(biomaRt)
-
-BiocManager::install("gage")
-library(gage)
-
-BiocManager::install("pathveiw")
-library(pathview)
-
-BiocManager::install("gageData")
-library(gageData)
-```
-
-
+TBD
 
 ----
 
