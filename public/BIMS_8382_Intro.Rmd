@@ -1,0 +1,415 @@
+---
+title: "Introduction to R and RMarkdown"
+author: "David Martin"
+date: '`3/26/2020'
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+
+```
+
+# Tour of RStudio
+
+Welcome to R and RStudio!
+
+- R is the underlying statistical computing environment. Think of this like a car's engine.
+
+- RStudio is the Integrated Development Environment that we use to interact with R, making writing and reading code a lot easier. Think of RStudio like the dashboard of the car.
+
+### RStudio Panes 
+
+- On the top left is the **script** window. This is where we are going to write all of our code and notes.
+
+- On the lower left there's the **console** window. This is where R tells us what it thinks we told it and then the answer. This part is what R would look like (without RStudio)
+
+- The top right has the **environment** and history tabs. The environment is a list of all objects that R knows and the history tab shows all the code that has been run.
+
+- On the bottom right there's a window with lots of tabs. Files provides the file structure in the working directory. **Plots** is where your visualizations will appear. Packages shows all of the installed packages and one that are checked are opened. **Help** is where we will learn about functions when we need assistance and the Viewer is for viewing other kinds of output, like web content.
+
+## Creating a Project
+
+RStudio projects make it straightforward to place your work into it's own working directory. Creating a project takes away some of the stress of navigating through file directories and file paths. A project creates an encapsulation for source files, images, and anything else created during your R Session.
+
+To create a Project, go to `File -> New Project` and then either create a new folder for your project by going to `New Directory` and browsing to where you want to place your project. Or, you can use a folder you have already created by going to `Existing Directory` and then navigating to your chosen folder.
+
+### RStudio Global Options
+
+- So that all of our set-ups look the same follow me to change a few settings. Go to Tools --> Global Options
+
+  - In the Code menu check the box for "Soft-wrap R source files"
+  - In the R Markdown menu UNcheck the box for "Show output inline for all RMarkdown documents"
+  
+### RMarkdown
+
+Today we are coding in an **RMarkdown** document. This is how I would recommend that you code your own projects too. RMarkdown interweaves prose with code. Prose are written in plain text and R code is contained in gray "r code chunks". To insert an R code chunk press `Ctrl+Alt+I` OR `CMD+Option+I`.
+
+To run code in R, click on a line of code and press `CTRL+Enter/CMD+Enter`. You can also highlight a portion of the code that you wish to run. The result will be printed out to the console.
+
+Highlight and run the following code in the code chunk
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+```
+
+## Packages
+
+We just installed and loaded the `tidyverse` package. Packages in R contain extensions to the base programming environment. Essentially they provide for you more functionality beyond what is orginally there. 
+
+You can think of an R package like an app on your phone. Fist, we installed it from the internet. 
+
+When we called the `install.packages()` function, R went to the Comprehensive R Archive Network (CRAN) and downloaded the specified package. There are over 10K packages listed on CRAN, over 1500 on Bioconductor (bioinformatics packages), and many more under development on people's github pages etc. You can be sure a package is safe to download if it comes from the CRAN or from Bioconductor.
+
+The `library` function loaded the functionality from the package into R and allows you to use this functionality during your current R session.
+
+## Reading in Data
+
+One example of functionality we gain from using the `tidyverse` package is the ability to read in csv files in a nice, neat way using the `read_csv()` function. 
+
+Today we are going to be looking at a dataset that looks at the show "The Office." To get the dataset, we will be pulling straight from the 8382 Github page.
+
+Run the following code chunk by clicking in the upper right hand corner of the chunk on the green arrow.
+
+```{r}
+office <- read_csv("https://raw.githubusercontent.com/HSL-Data/BIMS_8382_Web/master/public/data/office.csv")
+```
+
+Now the output specifies that we have successfully read in a dataset and that the dataset contains the below columns.
+
+### View a dataset
+
+To `View()` the dataset in spreadsheet form, we can click on the dataset's name in the Environment tab. Notice that this action is accompanied by some code in the console telling us that we could also get there using code. Let's try it both ways
+
+```{r}
+# View your data
+View(office) 
+```
+
+In the r chunk above, I have written my first code comment. Anything after a `#` sign is a comment. Use them liberally to *comment your code* to explain to yourself and others what the code is doing and why you have chosen to do it this way.
+
+- Commenting is helpful when you're testing things out during your analysis to 'turn off' parts of your script
+- Comments are also a big part of making your work reproducible for others and for your future self when you open this script a few months from now and need to remember what you were doing
+- Today I would like to challenge you to take notes directly in this document, _either as prose or as `# comments` in your r code chunks_.
+
+Now is a great time to save our script. Go to File --> Save or `CTRL+S` (pc) or `CMD+S` (mac).
+
+Where is the file saving? So far, we are coding in our RStudio cloud account so that is where the file will be saved. 
+
+# The arrow `<-` creates R objects
+
+The arrow operator is created with the less than sign followed directly by the dash.
+
+We use it in R to create new objects.
+
+So far in our coding today, we have used the arrow operator once already, resulting in an object in our environment:
+
+1. We created our first object, `office`, when we read in our data from the internet.
+
+Let's use the arrow to create a few more R objects. First, let's create an object containing one value
+
+```{r}
+object1 <- 55
+```
+
+Notice that when you run code that has an `<-` operator, the object is created in the environment. You will not see the value contained in the object in the console unless you ask R to print the object by calling its name:
+
+```{r}
+object1
+
+# R is case sensitive! Watch your casing and spelling
+#Object1
+```
+
+We can overwrite the value of object1 by re-assigning it
+
+```{r}
+object1 <- 70
+
+#then call its name to see the object
+object1
+```
+
+## Functions
+
+A function is a verb; it tells R to do something. To call an R function, we call the name of the function followed directly by `()`. The items passed to the function inside the () are called *arguments*. Arguments change the way a function behaves
+
+Some functions don't need any arguments
+```{r}
+Sys.Date() #get today's date
+```
+
+Some functions just take a single argument. Let's get the square root of 961. Now let's get the square root of object1
+```{r}
+sqrt(961)
+```
+
+To learn more about the function, type `?` and then the function's name
+
+```{r}
+?sqrt
+```
+
+Sometimes functions have arguments that have a default value. In those cases, you can override the default value by specifying your own.
+
+For example, let's look at the help page for the `rnorm()` function
+```{r}
+?rnorm
+```
+
+`rnorm()` generates random values from the normal distribution. We must supply the n argument since there is no default value, but there is a default value set for the mean and sd arguments.
+
+```{r}
+rnorm(n = 10)
+rnorm(n = 10, mean = 50, sd = 5)
+
+# don't specify n
+#rnorm(mean = 50, sd = 5)
+```
+
+In the above examples, we have labeled our arguments according to their names in the help menu. If you do not label the arguments, they will be called into the function in the order given in the help menu.
+
+```{r}
+rnorm(10, 50, 5)
+
+#out of order, but works bc the arguments are labeled
+rnorm(n = 10, sd = 5, mean = 50)
+```
+
+To improve readability (and accuracy) of your code, we would recommend labeling your arguments.
+
+# EXERCISE
+
+1. Use the arrow operator to create an object called object2 that stores 100 draws from a normal distribution with mean = 500 and sd = 100.
+
+2. Call `hist(object2)` to create a histogram of your normal distribution
+
+```{r}
+
+```
+
+------------------------------------
+
+Look at the environment. What does it tell you about object2?
+
+
+Let's create some more R objects that are collections of several values. To accomplish this, we will use the function `c()`, which stands for concatenate or combine. Usually functions are named with a full word describing what they do but because combining items together is so common, this function gets a very short name.
+
+```{r}
+object3 <- c(55, 60, 35, 70)
+```
+
+Check out the environment now. It worked! We created object3
+
+Let's create another object containing a different type of data
+
+```{r}
+object4 <- c("Jack", "Leila", "Rohit")
+```
+
+## More Functions
+
+Let's `sum()` everything in object3
+
+```{r}
+sum(object3)
+```
+
+Try the `mean()` function on your own for object3.
+
+```{r}
+mean(object3)
+```
+
+What happens if we try to `sum()` object4?
+
+```{r}
+#sum(object4)
+```
+
+What if we take the square root of object3?
+
+```{r}
+sqrt(object3)
+```
+
+It worked! Most functions in R are **vectorized** meaning that they will work on a vector as well as a single value. This means that in R, we usually do not need to write loops like we would in other languages.
+
+# EXERCISE
+
+Try the following functions on object3 and on object4. What do each of the below functions do? Optionally, call up the help menu for these functions to learn more.
+
+1. class()
+2. summary()
+3. str()
+
+```{r}
+
+```
+
+### Functions to inspect dataframes
+
+R has a few different types of objects. We already saw some vectors (one dimensional collection of items) before when we created object2, object3, and object4.
+
+R's dataframes store two dimensional, tabular, heterogeneous data. Two-dimensional and tabular meaning a table of rows and columns that form the 2 dimensions. Heterogeneous meaning that each column can contain a different type of data (i.e., one column Age is numeric while Gender is a character).
+
+A dataset is considered "tidy" when each variable forms a column, each observation forms a row, and each cell only contains one piece of data. This means that the entries within a column should all be the same type as each other.
+
+Let's remind ourselves what our `office` dataset looks like by calling its name
+
+```{r, results="hide"}
+office
+```
+
+Does anyone remember from before, how do we see the whole dataset in the spreadsheet viewer?
+
+```{r , results="hide"}
+View(office)
+```
+
+We can also directly call the `dim()` function to see the dimensions of the `office` dataset.
+
+```{r , results="hide"}
+dim(office) #rows then columns
+```
+
+We can ask for the number of rows and the number of columns
+
+```{r , results="hide"}
+nrow(office)
+ncol(office)
+```
+
+To see all the column headings we can call the function `names()`
+
+```{r , results="hide"}
+names(office)
+```
+
+And probably the two you'll use the most to inspect data frames, because they are the most descriptive, are `summary()` and `str()`, both of which we used above to inspect vectors
+
+```{r , results="hide" }
+summary(office)
+str(office)
+```
+
+## Accessing variables from a dataframes
+
+You might have noticed a `$` in front of the variable names in the `str()` output. That symbol is how we access invidual variables, or columns, from a dataframe
+
+The syntax we want is dataframe$columnname
+Let's look at the title column
+```{r , results="hide"}
+office$title
+```
+
+That function calls the whole column, which is 177 observations long. Usually printing out a long vector or column to the console is not useful.
+
+`head()` is a function allowing us to look at just the first 6 entries
+```{r , results="hide"}
+head(office$title)
+```
+
+What if we want to see the first 20 title values? 
+
+Let's see if we can find out by calling help on the `head()` function
+
+```{r , results="hide"}
+?head
+```
+
+The help menu tells us what `head()` does and it also specifies the other arguments that we could input to the `head()` function in the Arguments section. This is always a good section to check out. Remember that an argument is an option we specify to a function to change how the function operates.
+
+Let's try adding the `n = ` argument to `head()`
+
+```{r , results="hide"}
+head(office$title, n = 20)
+```
+
+Although we can specify the head function without naming the arguments, it is good practice to label the arguments to clarify what the code is doing. However, it is conventional to skip labeling the first argument, x, since its label is easily assumed.
+
+```{r , results="hide"}
+head(office$title, 20)
+```
+
+You may have read in the help menu that `head()` has a companion function `tail()` that shows the last n rows
+
+```{r , results="hide"}
+tail(office$title, n = 20)
+```
+
+We can also use the $ to create a new variable and attach it onto our dataframe.
+
+First let's look at the first 10 values of the imdb_rating
+
+```{r , results="hide"}
+View(office)
+head(office$imdb_rating, n = 10)
+```
+
+Let's say I would like a column where I want to save the average imdb_rating
+
+```{r , results="hide"}
+office$average_rating <- mean(office$imdb_rating, na.rm = TRUE)
+
+#head of the new column
+head(office$average_rating)
+```
+
+From here, I want to look and see the episodes that are above and below this average rating.
+
+```{r, results = "hide"}
+
+office$aver_diff <- office$imdb_rating - office$average_rating 
+head(office$aver_diff)
+
+```
+
+Let's look at some descriptive statistics for our dataset
+
+```{r , results="hide"}
+mean(office$imdb_rating)
+sd(office$imdb_rating)
+range(office$imdb_rating)
+table(office$director)
+
+```
+
+For variables where there are missings, we will need to include an argument that removes the missings
+```{r , results="hide"}
+mean(office$imdb_Rating)
+```
+
+Looking at the arguments section tells me that the argument I need to include is `na.rm = TRUE`
+```{r , results="hide"}
+mean(office$imdb_Rating, na.rm = TRUE)
+
+#Be careful with Missing Values!
+mean(c(13, 41, 53, 12, NA))
+mean(c(13, 41, 53, 12, NA), na.rm = TRUE)
+
+```
+
+### is.na function
+
+The is.na functions tells you whether or not a column has missing values. It will return a vector of true and false values, which can then be counted and explored.
+
+```{r, results = FALSE}
+is.na(office$title)
+sum(is.na(office$title))
+```
+
+# EXERCISE
+
+1. What's the standard deviation of the total votes?
+2. What's the mean total votes? 
+3. What's the range of `air_date` represented in the data?
+
+```{r , results="hide"}
+
+```
