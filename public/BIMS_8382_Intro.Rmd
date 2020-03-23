@@ -1,6 +1,5 @@
 ---
 title: "Introduction to R and RMarkdown"
-author: "David Martin"
 date: '`3/26/2020'
 output:
   prettydoc::html_pretty:
