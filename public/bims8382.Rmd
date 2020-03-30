@@ -41,7 +41,7 @@ March 26 – May 7 <small>_(No exam -- final class period will be held May 7)_</
 
 This course introduces methods, tools, and software for reproducibly managing, manipulating, analyzing, and visualizing large-scale biomedical data. Specifically, the course introduces the R statistical computing environment and packages for manipulating and visualizing high-dimensional data, covers strategies for reproducible research, and culminates with analyses of real biomedical data using R and Bioconductor packages.
 
-**This is not a _"Tool X"_ or _"Software Y"_ class.** We want you to take away from this series the ability to use an extremely powerful scientific computing environment (R) to do many of the things that you’ll do _across study designs and disciplines_ -- managing, manipulating, visualizing, and analyzing large, sometimes high-dimensional data. Whether that data is gene expression data from yeast, microbial genomics data from _B. pertussis_, public health data fromm [Gapminder](http://www.gapminder.org/), RNA-seq data from humans, influenza outbreak data, movie preference trends from Netflix, or truck routing data from FedEx, you’ll need the same computational know-how and data literacy to do the same kinds of basic tasks in each. We might show you how to use specific tools here and there, but these are not important -- you probably won't be using the same specific software or methods 10 years from now, but you'll still use the same underlying data and computational foundation. **That** is the point of this series -- to arm you with a basic foundation, and more importantly, to **enable you to figure out how to use _this tool_ or _that tool_ on your own**, when you need to.
+**This is not a _"Tool X"_ or _"Software Y"_ class.** We want you to take away from this series the ability to use an extremely powerful scientific computing environment (R) to do many of the things that you’ll do _across study designs and disciplines_ -- managing, manipulating, visualizing, and analyzing large, sometimes high-dimensional data. Whether that data is gene expression data from yeast, microbial genomics data from _B. pertussis_, public health data from [Gapminder](http://www.gapminder.org/), RNA-seq data from humans, influenza outbreak data, movie preference trends from Netflix, or truck routing data from FedEx, you’ll need the same computational know-how and data literacy to do the same kinds of basic tasks in each. We might show you how to use specific tools here and there, but these are not important -- you probably won't be using the same specific software or methods 10 years from now, but you'll still use the same underlying data and computational foundation. **That** is the point of this series -- to arm you with a basic foundation, and more importantly, to **enable you to figure out how to use _this tool_ or _that tool_ on your own**, when you need to.
 
 **_This is not a statistics class._** There are short lessons on essential statistics using R and regression in R but these lessons offer neither a comprehensive background on underlying theory nor in-depth coverage of implementation strategies using R. Some general knowledge of statistics and study design is helpful, but isn’t required for this course.
 
@@ -55,8 +55,9 @@ Because of this course's format as an online module, here we provide best option
 
 1. _Best option_ Dual monitors side-by-side
 2. Two computers side-by-side
-3. One computer (you) and one tablet (instructor)
-4. One computer (you & instructor) and PDF of printed codes
+3. One computer (you) and one tv (instructor)
+4. One computer (you) and one tablet (instructor)
+5. One computer (you & instructor) and PDF of printed codes
 
 ## Course Schedule
 
@@ -96,7 +97,14 @@ This session will focus solely on conducting regression analyses in R. It will b
 
 In this session we will investigate techniques for inspecting, visualizing, and reducing dimensions for high-dimensional data. We will examine techniques like PCA, clustering, and heatmaps that are useful for any number of large datasets.
 
-### April 28 & 30: RNASeq (guest)
+### April 28: Intro to High Performance Computing (Jackie Huband)
+
+- How to log onto Rivanna
+- Loading R modules
+- Intro to SLURM
+- Intro to multicore (multithread) with R
+
+### April 30: RNASeq (Gladys Andino Bautista)
 
 Description TBD
 
@@ -110,8 +118,8 @@ Each week's lesson will be followed by an independent homework assignment that w
 
 ## Grading Policy
 
-80% Homeworks -- each worth 16%
-20% Presentation and vignette
+* 80% Homeworks -- each worth 16%
+* 20% Presentation and vignette
 
 ## FAQ 
 
