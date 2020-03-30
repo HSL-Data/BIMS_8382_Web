@@ -152,11 +152,6 @@ code span.ot { color: #007020; }
 <article class="post-content">
 <div id="todays-files" class="section level1">
 <h1>Today’s Files</h1>
-  
-<p> Before we get started, download the zip file containing the filled-in script, the skeleton script, printable version of our work for today, and the project file. </p>
-  <p> Unzip the file and then click on the project file to begin </p>
-<a href="https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/dplyr_intro.zip?raw=true" target="_blank">Download the Files for Today's Class</a>
-
 </div>
 <div id="rmarkdown" class="section level1">
 <h1>RMarkdown</h1>
@@ -170,12 +165,20 @@ code span.ot { color: #007020; }
 <h1>Packages for Today</h1>
 <p>Today we are going to be using the dplyr package and the readr package. Since they are both contained within the tidyverse package, we will just load the tidyverse package.</p>
 <p>We are also going to be reading in a dataset from the <code>schrute</code> package, so we will need to intsall and load up that package.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="co">#install.packages(&quot;schrute&quot;)</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(schrute)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
+<pre><code>## -- Attaching packages -------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.2.1     v purrr   0.3.3
+## v tibble  2.1.3     v dplyr   0.8.4
+## v tidyr   1.0.2     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0</code></pre>
+<pre><code>## -- Conflicts ----------------------------- tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="co">#install.packages(&quot;schrute&quot;)</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">library</span>(schrute)</a></code></pre></div>
 <p>Read in Data from the <code>schrute</code> package</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">lines &lt;-<span class="st"> </span>theoffice</a>
-<a class="sourceLine" id="cb2-2" title="2">office_ratings &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-17/office_ratings.csv&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">lines &lt;-<span class="st"> </span>theoffice</a>
+<a class="sourceLine" id="cb6-2" title="2">office_ratings &lt;-<span class="st"> </span>readr<span class="op">::</span><span class="kw">read_csv</span>(<span class="st">&#39;https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-03-17/office_ratings.csv&#39;</span>)</a></code></pre></div>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   season = col_double(),
@@ -194,22 +197,22 @@ code span.ot { color: #007020; }
 <h2>The Pipe</h2>
 <p>The pipe is an operator in R that allows you to chain together functions in dplyr. In the past, to use multiple functions you would have to nest your functions inside of each other, but using the pipe allows you to chain the functions together in a readable/reproducible format. The pipe character is <code>%&gt;%</code> and essentially means “then” You can create the character using <code>CTRL+SHIFT+M</code> or <code>CMD+SHIFT+M</code></p>
 <p>The pipe essentially takes whatever is before the pipe as input for whatever is after the pipe.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">View</span>(lines)</a>
-<a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="kw">View</span>()</a>
-<a class="sourceLine" id="cb4-5" title="5"></a>
-<a class="sourceLine" id="cb4-6" title="6">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="st">  </span><span class="kw">head</span>(<span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">View</span>(lines)</a>
+<a class="sourceLine" id="cb8-2" title="2"></a>
+<a class="sourceLine" id="cb8-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="st">  </span><span class="kw">View</span>()</a>
+<a class="sourceLine" id="cb8-5" title="5"></a>
+<a class="sourceLine" id="cb8-6" title="6">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="st">  </span><span class="kw">head</span>(<span class="dv">3</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 6
 ##   season episode title         imdb_rating total_votes air_date  
 ##    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt; &lt;date&gt;    
 ## 1      1       1 Pilot                 7.6        3706 2005-03-24
 ## 2      1       2 Diversity Day         8.3        3566 2005-03-29
 ## 3      1       3 Health Care           7.9        2983 2005-04-05</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-3" title="3"><span class="st">  </span><span class="kw">tail</span>(<span class="dv">1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="st">  </span><span class="kw">head</span>(<span class="dv">5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">tail</span>(<span class="dv">1</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 6
 ##   season episode title      imdb_rating total_votes air_date  
 ##    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt; &lt;date&gt;    
@@ -218,8 +221,8 @@ code span.ot { color: #007020; }
 <div id="distinctcount" class="section level2">
 <h2>distinct/count</h2>
 <p>The distinct function will provide for you the distinct values of a column, while count provides you with both the distinct values of a column and then number of times each value shows up. The following example investigates the different characters (<code>character</code>) in “The Office” from the lines dataset:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="st">  </span><span class="kw">distinct</span>(character)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="st">  </span><span class="kw">distinct</span>(character)</a></code></pre></div>
 <pre><code>## # A tibble: 773 x 1
 ##    character  
 ##    &lt;chr&gt;      
@@ -234,13 +237,13 @@ code span.ot { color: #007020; }
 ##  9 Stanley    
 ## 10 Oscar      
 ## # ... with 763 more rows</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co">#Pipe into nrow() to get the number of distinct characters (other functions also exist to do something similar)</span></a>
-<a class="sourceLine" id="cb10-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="st">  </span><span class="kw">nrow</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co">#Pipe into nrow() to get the number of distinct characters (other functions also exist to do something similar)</span></a>
+<a class="sourceLine" id="cb14-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="st">  </span><span class="kw">nrow</span>()</a></code></pre></div>
 <pre><code>## [1] 773</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="st">  </span><span class="kw">count</span>(character)</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="st">  </span><span class="kw">count</span>(character)</a></code></pre></div>
 <pre><code>## # A tibble: 773 x 2
 ##    character                  n
 ##    &lt;chr&gt;                  &lt;int&gt;
@@ -266,9 +269,9 @@ code span.ot { color: #007020; }
 </ol>
 <details>
 <p><summary>Click here for the answers </summary></p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co">#1.</span></a>
-<a class="sourceLine" id="cb14-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb14-3" title="3"><span class="st">  </span><span class="kw">summary</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1"><span class="co">#1.</span></a>
+<a class="sourceLine" id="cb18-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="st">  </span><span class="kw">summary</span>()</a></code></pre></div>
 <pre><code>##      index          season            episode          episode_name      
 ##  Min.   :    1   Length:55130       Length:55130       Length:55130      
 ##  1st Qu.:13783   Class :character   Class :character   Class :character  
@@ -293,15 +296,15 @@ code span.ot { color: #007020; }
 ##                     3rd Qu.:8.700   3rd Qu.:2388   2007-10-11:  551  
 ##                     Max.   :9.700   Max.   :5948   (Other)   :48909  
 ##                     NA&#39;s   :3338    NA&#39;s   :3338   NA&#39;s      : 3338</code></pre>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="co">#2.</span></a>
-<a class="sourceLine" id="cb16-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb16-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(writer) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb16-4" title="4"><span class="st">  </span><span class="kw">nrow</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="co">#2.</span></a>
+<a class="sourceLine" id="cb20-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(writer) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb20-4" title="4"><span class="st">  </span><span class="kw">nrow</span>()</a></code></pre></div>
 <pre><code>## [1] 47</code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">  <span class="co">#47</span></a>
-<a class="sourceLine" id="cb18-2" title="2"><span class="co">#3. </span></a>
-<a class="sourceLine" id="cb18-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb18-4" title="4"><span class="st">  </span><span class="kw">count</span>(director)</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">  <span class="co">#47</span></a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="co">#3. </span></a>
+<a class="sourceLine" id="cb22-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-4" title="4"><span class="st">  </span><span class="kw">count</span>(director)</a></code></pre></div>
 <pre><code>## # A tibble: 61 x 2
 ##    director              n
 ##    &lt;chr&gt;             &lt;int&gt;
@@ -316,7 +319,7 @@ code span.ot { color: #007020; }
 ##  9 Charles McDougal    206
 ## 10 Charles McDougall  1710
 ## # ... with 51 more rows</code></pre>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">  <span class="co">#1307</span></a></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">  <span class="co">#1307</span></a></code></pre></div>
 </details>
 <hr />
 </div>
@@ -324,9 +327,9 @@ code span.ot { color: #007020; }
 <h2>Arrange</h2>
 <p>The <code>arrange()</code> function does what it sounds like. It takes a data frame or tbl and arranges (or sorts) by column(s) of interest. The first argument is the data, and subsequent arguments are columns to sort on. Use the <code>desc()</code> function to arrange by descending.</p>
 <p>The following code would get the number of lines each character spoke throughout the show:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb21-2" title="2"><span class="st">  </span><span class="kw">count</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb21-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(n)</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="st">  </span><span class="kw">count</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(n)</a></code></pre></div>
 <pre><code>## # A tibble: 773 x 2
 ##    character                  n
 ##    &lt;chr&gt;                  &lt;int&gt;
@@ -341,10 +344,10 @@ code span.ot { color: #007020; }
 ##  9 &quot;All but Oscar&quot;            1
 ## 10 &quot;All Girls&quot;                1
 ## # ... with 763 more rows</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># Since the default is ascending order, we are not getting the results that are probably useful, so let&#39;s use the desc() function</span></a>
-<a class="sourceLine" id="cb23-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb23-3" title="3"><span class="st">  </span><span class="kw">count</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb23-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># Since the default is ascending order, we are not getting the results that are probably useful, so let&#39;s use the desc() function</span></a>
+<a class="sourceLine" id="cb27-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-3" title="3"><span class="st">  </span><span class="kw">count</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n))</a></code></pre></div>
 <pre><code>## # A tibble: 773 x 2
 ##    character     n
 ##    &lt;chr&gt;     &lt;int&gt;
@@ -359,8 +362,8 @@ code span.ot { color: #007020; }
 ##  9 Oscar      1368
 ## 10 Ryan       1198
 ## # ... with 763 more rows</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb25-2" title="2"><span class="st">  </span><span class="kw">arrange</span>(imdb_rating)</a></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="st">  </span><span class="kw">arrange</span>(imdb_rating)</a></code></pre></div>
 <pre><code>## # A tibble: 188 x 6
 ##    season episode title             imdb_rating total_votes air_date  
 ##     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                   &lt;dbl&gt;       &lt;dbl&gt; &lt;date&gt;    
@@ -391,13 +394,19 @@ code span.ot { color: #007020; }
 </ul>
 <p>If you want to satisfy <em>all</em> of multiple conditions, you can use the “and” operator, <code>&amp;</code>.</p>
 <p>The “or” operator <code>|</code> (the pipe character, usually shift-backslash) will return a subset that meet <em>any</em> of the conditions.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb27-2" title="2"><span class="st">  </span><span class="kw">filter</span>(season <span class="op">==</span><span class="st"> &quot;01&quot;</span>)</a></code></pre></div>
-<pre><code>## # A tibble: 0 x 6
-## # ... with 6 variables: season &lt;dbl&gt;, episode &lt;dbl&gt;, title &lt;chr&gt;,
-## #   imdb_rating &lt;dbl&gt;, total_votes &lt;dbl&gt;, air_date &lt;date&gt;</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb29-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb31-2" title="2"><span class="st">  </span><span class="kw">filter</span>(season <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)</a></code></pre></div>
+<pre><code>## # A tibble: 6 x 6
+##   season episode title         imdb_rating total_votes air_date  
+##    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;               &lt;dbl&gt;       &lt;dbl&gt; &lt;date&gt;    
+## 1      1       1 Pilot                 7.6        3706 2005-03-24
+## 2      1       2 Diversity Day         8.3        3566 2005-03-29
+## 3      1       3 Health Care           7.9        2983 2005-04-05
+## 4      1       4 The Alliance          8.1        2886 2005-04-12
+## 5      1       5 Basketball            8.4        3179 2005-04-19
+## 6      1       6 Hot Girl              7.8        2852 2005-04-26</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 15 x 6
 ##    season episode title                 imdb_rating total_votes air_date  
 ##     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                       &lt;dbl&gt;       &lt;dbl&gt; &lt;date&gt;    
@@ -416,9 +425,9 @@ code span.ot { color: #007020; }
 ## 13      7      21 Goodbye, Michael              9.7        5749 2011-04-28
 ## 14      9      22 A.A.R.M.                      9.3        2860 2013-05-09
 ## 15      9      23 Finale                        9.7        7934 2013-05-16</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb31-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb31-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(episode_name)</a></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-3" title="3"><span class="st">  </span><span class="kw">distinct</span>(episode_name)</a></code></pre></div>
 <pre><code>## # A tibble: 13 x 1
 ##    episode_name                   
 ##    &lt;chr&gt;                          
@@ -435,10 +444,10 @@ code span.ot { color: #007020; }
 ## 11 Todd Packer                    
 ## 12 Michael&#39;s Last Dundies         
 ## 13 A.A.R.M</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="co"># Doesn&#39;t look as great when I try this</span></a>
-<a class="sourceLine" id="cb33-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb33-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb33-4" title="4"><span class="st">  </span><span class="kw">count</span>(season)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="co"># Doesn&#39;t look as great when I try this</span></a>
+<a class="sourceLine" id="cb37-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-4" title="4"><span class="st">  </span><span class="kw">count</span>(season)</a></code></pre></div>
 <pre><code>## # A tibble: 7 x 2
 ##   season     n
 ##   &lt;chr&gt;  &lt;int&gt;
@@ -449,27 +458,27 @@ code span.ot { color: #007020; }
 ## 5 06       552
 ## 6 07       927
 ## 7 09       501</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="co"># You can also save the results of a pipeline. Here I want to get the top 3 directors by number of lines. I can chain together a pipeline to return this and save it to a new dataframe called top_dirs</span></a>
-<a class="sourceLine" id="cb35-2" title="2">top_dirs &lt;-<span class="st"> </span>lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb35-3" title="3"><span class="st">  </span><span class="kw">count</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb35-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb35-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb35-6" title="6"></a>
-<a class="sourceLine" id="cb35-7" title="7"><span class="co">#Advanced Method</span></a>
-<a class="sourceLine" id="cb35-8" title="8"><span class="co">#top_dirs &lt;- lines %&gt;% </span></a>
-<a class="sourceLine" id="cb35-9" title="9"><span class="co">#  count(director) %&gt;% </span></a>
-<a class="sourceLine" id="cb35-10" title="10"><span class="co">#  arrange(desc(n)) %&gt;% </span></a>
-<a class="sourceLine" id="cb35-11" title="11"><span class="co">#  head(3) %&gt;% </span></a>
-<a class="sourceLine" id="cb35-12" title="12"><span class="co">#  select(director) %&gt;% </span></a>
-<a class="sourceLine" id="cb35-13" title="13"><span class="co">#  unlist()</span></a></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># You can also save the results of a pipeline. Here I want to get the top 3 directors by number of lines. I can chain together a pipeline to return this and save it to a new dataframe called top_dirs</span></a>
+<a class="sourceLine" id="cb39-2" title="2">top_dirs &lt;-<span class="st"> </span>lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">count</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb39-6" title="6"></a>
+<a class="sourceLine" id="cb39-7" title="7"><span class="co">#Advanced Method</span></a>
+<a class="sourceLine" id="cb39-8" title="8"><span class="co">#top_dirs &lt;- lines %&gt;% </span></a>
+<a class="sourceLine" id="cb39-9" title="9"><span class="co">#  count(director) %&gt;% </span></a>
+<a class="sourceLine" id="cb39-10" title="10"><span class="co">#  arrange(desc(n)) %&gt;% </span></a>
+<a class="sourceLine" id="cb39-11" title="11"><span class="co">#  head(3) %&gt;% </span></a>
+<a class="sourceLine" id="cb39-12" title="12"><span class="co">#  select(director) %&gt;% </span></a>
+<a class="sourceLine" id="cb39-13" title="13"><span class="co">#  unlist()</span></a></code></pre></div>
 <div id="the-in-operator" class="section level3">
 <h3>the %in% operator</h3>
 <p>The %in% operator is a useful tool when you have a series of conditions that you want to check. Instead of asking whether cond1 or cond2 or cond3 …. are met, you can use the %in% operator to check them all at once.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">tops &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Paul Fieg&quot;</span>, <span class="st">&quot;Randall Einhorn&quot;</span>, <span class="st">&quot;Greg Daniels&quot;</span>)</a>
-<a class="sourceLine" id="cb36-2" title="2"></a>
-<a class="sourceLine" id="cb36-3" title="3"><span class="co">#The next line of code will look through the tops vector and will check if each of the values in the vector are found in the director column</span></a>
-<a class="sourceLine" id="cb36-4" title="4">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb36-5" title="5"><span class="st">  </span><span class="kw">filter</span>(director <span class="op">%in%</span><span class="st"> </span>tops)</a></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1">tops &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Paul Fieg&quot;</span>, <span class="st">&quot;Randall Einhorn&quot;</span>, <span class="st">&quot;Greg Daniels&quot;</span>)</a>
+<a class="sourceLine" id="cb40-2" title="2"></a>
+<a class="sourceLine" id="cb40-3" title="3"><span class="co">#The next line of code will look through the tops vector and will check if each of the values in the vector are found in the director column</span></a>
+<a class="sourceLine" id="cb40-4" title="4">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-5" title="5"><span class="st">  </span><span class="kw">filter</span>(director <span class="op">%in%</span><span class="st"> </span>tops)</a></code></pre></div>
 <pre><code>## # A tibble: 8,248 x 12
 ##    index season episode episode_name director writer character text 
 ##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;
@@ -485,24 +494,24 @@ code span.ot { color: #007020; }
 ## 10   929 01     05      Basketball   Greg Da~ Greg ~ Dwight    &quot;I a~
 ## # ... with 8,238 more rows, and 4 more variables: text_w_direction &lt;chr&gt;,
 ## #   imdb_rating &lt;dbl&gt;, total_votes &lt;int&gt;, air_date &lt;fct&gt;</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="co">#Advanced Method - Skipping the creating a vector step.</span></a>
-<a class="sourceLine" id="cb38-2" title="2"><span class="co">#top_dirs &lt;- lines %&gt;% </span></a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="co">#  count(director) %&gt;% </span></a>
-<a class="sourceLine" id="cb38-4" title="4"><span class="co">#  arrange(desc(n)) %&gt;% </span></a>
-<a class="sourceLine" id="cb38-5" title="5"><span class="co">#  head(3) %&gt;% </span></a>
-<a class="sourceLine" id="cb38-6" title="6"><span class="co">#  select(director) %&gt;% </span></a>
-<a class="sourceLine" id="cb38-7" title="7"><span class="co">#  unlist()</span></a>
-<a class="sourceLine" id="cb38-8" title="8"></a>
-<a class="sourceLine" id="cb38-9" title="9"><span class="co"># lines %&gt;% </span></a>
-<a class="sourceLine" id="cb38-10" title="10"><span class="co">#   filter(director %in% top_dirs)</span></a></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1"><span class="co">#Advanced Method - Skipping the creating a vector step.</span></a>
+<a class="sourceLine" id="cb42-2" title="2"><span class="co">#top_dirs &lt;- lines %&gt;% </span></a>
+<a class="sourceLine" id="cb42-3" title="3"><span class="co">#  count(director) %&gt;% </span></a>
+<a class="sourceLine" id="cb42-4" title="4"><span class="co">#  arrange(desc(n)) %&gt;% </span></a>
+<a class="sourceLine" id="cb42-5" title="5"><span class="co">#  head(3) %&gt;% </span></a>
+<a class="sourceLine" id="cb42-6" title="6"><span class="co">#  select(director) %&gt;% </span></a>
+<a class="sourceLine" id="cb42-7" title="7"><span class="co">#  unlist()</span></a>
+<a class="sourceLine" id="cb42-8" title="8"></a>
+<a class="sourceLine" id="cb42-9" title="9"><span class="co"># lines %&gt;% </span></a>
+<a class="sourceLine" id="cb42-10" title="10"><span class="co">#   filter(director %in% top_dirs)</span></a></code></pre></div>
 </div>
 </div>
 <div id="select" class="section level2">
 <h2>select()</h2>
 <p>Whereas the <code>filter()</code> function allows you to return only certain <em>rows</em> matching a condition, the <code>select()</code> function returns only certain <em>columns</em>. The first argument is the data, and subsequent arguments are the columns you want.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="co"># You can simply list the column names you want to keep separated by a column</span></a>
-<a class="sourceLine" id="cb39-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">select</span>(episode_name, director)</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co"># You can simply list the column names you want to keep separated by a column</span></a>
+<a class="sourceLine" id="cb43-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="st">  </span><span class="kw">select</span>(episode_name, director)</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 2
 ##    episode_name director  
 ##    &lt;chr&gt;        &lt;chr&gt;     
@@ -517,9 +526,9 @@ code span.ot { color: #007020; }
 ##  9 Pilot        Ken Kwapis
 ## 10 Pilot        Ken Kwapis
 ## # ... with 55,120 more rows</code></pre>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co"># Or you can use the - sign to tell dplyr the columns you want to drop</span></a>
-<a class="sourceLine" id="cb41-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb41-3" title="3"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>director, <span class="op">-</span>season)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># Or you can use the - sign to tell dplyr the columns you want to drop</span></a>
+<a class="sourceLine" id="cb45-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb45-3" title="3"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>director, <span class="op">-</span>season)</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 10
 ##    index episode episode_name writer character text  text_w_direction
 ##    &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;           
@@ -538,9 +547,9 @@ code span.ot { color: #007020; }
 <div id="starts_with-ends_with-contains" class="section level3">
 <h3>starts_with(), ends_with(), contains()</h3>
 <p>The <code>starts_with</code>, <code>ends_with</code> and <code>contains</code> functions provide very useful tools for dropping/keeping several variables at once without having to list each and every column you want to keep. The function will return columns that either start with a specific string of text, ends with a certain string of text, or contain a certain string of text.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co"># As a note, these functions are all case sensitive</span></a>
-<a class="sourceLine" id="cb43-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb43-3" title="3"><span class="st">  </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="st">&quot;text&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="co"># As a note, these functions are all case sensitive</span></a>
+<a class="sourceLine" id="cb47-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb47-3" title="3"><span class="st">  </span><span class="kw">select</span>(<span class="kw">starts_with</span>(<span class="st">&quot;text&quot;</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 2
 ##    text                                text_w_direction                         
 ##    &lt;chr&gt;                               &lt;chr&gt;                                    
@@ -555,8 +564,8 @@ code span.ot { color: #007020; }
 ##  9 If you think she&#39;s cute now, you s~ If you think she&#39;s cute now, you should ~
 ## 10 What?                               What?                                    
 ## # ... with 55,120 more rows</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb45-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">ends_with</span>(<span class="st">&quot;r&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span><span class="kw">ends_with</span>(<span class="st">&quot;r&quot;</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 9
 ##    index season episode episode_name text  text_w_direction imdb_rating
 ##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt; &lt;chr&gt;                  &lt;dbl&gt;
@@ -572,8 +581,8 @@ code span.ot { color: #007020; }
 ## 10    10 01     01      Pilot        What? What?                    7.6
 ## # ... with 55,120 more rows, and 2 more variables: total_votes &lt;int&gt;,
 ## #   air_date &lt;fct&gt;</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb47-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;rec&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb51-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;rec&quot;</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 2
 ##    director   text_w_direction                                                  
 ##    &lt;chr&gt;      &lt;chr&gt;                                                             
@@ -588,16 +597,16 @@ code span.ot { color: #007020; }
 ##  9 Ken Kwapis If you think she&#39;s cute now, you should have seen her a couple of~
 ## 10 Ken Kwapis What?                                                             
 ## # ... with 55,120 more rows</code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="co"># You can also create a vector of column names you want to keep </span></a>
-<a class="sourceLine" id="cb49-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb49-3" title="3"><span class="st">  </span>names</a></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="co"># You can also create a vector of column names you want to keep </span></a>
+<a class="sourceLine" id="cb53-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">names</span>()</a></code></pre></div>
 <pre><code>##  [1] &quot;index&quot;            &quot;season&quot;           &quot;episode&quot;          &quot;episode_name&quot;    
 ##  [5] &quot;director&quot;         &quot;writer&quot;           &quot;character&quot;        &quot;text&quot;            
 ##  [9] &quot;text_w_direction&quot; &quot;imdb_rating&quot;      &quot;total_votes&quot;      &quot;air_date&quot;</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;index&quot;</span>, <span class="st">&quot;season&quot;</span>,<span class="st">&quot;episode&quot;</span>, <span class="st">&quot;episode_name&quot;</span>)</a>
-<a class="sourceLine" id="cb51-2" title="2"></a>
-<a class="sourceLine" id="cb51-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb51-4" title="4"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">vars &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;index&quot;</span>, <span class="st">&quot;season&quot;</span>,<span class="st">&quot;episode&quot;</span>, <span class="st">&quot;episode_name&quot;</span>)</a>
+<a class="sourceLine" id="cb55-2" title="2"></a>
+<a class="sourceLine" id="cb55-3" title="3">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb55-4" title="4"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 4
 ##    index season episode episode_name
 ##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;       
@@ -613,9 +622,9 @@ code span.ot { color: #007020; }
 ## 10    10 01     01      Pilot       
 ## # ... with 55,120 more rows</code></pre>
 <p>However, you can go ahead and combine <code>filter</code> and <code>select</code> to subset your data even further.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb53-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb53-3" title="3"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-2" title="2"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="fl">9.0</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
 <pre><code>## # A tibble: 4,222 x 4
 ##    index season episode episode_name
 ##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;       
@@ -630,9 +639,9 @@ code span.ot { color: #007020; }
 ##  9  4488 02     12      The Injury  
 ## 10  4489 02     12      The Injury  
 ## # ... with 4,212 more rows</code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb55-2" title="2"><span class="st">  </span><span class="kw">filter</span>(director <span class="op">%in%</span><span class="st"> </span>top_dirs) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb55-3" title="3"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-2" title="2"><span class="st">  </span><span class="kw">filter</span>(director <span class="op">%in%</span><span class="st"> </span>top_dirs) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">select</span>(vars)</a></code></pre></div>
 <pre><code>## # A tibble: 0 x 4
 ## # ... with 4 variables: index &lt;int&gt;, season &lt;chr&gt;, episode &lt;chr&gt;,
 ## #   episode_name &lt;chr&gt;</code></pre>
@@ -648,20 +657,20 @@ code span.ot { color: #007020; }
 </ol>
 <details>
 <p><summary>Click here for the answers </summary></p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1"><span class="co">#1. </span></a>
-<a class="sourceLine" id="cb57-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb57-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&lt;</span><span class="st"> </span><span class="dv">7</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb57-4" title="4"><span class="st">  </span><span class="kw">distinct</span>(director)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co">#1. </span></a>
+<a class="sourceLine" id="cb61-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&lt;</span><span class="st"> </span><span class="dv">7</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb61-4" title="4"><span class="st">  </span><span class="kw">distinct</span>(director)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 1
 ##   director     
 ##   &lt;chr&gt;        
 ## 1 Jeffrey Blitz
 ## 2 Rainn Wilson</code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1"><span class="co">#2.</span></a>
-<a class="sourceLine" id="cb59-2" title="2">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="dv">7</span> <span class="op">&amp;</span><span class="st"> </span>imdb_rating <span class="op">&lt;=</span><span class="st"> </span><span class="fl">7.5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-4" title="4"><span class="st">  </span><span class="kw">select</span>(title, imdb_rating, air_date) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb59-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(air_date)</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1"><span class="co">#2.</span></a>
+<a class="sourceLine" id="cb63-2" title="2">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-3" title="3"><span class="st">  </span><span class="kw">filter</span>(imdb_rating <span class="op">&gt;=</span><span class="st"> </span><span class="dv">7</span> <span class="op">&amp;</span><span class="st"> </span>imdb_rating <span class="op">&lt;=</span><span class="st"> </span><span class="fl">7.5</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-4" title="4"><span class="st">  </span><span class="kw">select</span>(title, imdb_rating, air_date) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb63-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(air_date)</a></code></pre></div>
 <pre><code>## # A tibble: 13 x 3
 ##    title             imdb_rating air_date  
 ##    &lt;chr&gt;                   &lt;dbl&gt; &lt;date&gt;    
@@ -678,8 +687,8 @@ code span.ot { color: #007020; }
 ## 11 Here Comes Treble         7.1 2012-10-25
 ## 12 Couples Discount          7.4 2013-02-07
 ## 13 The Farm                  7.5 2013-03-14</code></pre>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" title="1"><span class="co">#3. </span></a>
-<a class="sourceLine" id="cb61-2" title="2"><span class="co">#It Would not work because total_votes is no longer a part of the dataset as we selected title, imdb_rating, and air_date</span></a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1"><span class="co">#3. </span></a>
+<a class="sourceLine" id="cb65-2" title="2"><span class="co">#It Would not work because total_votes is no longer a part of the dataset as we selected title, imdb_rating, and air_date</span></a></code></pre></div>
 </details>
 <hr />
 </div>
@@ -687,29 +696,29 @@ code span.ot { color: #007020; }
 <h2>summarize()</h2>
 <p>The <code>summarize()</code> function summarizes multiple values to a single value. On its own the <code>summarize()</code> function doesn’t seem to be all that useful. The dplyr package provides a few convenience functions called <code>n()</code> and <code>n_distinct()</code> that tell you the number of observations or the number of distinct values of a particular variable.</p>
 <p>Notice that summarize takes a data frame and returns a data frame. In this case it’s a 1x1 data frame with a single row and a single column. The name of the column, by default is whatever the expression was used to summarize the data. This usually isn’t pretty, and if we wanted to work with this resulting data frame later on, we’d want to name that returned value something easier to deal with.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb62-2" title="2"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(imdb_rating))</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb66-2" title="2"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(imdb_rating))</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##   `mean(imdb_rating)`
 ##                 &lt;dbl&gt;
 ## 1                  NA</code></pre>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1"><span class="co">#Gotta watch out for nas. Use na.rm = TRUE to run the calculation without nas being involved.</span></a>
-<a class="sourceLine" id="cb64-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb64-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="co">#Gotta watch out for nas. Use na.rm = TRUE to run the calculation without nas being involved.</span></a>
+<a class="sourceLine" id="cb68-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##   `mean(imdb_rating, na.rm = TRUE)`
 ##                               &lt;dbl&gt;
 ## 1                              8.27</code></pre>
-<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" title="1"><span class="co">#The default column names do not look very aesthetically pleasing, let&#39;s take care of that.</span></a>
-<a class="sourceLine" id="cb66-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb66-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1"><span class="co">#The default column names do not look very aesthetically pleasing, let&#39;s take care of that.</span></a>
+<a class="sourceLine" id="cb70-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##   mean_rating
 ##         &lt;dbl&gt;
 ## 1        8.27</code></pre>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1"><span class="co">#Again, summarize alone is not entirely useful</span></a>
-<a class="sourceLine" id="cb68-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb68-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">n</span>())</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1"><span class="co">#Again, summarize alone is not entirely useful</span></a>
+<a class="sourceLine" id="cb72-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb72-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="kw">n</span>())</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 1
 ##   `n()`
 ##   &lt;int&gt;
@@ -718,8 +727,8 @@ code span.ot { color: #007020; }
 <div id="group_by" class="section level2">
 <h2>group_by()</h2>
 <p>We saw that <code>summarize()</code> isn’t that useful on its own. Neither is <code>group_by()</code> All this does is takes an existing data frame and coverts it into a grouped data frame where operations are performed by group.</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb70-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb74-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director)</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 12
 ## # Groups:   director [61]
 ##    index season episode episode_name director writer character text 
@@ -736,8 +745,8 @@ code span.ot { color: #007020; }
 ## 10    10 01     01      Pilot        Ken Kwa~ Ricky~ Pam       What?
 ## # ... with 55,120 more rows, and 4 more variables: text_w_direction &lt;chr&gt;,
 ## #   imdb_rating &lt;dbl&gt;, total_votes &lt;int&gt;, air_date &lt;fct&gt;</code></pre>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb72-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director, season)</a></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb76-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director, season)</a></code></pre></div>
 <pre><code>## # A tibble: 55,130 x 12
 ## # Groups:   director, season [128]
 ##    index season episode episode_name director writer character text 
@@ -755,10 +764,10 @@ code span.ot { color: #007020; }
 ## # ... with 55,120 more rows, and 4 more variables: text_w_direction &lt;chr&gt;,
 ## #   imdb_rating &lt;dbl&gt;, total_votes &lt;int&gt;, air_date &lt;fct&gt;</code></pre>
 <p>The real power comes in where <code>group_by()</code> and <code>summarize()</code> are used together. First, write the <code>group_by()</code> statement. Then pipe the result to a call to <code>summarize()</code>.</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" title="1"><span class="co">#Let&#39;s summarize the mean imdb_rating for each director</span></a>
-<a class="sourceLine" id="cb74-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb74-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb74-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1"><span class="co">#Let&#39;s summarize the mean imdb_rating for each director</span></a>
+<a class="sourceLine" id="cb78-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb78-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb78-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 61 x 2
 ##    director          mean_rating
 ##    &lt;chr&gt;                   &lt;dbl&gt;
@@ -773,10 +782,10 @@ code span.ot { color: #007020; }
 ##  9 Charles McDougal         8.4 
 ## 10 Charles McDougall        8.30
 ## # ... with 51 more rows</code></pre>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb76-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb80-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb80-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb80-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
 <pre><code>## # A tibble: 61 x 2
 ##    director                      mean_rating
 ##    &lt;chr&gt;                               &lt;dbl&gt;
@@ -791,11 +800,11 @@ code span.ot { color: #007020; }
 ##  9 Greg Daneils                         8.6 
 ## 10 Lee Eisenberg;Gene Stupnitsky        8.6 
 ## # ... with 51 more rows</code></pre>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" title="1"><span class="co">#Let&#39;s see how many episodes each director directed</span></a>
-<a class="sourceLine" id="cb78-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb78-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb78-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_episodes =</span> <span class="kw">n_distinct</span>(episode)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb78-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_episodes)) </a></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" title="1"><span class="co">#Let&#39;s see how many episodes each director directed</span></a>
+<a class="sourceLine" id="cb82-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(director) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_episodes =</span> <span class="kw">n_distinct</span>(episode)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb82-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_episodes)) </a></code></pre></div>
 <pre><code>## # A tibble: 61 x 2
 ##    director         n_episodes
 ##    &lt;chr&gt;                 &lt;int&gt;
@@ -810,11 +819,11 @@ code span.ot { color: #007020; }
 ##  9 Paul Lieberstein          6
 ## 10 B.J. Novak                5
 ## # ... with 51 more rows</code></pre>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb80-1" title="1"><span class="co">#Let&#39;s calculate who had the most lines</span></a>
-<a class="sourceLine" id="cb80-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb80-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb80-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_lines =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb80-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_lines))</a></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" title="1"><span class="co">#Let&#39;s calculate who had the most lines</span></a>
+<a class="sourceLine" id="cb84-2" title="2">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb84-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb84-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_lines =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb84-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_lines))</a></code></pre></div>
 <pre><code>## # A tibble: 773 x 2
 ##    character n_lines
 ##    &lt;chr&gt;       &lt;int&gt;
@@ -829,11 +838,11 @@ code span.ot { color: #007020; }
 ##  9 Oscar        1368
 ## 10 Ryan         1198
 ## # ... with 763 more rows</code></pre>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb82-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb82-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_lines =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb82-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_lines)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb82-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">4</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" title="1">lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-3" title="3"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_lines =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-4" title="4"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(n_lines)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb86-5" title="5"><span class="st">  </span><span class="kw">head</span>(<span class="dv">4</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 4 x 2
 ##   character n_lines
 ##   &lt;chr&gt;       &lt;int&gt;
@@ -841,47 +850,47 @@ code span.ot { color: #007020; }
 ## 2 Dwight       6847
 ## 3 Jim          6303
 ## 4 Pam          5031</code></pre>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" title="1"><span class="co">#Taking it deeper, we can try and calculate who had the most lines in each episode. In this we use the top_n function, which will be taking only the observation from each episode that has the highest n (number of lines)</span></a>
-<a class="sourceLine" id="cb84-2" title="2">top_lines &lt;-<span class="st"> </span>lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb84-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(episode_name, character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb84-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>(),</a>
-<a class="sourceLine" id="cb84-5" title="5">            <span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb84-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(episode_name, <span class="kw">desc</span>(n)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb84-7" title="7"><span class="st">  </span><span class="kw">top_n</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">wt=</span>n) </a>
-<a class="sourceLine" id="cb84-8" title="8"></a>
-<a class="sourceLine" id="cb84-9" title="9">top_lines</a></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" title="1"><span class="co">#Taking it deeper, we can try and calculate who had the most lines in each episode. In this we use the top_n function, which will be taking only the observation from each episode that has the highest n (number of lines)</span></a>
+<a class="sourceLine" id="cb88-2" title="2">top_lines &lt;-<span class="st"> </span>lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb88-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(episode_name, character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb88-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n_lines =</span> <span class="kw">n</span>(),</a>
+<a class="sourceLine" id="cb88-5" title="5">            <span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb88-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(episode_name, <span class="kw">desc</span>(n_lines)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb88-7" title="7"><span class="st">  </span><span class="kw">top_n</span>(<span class="dt">n =</span> <span class="dv">1</span>, <span class="dt">wt=</span>n_lines) </a>
+<a class="sourceLine" id="cb88-8" title="8"></a>
+<a class="sourceLine" id="cb88-9" title="9">top_lines</a></code></pre></div>
 <pre><code>## # A tibble: 188 x 4
 ## # Groups:   episode_name [186]
-##    episode_name                     character     n mean_rating
-##    &lt;chr&gt;                            &lt;chr&gt;     &lt;int&gt;       &lt;dbl&gt;
-##  1 A Benihana Christmas (Parts 1&amp;2) Michael     108         8.7
-##  2 A.A.R.M                          Jim          89         9.3
-##  3 After Hours                      Dwight       60         8.1
-##  4 Andy&#39;s Ancestry                  Andy         44         7.5
-##  5 Andy&#39;s Play                      Andy         49         8.2
-##  6 Angry Andy                       Andy         53         7.1
-##  7 Baby Shower                      Michael      79         8.1
-##  8 Back from Vacation               Michael      70         8.6
-##  9 Basketball                       Michael     104         8.4
-## 10 Beach Games                      Michael     105         9.3
+##    episode_name                     character n_lines mean_rating
+##    &lt;chr&gt;                            &lt;chr&gt;       &lt;int&gt;       &lt;dbl&gt;
+##  1 A Benihana Christmas (Parts 1&amp;2) Michael       108         8.7
+##  2 A.A.R.M                          Jim            89         9.3
+##  3 After Hours                      Dwight         60         8.1
+##  4 Andy&#39;s Ancestry                  Andy           44         7.5
+##  5 Andy&#39;s Play                      Andy           49         8.2
+##  6 Angry Andy                       Andy           53         7.1
+##  7 Baby Shower                      Michael        79         8.1
+##  8 Back from Vacation               Michael        70         8.6
+##  9 Basketball                       Michael       104         8.4
+## 10 Beach Games                      Michael       105         9.3
 ## # ... with 178 more rows</code></pre>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" title="1"><span class="co">#You can save your pipeline and then use that to do even more analysis/investigation</span></a>
-<a class="sourceLine" id="cb86-2" title="2">  top_lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb86-3" title="3"><span class="st">    </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb86-4" title="4"><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(mean_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb86-5" title="5"><span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean))</a></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="co">#You can save your pipeline and then use that to do even more analysis/investigation</span></a>
+<a class="sourceLine" id="cb90-2" title="2">  top_lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb90-3" title="3"><span class="st">    </span><span class="kw">group_by</span>(character) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb90-4" title="4"><span class="st">    </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(mean_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>), <span class="dt">n_lines =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb90-5" title="5"><span class="st">    </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean))</a></code></pre></div>
 <pre><code>## # A tibble: 9 x 3
-##   character  mean     n
-##   &lt;chr&gt;     &lt;dbl&gt; &lt;int&gt;
-## 1 Deangelo   8.8      2
-## 2 Michael    8.41   122
-## 3 Jim        8.11    10
-## 4 Dwight     7.96    21
-## 5 Pam        7.87     6
-## 6 Erin       7.83     3
-## 7 Jo         7.8      1
-## 8 Andy       7.77    22
-## 9 Nellie     6.7      1</code></pre>
+##   character  mean n_lines
+##   &lt;chr&gt;     &lt;dbl&gt;   &lt;int&gt;
+## 1 Deangelo   8.8        2
+## 2 Michael    8.41     122
+## 3 Jim        8.11      10
+## 4 Dwight     7.96      21
+## 5 Pam        7.87       6
+## 6 Erin       7.83       3
+## 7 Jo         7.8        1
+## 8 Andy       7.77      22
+## 9 Nellie     6.7        1</code></pre>
 </div>
 <div id="exercise-2" class="section level2">
 <h2>Exercise</h2>
@@ -891,24 +900,24 @@ code span.ot { color: #007020; }
 </ol>
 <details>
 <p><summary>Click here for the answers </summary></p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" title="1"><span class="co">#1. </span></a>
-<a class="sourceLine" id="cb88-2" title="2">top_lines <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb88-3" title="3"><span class="st">  </span><span class="kw">filter</span>(character <span class="op">==</span><span class="st"> &quot;Erin&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb88-4" title="4"><span class="st">  </span><span class="kw">select</span>(episode_name, mean_rating, n) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb88-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" title="1"><span class="co">#1. </span></a>
+<a class="sourceLine" id="cb92-2" title="2">top_lines <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb92-3" title="3"><span class="st">  </span><span class="kw">filter</span>(character <span class="op">==</span><span class="st"> &quot;Erin&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb92-4" title="4"><span class="st">  </span><span class="kw">select</span>(episode_name, mean_rating, n_lines) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb92-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ## # Groups:   episode_name [3]
-##   episode_name    mean_rating     n
-##   &lt;chr&gt;                 &lt;dbl&gt; &lt;int&gt;
-## 1 Pool Party              8      48
-## 2 Secretary&#39;s Day         7.9    52
-## 3 Spooked                 7.6    36</code></pre>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" title="1"><span class="co">#2. </span></a>
-<a class="sourceLine" id="cb90-2" title="2">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb90-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(season) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb90-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
-<a class="sourceLine" id="cb90-5" title="5">            <span class="dt">sd_rating =</span> <span class="kw">sd</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb90-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
+##   episode_name    mean_rating n_lines
+##   &lt;chr&gt;                 &lt;dbl&gt;   &lt;int&gt;
+## 1 Pool Party              8        48
+## 2 Secretary&#39;s Day         7.9      52
+## 3 Spooked                 7.6      36</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" title="1"><span class="co">#2. </span></a>
+<a class="sourceLine" id="cb94-2" title="2">office_ratings <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb94-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(season) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb94-4" title="4"><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean_rating =</span> <span class="kw">mean</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb94-5" title="5">            <span class="dt">sd_rating =</span> <span class="kw">sd</span>(imdb_rating, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb94-6" title="6"><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(mean_rating))</a></code></pre></div>
 <pre><code>## # A tibble: 9 x 3
 ##   season mean_rating sd_rating
 ##    &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;
@@ -927,8 +936,8 @@ code span.ot { color: #007020; }
 <div id="writing-out-data" class="section level2">
 <h2>Writing out data</h2>
 <p>Just like you can read in data from read_csv(), you can also write out a csv file. Let’s create a new file for our <code>top_lines</code> data.</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" title="1"><span class="co">#Include the name of the object to export (top_lines) and the name of the file</span></a>
-<a class="sourceLine" id="cb92-2" title="2"><span class="kw">write_csv</span>(top_lines, <span class="st">&quot;top_lines.csv&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" title="1"><span class="co">#Include the name of the object to export (top_lines) and the name of the file</span></a>
+<a class="sourceLine" id="cb96-2" title="2"><span class="kw">write_csv</span>(top_lines, <span class="st">&quot;top_lines.csv&quot;</span>)</a></code></pre></div>
 </div>
 </div>
 </article>

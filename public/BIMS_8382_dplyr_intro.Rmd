@@ -12,11 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache = TRUE)
 knitr::opts_chunk$set(warnings = FALSE)
 knitr::opts_chunk$set(messages = FALSE)
-
 ```
-
 # Today's Files
-   
+
+
 # RMarkdown 
 
 Before we get started with the lesson on dplyr, I want us to all try and knit together a simple markdown file. To do this, we are going to go to `File -> New File -> R Markdown ->` and then provide a title for our Markdown file. 
@@ -155,7 +154,7 @@ The "or" operator `|` (the pipe character, usually shift-backslash) will return 
 
 ```{r}
 office_ratings %>% 
-  filter(season == "01")
+  filter(season == 1)
 
 office_ratings %>% 
   filter(imdb_rating >= 9.0)
@@ -239,7 +238,7 @@ lines %>%
 
 # You can also create a vector of column names you want to keep 
 lines %>% 
-  names
+  names()
 
 vars <- c("index", "season","episode", "episode_name")
 
@@ -363,17 +362,17 @@ lines %>%
 #Taking it deeper, we can try and calculate who had the most lines in each episode. In this we use the top_n function, which will be taking only the observation from each episode that has the highest n (number of lines)
 top_lines <- lines %>% 
   group_by(episode_name, character) %>% 
-  summarize(n = n(),
+  summarize(n_lines = n(),
             mean_rating = mean(imdb_rating, na.rm = TRUE)) %>% 
-  arrange(episode_name, desc(n)) %>% 
-  top_n(n = 1, wt=n) 
+  arrange(episode_name, desc(n_lines)) %>% 
+  top_n(n = 1, wt=n_lines) 
 
 top_lines
 
 #You can save your pipeline and then use that to do even more analysis/investigation
   top_lines %>% 
     group_by(character) %>% 
-    summarize(mean = mean(mean_rating, na.rm = TRUE), n = n()) %>% 
+    summarize(mean = mean(mean_rating, na.rm = TRUE), n_lines = n()) %>% 
     arrange(desc(mean))
 
 ```
@@ -390,7 +389,7 @@ top_lines
 #1. 
 top_lines %>% 
   filter(character == "Erin") %>% 
-  select(episode_name, mean_rating, n) %>% 
+  select(episode_name, mean_rating, n_lines) %>% 
   arrange(desc(mean_rating))
 
 #2. 
