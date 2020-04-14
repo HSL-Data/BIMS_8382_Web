@@ -8,6 +8,7 @@ output:
     highlight: github
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE)
 ```
@@ -60,15 +61,22 @@ Printing out all the **`Status`** values in the data will not be useful. It will
 hormone$Status
 ```
 
-Now, let's see what are the `unique` values of Status using base R and then using a dplyr pipeline
+# EXERCISE 1
+
+A. See what the `unique` values of Status are using base R 
+B. Use a dplyr pipeline to retrieve the same information
+
+<details><summary>Click here for the answers </summary>
 
 ```{r}
-# Get the unique values of Race
+# Get the unique values of Status
 unique(hormone$Status)
 
 # Do the same thing the dplyr way
 hormone %>% distinct(Status)
 ```
+
+</details>
 
 ```{r}
 #create a table of frequencies
@@ -164,16 +172,25 @@ twostat <- hormone %>%
   filter(Status == "WithFemales" | Status == "Single")
 ```
 
-
 Next, let's create some exploratory plots to answer our questions about the assumptions. I like density plots colored by group. I think these help you see the distribution of the variable to assess equal variance. This plot also informs you somewhat on normality, and helps you see if there is a noticeable difference in groups.
 
 ```{r}
 ggplot(twostat, aes(PgConc, fill = Status)) + geom_density(alpha = 0.5)
+```
 
-# whoa, definitely not normally distributed, but I know that these data are typically log transformed, so let's try that
+Whoa! These distributions are definitely not normally distributed, but I know that these data are typically log transformed...
 
+# EXERCISE 2
+
+Create a similar plot to above but with the log-transformed Pg concentration. Based on this plot, do these distributions meet the assumptions of normality and equal variance?
+
+<details><summary>Click here for the answers </summary>
+
+```{r}
 ggplot(twostat, aes(LogPg, fill = Status)) + geom_density(alpha = .5)
 ```
+
+</details>
 
 First we make sure that a t-test is the correct type of analysis. A t-test tests the difference in 2 means - yes that is what we want to do. Next we need to decide what type of t-test we need to perform by thinking through the assumptions. Domain specific knowledge and exploratory data analyses will help here.
 
@@ -252,13 +269,19 @@ hormone %>% count(Status)
 
 ANOVA prefers balanced sample sizes. If you can choose to design your study with balanced sample sizes, ANOVA will perform better (better power, higher probability of equal variances assumption being met, etc). These data are not too imbalanced but definitely could be better.
 
-First let's run a grouped summary to see what we have in terms of differences in means
+# EXERCISE 3
+
+Run a grouped summary to see the mean LogPg for each Status
+
+<details><summary>Click here for the answers </summary>
 
 ```{r}
 hormone %>%
   group_by(Status) %>%
   summarize(mean = mean(LogPg))
 ```
+
+</details>
 
 Ok, so PregSuccess and PregLost seem higher than the other Statuses.
 
@@ -558,11 +581,13 @@ chisq.test(xt)$expected
 - We expected 4549 Inexpensive Premium diamonds, and found fewer
 - We expected 7108 Inexpensive Ideal diamonds, and found **more**
 
+
 - We expected 531 Average priced Fair diamonds, and found **more**
 - We expected 1618 Average priced Good diamonds, and found fewer
 - We expected 3988 Average priced VeryGood diamonds, and found the same
 - We expected 4552 Average priced Premium diamonds, and found fewer
 - We expected 7114 Average priced Ideal diamonds, and found fewer
+
 
 - We expected 547 Expensive Fair diamonds, and found **more**
 - We expected 1668 Expensive Good diamonds, and found **more**
