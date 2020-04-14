@@ -152,6 +152,12 @@ code span.ot { color: #007020; }
 
 <div id="post">
 <article class="post-content">
+<div id="todays-files" class="section level1">
+<h1>Today’s files</h1>
+<p>Before we get started, download the zip file containing the filled-in script, the skeleton script, printable version of our work for today, the project file, and the data file (csv).</p>
+<p>Unzip the file and then click on the project file to begin</p>
+<p><a href="https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/stats_files.zip">Download the Files for Today’s Class</a></p>
+</div>
 <div id="goal" class="section level1">
 <h1>Goal</h1>
 <p>The goal of this session is to teach you how to conduct basic statistical analyses in R. We will cover descriptive statistics, exploratory data analysis, t-tests, ANOVA, and methods for discrete variable analysis. We do not have time to cover testing the assumptions and the underlying theory or mathematics.</p>
@@ -167,7 +173,7 @@ code span.ot { color: #007020; }
 <a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">library</span>(broom)</a></code></pre></div>
 <p>Next, let’s load in the <code>WolfHormoneData.csv</code> dataset.</p>
 <p>These data are hormone concentrations from 43 female maned wolves at the Smithsonian National Zoo – part of my dissertation. We were interested to see whether the housing status of the female impacts the reproductive hormone concentrations.</p>
-<p>We will use the <code>read_csv()</code> function from the tidyverse to get our data into R. Once we’ve loaded it, we can type the name of the object itself (<code>brauer</code>) to see it printed to the screen.</p>
+<p>We will use the <code>read_csv()</code> function from the tidyverse to get our data into R. Once we’ve loaded it, we can type the name of the object itself (<code>hormone</code>) to see it printed to the screen.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">hormone &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/WolfHormoneData.csv&quot;</span>)</a></code></pre></div>
 <p>Let’s get a feel for this new dataset to familiarize ourselves with its structure</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">glimpse</span>(hormone)</a></code></pre></div>

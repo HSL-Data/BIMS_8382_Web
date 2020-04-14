@@ -8,10 +8,17 @@ output:
     highlight: github
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE)
 ```
+
+# Today's files
+
+ Before we get started, download the zip file containing the filled-in script, the skeleton script, printable version of our work for today, the project file, and the data file (csv).
+
+Unzip the file and then click on the project file to begin
+
+[Download the Files for Today's Class](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/stats_files.zip)
 
 # Goal
 
@@ -34,7 +41,7 @@ Next, let's load in the `WolfHormoneData.csv` dataset.
 
 These data are hormone concentrations from 43 female maned wolves at the Smithsonian National Zoo -- part of my dissertation. We were interested to see whether the housing status of the female impacts the reproductive hormone concentrations.
 
-We will use the `read_csv()` function from the tidyverse to get our data into R. Once we've loaded it, we can type the name of the object itself (`brauer`) to see it printed to the screen.
+We will use the `read_csv()` function from the tidyverse to get our data into R. Once we've loaded it, we can type the name of the object itself (`hormone`) to see it printed to the screen.
 
 ```{r}
 hormone <- read_csv("data/WolfHormoneData.csv")
