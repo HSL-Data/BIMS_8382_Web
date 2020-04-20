@@ -137,6 +137,8 @@ ggplot(pp2, aes(x = Width_in, y = logprice)) +
 
 A. Create 2 more models, `mod2` and `mod3`, that explain the price or logprice by the `Width_in` of the painting using the pp2 dataset.
 
+<details><summary>Click here for the answers </summary>
+
 ```{r}
 mod2 <- lm(price ~ Width_in, data = pp2)
 mod3 <- lm(logprice ~ Width_in, data = pp2)
@@ -145,13 +147,19 @@ summary(mod2)
 summary(mod3)
 ```
 
+</details>
+
 B. Interpret the output for these models
+
+<details><summary>Click here for the answers </summary>
 
 - mod2
 $$\widehat{Price} = 321.91 + 21.87~Width_{in}$$
 
 - mod3
 $$\widehat{LogPrice} = 4.67 + 0.019~Width_{in}$$
+
+</details>
 
 These are really different. Which is better?
 
@@ -338,11 +346,15 @@ newdata <- add_predictions(newdata, mod6)
 
 Using the pp2 and newdata dataframes, create a plot showing the raw data and the regression lines.
 
+<details><summary>Click here for the answers </summary>
+
 ```{r}
 ggplot() +
   geom_point(data = pp2, aes(Width_in, logprice, col = factor(landsALL)), alpha = 0.2) +
   geom_line(data = newdata, aes(Width_in, pred, col = factor(landsALL)), lwd = 1)
 ```
+
+</details>
 
 If an interaction is included in the model, the main effects of both of those variables must also be in the model
 
@@ -498,6 +510,8 @@ Use the coefficients from the `summary()` output to calculate the log odds of be
 
 Now exponentiate the log odds using `exp()` and interpret what you have found.
 
+<details><summary>Click here for the answers </summary>
+
 ```{r}
 #A
 31.1557 -1.4318 - (.8292*40)
@@ -514,6 +528,8 @@ exp(0.7019)
 exp(2.1337)
 # odds of being from Vic are 8.44 : 1 (8x as likely)
 ```
+
+</details>
 
 That was a just a taste of logistic regression modeling. There is _so much_ more to go into here and this lesson only scratches the surface. Missing from this lesson are things like assumptions and diagnostics, model comparison approaches, penalization, and much more. I would encourage you to learn more using the resources below, or as always, feel free to reach out to us at Data Services at the HSL.
 
