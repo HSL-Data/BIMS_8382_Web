@@ -1,0 +1,536 @@
+---
+title: "Regression"
+author: "Marieke Jones"
+date: "4/21/2020"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+# Today's files
+
+ Before we get started, download the zip file containing the filled-in script, the skeleton script, printable version of our work for today, the project file, and the data files (csv).
+
+Unzip the file and then click on the project file to begin
+
+[Download the Files for Today's Class](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/regression_files.zip?raw=true)
+
+# Set up
+
+Install and load packages.  
+Packages needed today are tidyverse, broom, modelr
+
+```{r}
+library(tidyverse)
+library(broom)      #clean up output from models
+library(modelr)     #add predictions and residuals from model
+```
+
+# Paintings data
+
+Today we will start with a dataset about paintings in the 18th century in Paris. Two graduate students in the Duke Art, Law, and Markets Initiative in curated this dataset in 2013 by entering data from printed catalogues of 28 auction sales in Paris, 1764- 1780.
+
+The dataset contains 3393 paintings, their prices, and descriptive details from sales catalogues for over 60 variables.
+
+Let's start by reading in the data file
+
+```{r}
+pp <- read_csv("data/paris-paintings.csv", na = c("NA", "n/a", ""))
+```
+
+## Clean shape and material variables
+
+Shape was spelled with either English or French so those should be combined. Material is coded in letters which are difficult to interpret, so let's make that variable nicer to look at too. We'll use the `fct_collapse()` function from the forcats package to accomplish this, but we could have used `case_when()` from dplyr instead.
+
+```{r}
+pp <- pp %>%
+  mutate(
+    Shape = fct_collapse(Shape, oval = c("oval", "ovale"),
+                                round = c("round", "ronde"),
+                                squ_rect = "squ_rect",
+                                other = c("octogon", "octagon", "miniature")),
+    mat = fct_collapse(mat, metal = c("a", "br", "c"),
+                            canvas = c("co", "t", "ta"),
+                            paper = c("p", "ca"),
+                            wood = "b",
+                            other = c("e", "g", "h", "mi", "o", "pa", "v", "al", "ar", "m"))
+  )
+```
+
+Take a look at the data. 
+
+```{r}
+glimpse(pp)
+```
+
+# Linear regression with 1 continuous predictor variable
+
+First we will look at a very simple model explaining the painting's height by its width. We will put the width on the x axis and the height on the y. 
+
+```{r}
+ggplot(pp, aes(Width_in, Height_in)) + geom_point(alpha = 0.2)
+```
+
+Any ideas for what is creating this interesting pattern we see in the xy scatterplot? Write them in the chat.
+
+Looks like there is a positive association. Let's create a model and then interpret its output. To do this we will be using the lm function, standing for *linear model*. In modeling lanugage, the height is the *response* variable and the width will be our *predictor* variable.
+
+```{r}
+#Let's look at the lm function
+?lm() 
+
+mod1 <- lm(Height_in ~ Width_in, data = pp)
+mod1
+summary(mod1)
+```
+
+The relationship is highly significant (P=$2.2 \times 10^{-16}$). The intercept term is not very useful most of the time. Here it shows us what the Height_in would be when Width_in = 0. The Width_in coefficient is meaningful -- for each additional inch in width of the painting, the height of the painting increases by an average of 0.78 inches. It does seem that increasing width is associated with increasing height.
+
+$$\widehat{Height_{in}} = 3.62 + 0.78~Width_{in}$$
+
+Check out the R^2. Write in the chat how we interpret this value (it is ok to not know!).
+
+We can also return the output from the summary function in a dataframe by using some excellent helper functions from the broom package
+
+```{r}
+#?tidy
+#?augment
+#?glance
+tidy(mod1)
+augment(mod1)
+glance(mod1)
+```
+
+## Example 2
+
+Let's create two exploratory plots looking at Width_in on x and price or logprice on the y.
+
+```{r}
+ggplot(pp, aes(x = Width_in, y = price)) + 
+  geom_point(alpha = .2)
+ggplot(pp, aes(x = Width_in, y = logprice)) + 
+  geom_point(alpha = .2)
+```
+
+We do not have a lot of data for very large paintings. Let's create a dataset called `pp2` where we cap the width at 100 inches. 
+
+```{r}
+pp2 <- pp %>% filter(Width_in < 100)
+```
+
+Then re-create the plots.
+
+```{r}
+ggplot(pp2, aes(x = Width_in, y = price)) + 
+  geom_point(alpha = .2)
+
+ggplot(pp2, aes(x = Width_in, y = logprice)) + 
+  geom_point(alpha = .2)
+```
+
+## EXERCISE 1
+
+A. Create 2 more models, `mod2` and `mod3`, that explain the price or logprice by the `Width_in` of the painting using the pp2 dataset.
+
+```{r}
+mod2 <- lm(price ~ Width_in, data = pp2)
+mod3 <- lm(logprice ~ Width_in, data = pp2)
+
+summary(mod2)
+summary(mod3)
+```
+
+B. Interpret the output for these models
+
+- mod2
+$$\widehat{Price} = 321.91 + 21.87~Width_{in}$$
+
+- mod3
+$$\widehat{LogPrice} = 4.67 + 0.019~Width_{in}$$
+
+These are really different. Which is better?
+
+## Residuals and Diagnostics
+
+To help us choose between mod2 and mod3, let's take a moment to investigate the residuals. A residual is defined as the difference between the observed price and the predicted price. In mathematical symbols: $y_i - \hat{y}_i$
+
+Many of the assumptions of a linear model deal with residuals.
+
+Assumptions of linear model:
+1. Random Sampling
+2. Equal variance across levels of X
+3. Normality of residuals, centered at zero
+4. Independent residuals
+5. Linear relationship between X and Y
+
+A residual plot showing the predicted price on the x and the residuals on the y is a good place to start. We are looking for a snow storm of points showing that the residuals are not correlated to the predicted response variable.
+
+```{r}
+mod2 %>%
+  augment() %>%
+  ggplot(aes(.fitted, .resid)) + geom_point(alpha = .4)
+# we definitely see a pattern on this one ... not good
+# residuals are definitely not normally distributed (way more positive)
+
+mod3 %>%
+  augment() %>%
+  ggplot(aes(.fitted, .resid)) + geom_point(alpha = .4)
+# no clear pattern seen here, this is better
+```
+
+Let's look at a histogram of price and logprice.
+
+```{r}
+ggplot(pp2, aes(price)) + geom_histogram() 
+# suggests a log transform could help
+# price
+
+ggplot(pp2, aes(logprice)) + geom_histogram()
+```
+
+Let's look at the rest of the default diagnositic plots for mod3
+
+```{r}
+plot(mod3)
+```
+
+1. The first plot shows the same plot that we just created ourselves. Predicted logprice on x and residuals on y. We see that residuals are centered at zero with an even spread on the top and bottom, suggesting they are normally distributed (assumption #3). We do not see any increase or decrease in variance as we go from low predicted log price to high (assumption #2).
+
+2. This should look familiar from last week. This is a qq plot of the residuals helping us assess normality (assumption #3). What should we conclude?
+
+3. Here we have taken the sqrt(residuals) on y and we still have the predicted values on x. The paintings with the worst fit (highest residual) whether negative or positive will be on the top of the plot. We do not see any paintings with particularly bad fit compared to the rest.
+
+4. This final plot shows the leverage on x and residuals on y. Leverage is the impact of each point on the regression line. Dotted lines will be drawn where there is high leverage and points outside those dotted lines should be investigated carefully since they greatly impact the slope of the line. We do not have any points to worry about here.
+
+## Visualizing the model 
+
+In this case, we can get away with `geom_smooth(method = "lm)`.
+
+```{r}
+ggplot(pp2, aes(Width_in, logprice)) + 
+  geom_point(alpha = .4) + 
+  geom_smooth(method = "lm")
+```
+
+# Linear regression with 1 categorical variable
+
+We did this one last week, it's also called an ANOVA. We will not cover it again here.
+
+# Linear regression with 2 continuous predictors
+
+Let's predict the logprice using width and height
+
+```{r}
+mod4 <- lm(logprice ~ Width_in + Height_in, data = pp2)
+
+summary(mod4)
+```
+
+Now what is our interpretation of each coefficient?
+
+- (Intercept): For a painting with width = 0 and height = 0, logprice = 4.72
+- Width_in: For each additional inch in width holding height constant, the logprice increases by an average of 0.03 livres
+- Height_in: For each additional inch in Height holding weight constant, the logprice decreases by an average of -0.02 livres
+
+$$\widehat{Logprice} = 4.72 + 0.032~Width_{in} - 0.016~Height_{in}$$
+
+One (big) problem with this model is that our predictors are correlated with each other. Earlier, we created a model that explained the Height by the Width and there was a significant positive relationship. 
+
+We cannot hold height constant while increasing width because in our data as height increases, so does width. That may be the reason for the negative coefficient on Height.
+
+## Example 2
+
+Instead of Height and Width, let's use the area of the painting and add in the variable describing whether the artist was still living at the time of the auction.
+
+```{r}
+pp3 <- pp %>% filter(Surface < 5000)
+mod5 <- lm(logprice ~ Surface + factor(artistliving), data = pp3)
+summary(mod5)
+```
+
+What is the interpretation of the (Intercept)?
+What is the interpretation of the Surface coefficient?
+
+The artist living is a dichotomous variable so our interpretation is that the average difference between artists who were not living and artists who were living at the time of auction is an increase in log price of 0.14 livres. That difference is not significant.
+
+## Visualize the model
+
+Let's plot mod5. If we just use `geom_smooth(method = "lm")` colored by landscape that will not plot the model we have created. The lines created by `geom_smooth()` will always allow the slope AND y-intercept to vary by group. 
+
+```{r}
+ggplot(pp3, aes(Surface, logprice, col = factor(artistliving))) + 
+  geom_point(alpha = .2) + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+In our model, the slopes are equivalent for both artists dead and living, so this plot is not our model. We need a plotting method that will work no matter what the model is.
+
+To visualise the predictions from any model, we'll start by generating an evenly spaced grid of values that covers the region where our data lies. To do this, I'll use the `data_grid()` function from the modelr package.
+
+```{r}
+newdata <-  data_grid(pp3, Surface, artistliving)
+newdata
+```
+
+Next we add predictions. We'll use `add_predictions()` which takes a data frame and a model. It adds the predictions from the model to a new column in the data frame
+
+```{r}
+newdata <- add_predictions(newdata, mod5)
+newdata
+```
+
+Great! Now we'll plot the raw data and then the model
+
+```{r}
+ggplot() + 
+  geom_point(data = pp3, aes(x = Surface, 
+                            y = logprice, 
+                            color = factor(artistliving)), alpha = .2) +
+  geom_line(data = newdata, aes(x = Surface, 
+                                y = pred, 
+                                color = factor(artistliving)), size = 1)
+```
+
+Now we can easily see what our model was telling us. The lines for artist living are quite similar to each other and really should be modeled together.
+
+# Linear regression with 1 continuous and 1 categorical predictors and an interaction
+
+To test the difference in slopes between 2 groups we will add an interaction term between the continuous x and the categorical x.
+
+```{r}
+mod6 <- lm(logprice ~ Width_in * factor(landsALL), data = pp2)
+summary(mod6)
+```
+
+Interpretation:
+
+- A portrait painting at width = 0 will have logprice = 4.7 livres
+- For each additional inch in width, logprice increases by 0.01 livres
+- The average difference between a portrait painting at width = 0 and a landscape painting at width = 0 is -0.175 (landscapes start out less expensive).
+- For every inch of increased width in a landscape painting, logprice increases by an average of 0.02 livres
+
+Increasing the width has double the impact on price for a landscape painting as compared with a portrait.
+
+## Visualize
+
+Because we want to show two different y-intercepts and slopes for each landscape level, ggplot's default plot will work.
+
+```{r}
+ggplot(pp2, aes(Width_in, logprice, col = factor(landsALL))) + 
+  geom_point(alpha = .2) + 
+  geom_smooth(method = "lm", se  = FALSE)
+```
+
+To give ourselves practice creating the plot from scratch, let's do that too. First we create a dataframe that spans our predictor space.
+
+```{r}
+newdata <- data_grid(pp2, Width_in, landsALL)
+
+newdata <- add_predictions(newdata, mod6)
+```
+
+# EXERCISE 2
+
+Using the pp2 and newdata dataframes, create a plot showing the raw data and the regression lines.
+
+```{r}
+ggplot() +
+  geom_point(data = pp2, aes(Width_in, logprice, col = factor(landsALL)), alpha = 0.2) +
+  geom_line(data = newdata, aes(Width_in, pred, col = factor(landsALL)), lwd = 1)
+```
+
+If an interaction is included in the model, the main effects of both of those variables must also be in the model
+
+If a main effect is not in the model, then its interaction should not be in the model.
+
+# Model Selection
+
+## Metrics of fit
+
+There are several ways to measure model fit. We already briefly looked at R^2 but the problem with R^2 is that every time you add an additional parameter, R^2 increases whether the predictor helped explain the response or not.
+
+A better choice would be Adjusted R^2 which includes a penalization term for the additional parameter ensuring that Adjusted R^2 only increases if the addition of that parameter is "worth it".
+
+Outside of the classical hypothesis testing framwork with p-values and R^2 statistics are AIC and BIC information criteria. We don't have time to delve into the specifics but these are lowest for the best model among a related set of models.
+
+## Methods of selection
+
+- Use your knowledge of the system to decide which parameters to include / exclude (always the best option)
+
+- Backwards elimination
+Start with **full** model (including all candidate explanatory variables and all candidate interactions). Remove one variable at a time, and select the model with the best model fit. Continue until best model fit has been achieved.
+
+- Forward selection
+Start with **empty** model. Add one variable (or interaction effect) at a time, and select the model with the best model fit. Continue until best metric has been achieved.
+
+Let's follow the backwards elimination method starting with a model to explain logprice with 11 predictor terms.
+
+```{r}
+fullmod <- lm(logprice ~ Surface*paired + relig + year*artistliving + landsALL + mat*engraved, data = pp3)
+summary(fullmod)
+```
+
+Now we'll make use of the `drop1()` function to help us assess which term has the lowest AIC, which is the default for the drop1 function. To change the criteria to BIC we would add the argument `k = log(n)`.
+
+```{r}
+drop1(fullmod)
+```
+
+The mat*engraved interaction term is associated with the smallest AIC, and so we should drop that
+
+```{r}
+mod <- lm(logprice ~ Surface*paired + relig + year*artistliving + landsALL + mat + engraved, data = pp3)
+drop1(mod)
+```
+
+Now the Surface:paired interaction term is associated with the smallest AIC, and so we should drop that
+
+```{r}
+mod <- lm(logprice ~ Surface + paired + relig + year*artistliving + landsALL + mat + engraved, data = pp3)
+drop1(mod)
+```
+
+Using AIC, we have concluded that the model explaining logprice with `Surface + paired + relig + year*artistliving + landsALL + mat + engraved` is our final model. That being said, models with AIC within ~10 points are more or less equivalent so we could probably get away with dropping more terms if we chose.
+
+Model fitting is as much an art as it is a science. Also remember that if you conduct model selection using AIC, you will likely not arrive at the same conclusion as you would using Adj R^2 or BIC.
+
+The leaps package allows for automated model selection using forward, backward, or stepwise (combo of forward and backward) selection so if you are interested in this technique, take a look in there...maybe for your final project...
+
+# Logistic regression (if there is time)
+
+Until now we've only discussed analyzing _continuous_ outcomes / dependent variables. We've tested for differences in means between _n_ groups using ANOVA, and more general relationships using linear regression. In all of these cases, the dependent variable, i.e., the outcome, or $Y$ variable, was _continuous_. 
+
+But, what if our outcome variable is _discrete_, e.g., "Yes/No", "Mutant/WT", "Case/Control", etc.?
+
+In this section, we'll use an ecological dataset that classifies possums from two different regions. Victoria is in the eastern half of Australia and traverses the southern coast. The other region consists of New South Wales and Queensland, which make up eastern and northeastern Australia. We use logistic regression to differentiate between possums in these two regions. The outcome variable, called vic, takes value 1 when a possum is from Victoria and 0 when it is from New South Wales or Queensland.
+
+Let's load the data and take a look
+
+```{r}
+possum <- read_csv("data/possum.csv")
+glimpse(possum)
+```
+
+Let's spend a few minutes doing some exploratory data analysis to make sure we understand the dataset
+
+```{r}
+ggplot(possum, aes(factor(vic), headL, fill = sex)) +
+  geom_boxplot()
+
+ggplot(possum, aes(factor(vic), skullW, fill = sex)) +
+  geom_boxplot()
+
+ggplot(possum, aes(factor(vic), tailL, fill = sex)) +
+  geom_boxplot() #WHOA!
+
+ggplot(possum, aes(factor(vic), totalL, fill = sex)) +
+  geom_boxplot()
+```
+
+Based on EDA, Victoria possums have longer heads, much shorter tails, and longer total lengths than possums from other areas.
+
+For this we'll use _logistic regression_ to model the _log odds_ of the binary response. That is, instead of modeling the outcome variable, $Y$, directly against the inputs, we'll model the _log odds_ of the outcome variable.
+
+If $p$ is the probability that the individual comes from Victoria, then $\frac{p}{1-p}$ is the [_odds_](https://en.wikipedia.org/wiki/Odds) that possum comes from Victoria. Then it follows that the linear model is expressed as:
+
+$$log(\frac{p}{1-p}) = \beta_0 + \beta_1 x_1 + \cdots + \beta_k x_k$$
+
+Where $\beta_0$ is the intercept, $\beta_1$ is the increase in the log odds of the outcome for every unit increase in $x_1$, and so on.
+
+Logistic regression is a type of _generalized linear model_ (GLM). We fit GLM models in R using the `glm()` function. It works like the `lm()` function except we specify which GLM to fit using the `family` argument. Logistic regression requires `family=binomial`.
+
+The typical use looks like this:
+
+```r
+mod <- glm(y ~ x, data=yourdata, family='binomial')
+summary(mod)
+```
+
+Now, let's fit a logistic regression model assessing how the odds of being from Victoria change with morphological variables. 
+
+We'll start with just one variable we identified in EDA as important, tailL
+
+```{r}
+fit1 <- glm(vic ~ tailL, data=possum, family="binomial")
+summary(fit1)
+```
+
+An increasing tail length is associated with lower log odds of being from Victoria (longer tail, less chance of being from Victoria). 
+
+For logistic regression, we no longer have R^2 as a metric of model fit. Instead we have deviance and the AIC, Aikaike Information Criterion. The AIC alone is not interpretable, but it is useful for comparing nested models. 
+
+Let's fit a model adding in sex.
+
+```{r}
+fit2 <- glm(vic ~ tailL + sex, data=possum, family="binomial")
+summary(fit2)
+```
+
+The AIC of this model is 6 points lower. For now, let's stick with this model for interpretation.
+
+The `Estimate` column shows the log of the odds ratio -- how the log odds of being from Victoria change based on tailL and sex. For each additional cm of tailL, the log odds of being from Victoria decrease by 0.82. Going from female to male decreases the log odds of being from Victoria by 1.43
+
+To get the odds ratio rather than the log odds, we exponentiate
+```{r}
+exp(fit2$coefficients)
+
+# let's go one step further and add a 95% CI for the odds ratio
+exp(cbind(OR = coef(fit2), confint(fit2)))
+```
+
+For each additional cm of tailL, the odds of being from Victoria change by 0.436 to 1 (halving). Phrased another way, for every cm less of tailL, the odds of being from Victoria increase by a factor of `(1-0.4364) + 1` = 1.56. 
+
+From female to male the odds of being from Victoria change by 0.238 (fewer males in Victoria). Hmm, that is interesting. Let's take a look at that by tabulating the counts in each category.
+
+```{r}
+possum %>%
+  count(vic, sex)
+```
+
+# EXERCISE 3
+
+Use the coefficients from the `summary()` output to calculate the log odds of being from Victoria for (A) a male possum with a tailL of 40cm (B) a male with a 35cm tail and (C) a female with a 35cm tail.
+
+Now exponentiate the log odds using `exp()` and interpret what you have found.
+
+```{r}
+#A
+31.1557 -1.4318 - (.8292*40)
+exp(-3.4441)
+# odds of being from Vic are 0.03 : 1 (not at all likely)
+
+#B
+31.1557 -1.4318 - (.8292*35)
+exp(0.7019)
+# odds of being from Vic are 2.01 : 1 (doubly as likely compared to other region)
+
+#C
+31.1557 - (.8292*35)
+exp(2.1337)
+# odds of being from Vic are 8.44 : 1 (8x as likely)
+```
+
+That was a just a taste of logistic regression modeling. There is _so much_ more to go into here and this lesson only scratches the surface. Missing from this lesson are things like assumptions and diagnostics, model comparison approaches, penalization, and much more. I would encourage you to learn more using the resources below, or as always, feel free to reach out to us at Data Services at the HSL.
+
+# Resources
+
+- R for Data Science chapters on Modeling. [R4DS](https://r4ds.had.co.nz/model-intro.html)
+
+- [ModernDive by Chester Ismay and Albert Kim](https://moderndive.com/). This book provides a modern teaching of regression using the teaching evaluation data used in the class.
+
+- [Data Science in a Box by Mine Cetinkaya-Rundel](https://datasciencebox.org/). This is a resource for teaching data science that I reference frequently and maybe you'd also like it. Code from the modeling lectures is included here.
+
+- [Douglas Bates' Theory and Application of Regression and Analysis of Variance course notes](http://pages.stat.wisc.edu/~st849-1/lectures/Ch07.pdf) Model selection specifics that did not fit in this lecture
+
+- [OpenIntro](https://www.openintro.org/stat/textbook.php?stat_book=os). A wonderful introductory statistics textbook free to download (or for a suggested donatation of $15)
+
+- [Statistical Modeling: A Fresh Approach by Danny Kaplan](http://www.mosaic-web.org/go/StatisticalModeling/). This book provides a gentle introduction to modelling, where you build your intuition, mathematical tools, and R skills in parallel.
+
+- [An Introduction to Statistical Learning by Gareth James, Daniela Witten, Trevor Hastie, and Robert Tibshirani](http://www-bcf.usc.edu/~gareth/ISL/) (available online for free). This book presents a family of modern modelling techniques collectively known as statistical learning. For an even deeper understanding of the math behind the models, read the classic [Elements of Statistical Learning by Trevor Hastie, Robert Tibshirani, and Jerome Friedman](https://web.stanford.edu/~hastie/Papers/ESLII.pdf) (also available online for free).
+
+- [Applied Predictive Modeling by Max Kuhn and Kjell Johnson](http://appliedpredictivemodeling.com). This book is a companion to the caret package and provides practical tools for dealing with real-life predictive modelling challenges.
