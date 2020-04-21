@@ -101,9 +101,21 @@ In this session we will investigate techniques for inspecting, visualizing, and 
 
 In this session we will explore how to move our programs onto Rivanna, UVA's high performance computing cluster. Topics will include how to log onto Rivanna, setting up an R environment for running our codes, and submitting our jobs to run in the background.  We also will look at how to use multiple cores to parallelize R programs.
 
+Further Resources:
+- [Parallel R](http://detritus.fundacioace.com/pub/books/Oreilly.Parallel.R.Oct.2011.pdf) -- a good foundation, but a bit dated
+- [HPC for parallel R](https://jstaf.github.io/hpc-r/parallel/)
+- In the Fall semester, keep your eyes open for a [Research Computing workshop](https://www.rc.virginia.edu/education/workshops/) on parallel R
+
 ### April 30: RNASeq (Gladys Andino Bautista)
 
-Description TBD
+In this session we will focus on high throughput RNA sequencing data analysis, and we will explore examples drawn from genomics and bioinformatics applications. I will provide an overview of how to check the quality of RNA-Seq data, how to determine if the data contain adaptor sequences and other contaminants and how to remove them. The primary focus will be on the analysis of differential gene expression with RNA-Seq data using RStudio, and specialized R package (DESeq2).
+
+Further Resources:
+- [DESeq2 Package Vignette](http://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
+- [Comprehensive evaluation of de novo transcriptome assembly programs and their effects on differential gene expression analysis](https://academic.oup.com/bioinformatics/article/33/3/327/2580374)
+- [Trimmomatic: a flexible trimmer for Illumina sequence data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4103590/pdf/btu170.pdf)
+- [Beginner's Guide to Analysis of RNA Sequencing Data](https://www.atsjournals.org/doi/pdf/10.1165/rcmb.2017-0430TR)
+- [A Survey of Best Practices for RNA-Seq Data Analysis](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-016-0881-8)
 
 ### May 5 & 7: Student Presentations
 
