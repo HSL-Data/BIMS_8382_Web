@@ -1,0 +1,501 @@
+---
+title: "Dimension Reduction"
+author: "Marieke Jones"
+date: "4/23/2020"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE, message = FALSE)
+```
+
+# Today's files
+
+ Before we get started, download the zip file containing the filled-in script, the skeleton script, printable version of our codes for today, and the project file.
+
+Unzip the file and then click on the project file to begin
+
+[Download the Files for Today's Class](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/dimred_files.zip?raw=true)
+
+# Dimension Reduction
+
+Load pacakges
+
+```{r}
+library(tidyverse)
+library(rattle.data)  # for wine data
+library(GGally)       # ggplot2 pairs plot
+library(ggfortify)    # autoplot ggplot2 PCA
+library(dendextend)   # customizable dendrogram (if installation is difficult wait to update R to 3.6.0)
+library(colorspace)   # rainbow hcl colors
+library(gplots)       # heatmap2
+```
+
+# PCA basics
+
+PCA stands for *Principal Components Analysis*. It is a technique that results in features called Principal Components (PCs) that are a linear combination of our predictors.
+
+- The PCs are independent from each other, so PCA can help immensely with collinearity in the predictor space
+- The total number of PCs created will be equal to the number of samples or predictors (whichever is smaller)
+- Together the PCs will explain 100% of the variation seen in the data
+- The first PCs that are created explain the most variation
+- We can then investigate the first few PCs and see the contribution of the predictors to each of the PCs (called loadings). Hopefully the first few PCs will help us describe the important differences in the types of wines and we can disregard the rest.
+
+## Load wine data
+
+```{r}
+data(wine)
+str(wine)
+
+head(wine)
+```
+
+## EDA for wine data
+
+Using ggpairs from the GGally package. Because it is hard to visualize so many variables on the same plot, we'll start with the first 5 columns (excepting Type).
+
+```{r}
+ggpairs(wine, mapping=aes(colour = Type), columns =  2:6)
+```
+
+Looks like Alcohol is able to separate our 3 types of wine. Some separation also in Malic, Alcalinity, and Magnesium. Correlations among these variables are low
+
+```{r}
+ggpairs(wine, mapping=aes(colour = Type), columns =  7:14)
+```
+
+Again 2D separation on some variables and here we are starting to see high correlations between some features. Imagine instead of 13 features, you have 10K like in the case of many genomics studies. We will not be able to use the features with each other in a regression model (remember that most models have the assumption that predictors are independent from each other.)
+
+If these were your data, you would spend much more time here in EDA figuring out which predictors seem important to the classification of the wines. This is where PCA can help. 
+
+## Data Processing
+
+PCA needs a full dataset with no missing values. If you have missing values, you should impute first to fill in the missings prior to PCA. Second, let's scale and center the predictor variables. These steps are critical for an interpretable PCA. Scaling ensures that just because a variable was measured on a larger scale it doesn't have an outsized impact on the PCA. Importantly, scaling will fail for variables that are entirely zero or constant.
+Remove these variables since they will not help explain variance. Centering puts the middle of the multivariate data in the center of the plot, ensuring that we can interpret the loadings correctly. 
+
+Let's not scale and center Type (errors out if you try).
+
+```{r}
+# ?scale
+# this function will scale AND center
+wine_scaled <- scale(wine[, -1])
+
+head(wine)
+head(wine_scaled)
+```
+
+## Conduct PCA
+
+Run PCA on the features without the type. Here we will use the `prcomp()` function but other common functions for running PCA are `princomp()` (stats package) and `PCA()` from the FactoMineR package.
+
+```{r}
+# ?prcomp
+#notice arguments for centering and scaling. We can do that inside the prcomp call
+winePCA <- prcomp(wine[,-1], scale. = TRUE, center = TRUE)
+```
+
+Now let's investigate the $rotation attribute of the winePCA object to see the contribution of each predictor to each PC.
+
+```{r}
+winePCA$rotation
+```
+
+This is showing us the contribution of each predictor on each PC. We see that there are 13 total PCs ( = to the number of predictors)
+
+Next let's plot the PCA. There is a great autoplot feature for PCAs (prcomp and princomp) in the ggfortify package
+
+```{r}
+autoplot(winePCA)
+
+#color by type
+autoplot(winePCA, data = wine, colour = "Type") # coloUr has to be British spelling
+
+#change colors to viridis scale (implemented in ggplot as of July 2018)
+autoplot(winePCA, data = wine, colour = "Type", size = 3) +
+  scale_color_viridis_d()
+
+#optionally, add labels to denote which point is which, labeled by rowname
+autoplot(winePCA, data = wine, colour = "Type", shape = FALSE) +
+  scale_color_viridis_d()
+```
+
+Notice by default that the first two PCs are shown, PC1 (highest eigenvalue) is typically shown on the X and PC2 on the Y. This autoplot feature also prints the amount of variation that each PC explains.
+
+Ok, great! Our PC1 separates by Type! PC1 separates Type 1 and 3 well. Type 1 has negative loadings on PC1 and Type 3 has positive loadings. PC2 separates Type 1/3 from Type 2. Type1/3 have positive loadings and Type 2 has negative loadings.
+
+Let's take a look at what predictors make up PC1
+
+```{r}
+winePCA$rotation[,1] %>% sort()
+```
+
+This suggests that Type 1 wine has higher Flavanoids, Phenols, and Dilution
+
+Let's check that
+
+```{r}
+wine %>%
+  group_by(Type) %>%
+  summarize(Flav = mean(Flavanoids), Phen = mean(Phenols), Dil = mean(Dilution))
+
+ggplot(wine, aes(Flavanoids, fill = Type, col = Type)) + geom_density(alpha = .3)
+ggplot(wine, aes(Phenols, fill = Type, col = Type)) + geom_density(alpha = .3)
+ggplot(wine, aes(Dilution, fill = Type, col = Type)) + geom_density(alpha = .3)
+```
+
+Nice!
+
+We can add the loadings from each predictor on to the first two PCs to the 2D plot. 
+```{r}
+autoplot(winePCA, data = wine, colour = "Type", 
+         loadings.colour = 'blue', 
+         loadings.label = TRUE, 
+         loadings.label.size = 3, 
+         loadings.label.colour = 'black', size = 3) + 
+  scale_color_viridis_d()
+```
+
+Type 2 has lowest levels of Ash. Check this
+```{r}
+wine %>%
+  group_by(Type) %>%
+  summarize(MAsh = mean(Ash))
+
+ggplot(wine, aes(Ash, fill = Type, col = Type)) + geom_density(alpha = .3)
+```
+
+Finally, see the scree plot to understand how many PCs we need to adequately explain our data
+```{r}
+#base r
+plot(winePCA)
+```
+This plot shows the PCs on X-axis and variance of each PC on Y
+
+If we want to see the proportion of explained variance for each PC, we can call summary.
+```{r}
+summary(winePCA)
+```
+
+Horribly, there is no (easy) way that I found to pull out the proportion of variance row from this `summary()`. 
+
+We can calculate it ourselves by taking the variance (standard deviation ^2) and then dividing each PC's variance by the total variance.
+
+```{r}
+winevar <- winePCA$sdev^2
+wineexpvar <- winevar/sum(winevar)
+
+# base r screeplot
+plot(1:13, wineexpvar, type = "b", ylab = "Explained variance")
+```
+
+Seems like 4 PCs will explain most of the variance. Adding a 5th PC does not help much.
+
+```{r}
+summary(winePCA)
+```
+
+4 PCs explain 73% of the variance in the wines.
+
+We can use these important PCs in a regression or we can use them in a heatmap etc.
+
+# Clustering
+
+## K-means Clustering
+
+K-means clustering is an unsupervised learning algorithm that tries to cluster data based on their similarity. *Unsupervised learning* means that there is no outcome to be predicted, and the algorithm just tries to find patterns in the data. In k means clustering, we have the specify the number of clusters we want the data to be grouped into. 
+
+The general scenario where you would use clustering is when you want to learn more about your dataset. You can run clustering several times, investigate the interesting clusters and note insights. Clustering is an exploratory tool.
+
+K-means randomly assigns each observation to a cluster, and finds the *centroid* of each cluster. Then, the algorithm iterates through two steps:
+
+    1. Reassign data points to the cluster whose centroid is closest
+    2. Calculate new centroid of each cluster.
+
+These two steps are repeated till the within cluster variation cannot be reduced any further. The within cluster variation is calculated as the sum of the distance between the data points and their respective centroids. 
+
+Let's try k-means clustering on the iris dataset. 
+
+```{r}
+data(iris)
+```
+
+There are no missing data points in the iris dataset, but like other techniques presented today, you should delete or impute missing data rows prior to clustering.
+
+First let's just look at the data, colored by Species
+
+```{r}
+ggplot(iris, aes(Petal.Length, Petal.Width, color = Species)) +
+  geom_point()
+```
+
+We have three pretty distinct species, but setosa is very different from the other two species. Let's see if K-means clustering can identify these same three clusters without us telling the algorithm which observations belong to which species.
+
+First we *scale the variables* so that the different measurement scales for the different flower variables do not impact the distance calculation between points.
+
+```{r}
+iris2 <- iris[,-5] %>% scale() #predictors
+species_labels <- iris[,5]
+```
+
+Ok, let's try the clustering. Since we know that there are 3 species involved, we'll ask the algorithm to group the data into 3 clusters, and since the starting assignments are random, we specify nstart = 20. This means that R will try 20 different random starting assignments and then select the one with the lowest within cluster variation.
+
+```{r}
+set.seed(423)
+irisCluster <- kmeans(iris2, centers = 3, nstart = 50)
+irisCluster
+```
+
+Looks like there are at least a few incorrect assignments. Let's compare the cluster assignment with the true species assignment
+
+```{r}
+table(irisCluster$cluster, iris$Species)
+```
+
+It was easy to classify setosa because those observations are not at all overlapping versicolor and virginica, but the separation between versicolor and virginica was less good.
+
+To make a plot, let's add the cluster and our original species variable as columns in our iris2 dataset.
+
+```{r}
+iris2 <- iris2 %>%
+  as.data.frame(iris2) %>%
+  mutate(cluster = irisCluster$cluster,
+         Species = species_labels) 
+```
+
+Before we make a nice plot, let's label which observations were misclassified so we can color those
+
+```{r}
+iris2 <- iris2 %>%
+  mutate(mislabel = case_when(cluster == 1 & Species == "setosa" ~ "no",
+                              cluster == 2 & Species == "virginica" ~ "no",
+                              cluster == 3 & Species == "versicolor" ~ "no",
+                              TRUE ~ "yes"))
+```
+
+Make a plot showing true species and which observations were misclassified by k-means.
+
+```{r}
+ggplot(iris2, aes(Petal.Length, Petal.Width)) +
+  geom_point(shape = 21, aes(color = mislabel, fill = Species), size = 2, stroke = 1) +
+  scale_color_manual(values = c("black", "red"))
+```
+
+A typical use case for K-means is when you do not know which data points should cluster together. In this case, it is handy to know which are which so we can judge our accuracy.
+
+With k-Means, you need to have a sense ahead-of-time what your desired number of clusters is. Also, k-means creates sphere-like clusters, so if your groups are not spherical the results may not be great.
+
+## Hierarchical Clustering
+
+Compared to k-means, hierarchical clustering has fewer assumptions about the distribution of your data - the only requirement (which k-means also shares) is that a distance can be calculated each pair of data points. 
+
+Hierarchical clustering will finds the 2 most similar observations and merge them into a super observation, and then find the next 2 most similar to each other (including the super obs), merge them into one super observation until all observations have been merged. It could also be performed on the columns (variables).
+
+We will end up with a *dendrogram*, or a sort of connectivity plot. You can use that plot to decide how many clusters to break your data into, by cutting the dendrogram at different heights. Hierarchical clustering can be more computationally expensive but usually produces more intuitive results.
+
+Importantly, we must decide on distance measure and on clustering method.
+
+Distance measures:
+- Euclidean
+- Manhattan
+- Cosine similarity
+- many others
+
+Clustering methods:
+- Single link (based on closest obs in each group)
+- Complete link (based on farthest obs in each group)
+- Average link (avg of all pairwise distances)
+- Centroids (distance between means of clusters)
+- Ward's method (change in total distance from centroid)
+
+Let's try hierarchical clustering on the iris dataset
+
+We'll use the **scaled variables** starting with a fresh copy to get rid of our extra columns from k-means.
+
+```{r}
+iris2 <- iris[,-5] %>% scale()
+```
+
+By default the dendrogram will be labeled by the row name so an easy way to label the true species is to stuff that info (along with the row number) into the row.names of our iris2 matrix. 
+
+```{r}
+row.names(iris2) <- paste0(iris[,5], 1:150)
+```
+
+```{r}
+d_iris <- dist(iris2, method = "man") # default is euclidean distance, method="man" works a bit better for these data (I know bc I tried)
+
+#now we must choose the clustering method, let's go with complete which is the default
+hc_iris <- hclust(d_iris)
+
+plot(hc_iris)
+```
+
+It would be nice to color this dendrogram so we could easily see where the different species are.
+
+Using the dendextend package, we can create a really nice looking colorful dendrogram.
+
+```{r}
+dend <- as.dendrogram(hc_iris)
+
+plot(dend)
+
+#rotate plot to horizontal
+dend %>% plot(horiz =  TRUE)
+
+# Color the branches based on the clusters:
+dend <- dend %>% color_branches(k=3, groupLabels = rev(levels(iris[,5])), col = rainbow_hcl(3))
+dend %>% plot(horiz =  TRUE)
+
+#make labels much smaller
+dend <- dend %>% set("labels_cex", 0.25)
+dend %>% plot(horiz =  TRUE)
+
+order.dendrogram(dend) #here is the order of row numbers in the dendrogram (bottom to top)
+
+#this trickery provides the true label of each row (bottom to top)
+truespec <- sort_levels_values(
+  as.numeric(iris[,5])[order.dendrogram(dend)]
+  )
+
+#save those labels as the labels_colors (top to bottom)
+labels_colors(dend) <- rainbow_hcl(3)[truespec]
+
+# "#E495A5" = red 
+# "#86B875" = green 
+# "#7DB0DD" = blue
+
+dend %>% plot(main = "Hierarchical clustered dendrogram for Iris data
+              labels = true species", horiz =  TRUE)
+```
+
+Excellent!
+
+# Heatmaps
+
+Now let's use this same dendrogram to create a heatmap
+
+```{r}
+heatmap.2(iris2,
+          dendrogram = "row", #turns off dendrogram on columns
+          Rowv = dend, #puts our hclust dendrogram on the rows
+          Colv = "NA") # do not order by column
+```
+
+Change some options to clean up the plot:
+
+Set up custom colors for the heatmap
+```{r}
+my_palette <- heat_hcl(n = 299) #from colorspace package
+```
+
+Add a title and change the colors
+```{r}
+heatmap.2(iris2, 
+          dendrogram = "row",
+          Rowv = dend,
+          Colv = "NA",
+          main = "Heatmap for the Iris data set",
+          col = my_palette
+          )
+```
+
+Take away the neon trace line and set the margins to crop out true species and rownumber (good if use case is for where we do not know real species)
+```{r}
+heatmap.2(iris2, 
+          dendrogram = "row",
+          Rowv = dend,
+          Colv = "NA",
+          main = "Heatmap for the Iris data set",
+          col = my_palette,
+          trace="none",         #new
+          margins =c(5,1)       #new
+         )
+```
+
+Change column label angle, make column labels smaller and clean up color key
+```{r}
+heatmap.2(iris2, 
+          dendrogram = "row",
+          Rowv = dend,
+          Colv = "NA",
+          main = "Heatmap for the Iris data set",
+          col = my_palette,
+          trace="none",          
+          margins =c(5,1),
+          srtCol = 20,           # new angle of column label
+          cexCol = .75,          # make column label smaller
+          key.xlab = "",         # remove x label of legend
+          key.title = "Color Key", # shorten key title
+          denscol = "grey",      # change legend histogram color to grey
+          density.info = "density" #change histogram to density
+         )
+```
+
+It is looking pretty good, huh!
+
+The last step I would like to do is to add an annotation showing the true species using a color bar. This option is called RowSideColors and it seems straightforward, but something goes awry.
+```{r}
+#add colored strip indicating true species
+heatmap.2(iris2, 
+          dendrogram = "row",
+          Rowv = dend,
+          Colv = "NA",
+          main = "Heatmap for the Iris data set",
+          col = my_palette,
+          trace="none",          
+          margins =c(5,1),
+          srtCol = 20,
+          cexCol = .75,
+          key.xlab = "",
+          key.title = "Color Key",
+          denscol = "grey",
+          density.info = "density",
+          RowSideColors = rev(labels_colors(dend)) #check this out!
+         )
+```
+
+Harumph! The RowSideColors don't listen to the color labels I am setting and I have no good idea why
+
+The colors the rows are supposed to be are fine.
+```{r}
+rev(labels_colors(dend))
+```
+Based on this named vector, the bottom 25 rows should be red!
+
+# Help!
+See if you can figure out why the colors on the RowSideColors do not match with what we saw in the dendrogram. The vector of colors `rev(labels_colors(dend))` looks correct to me, but the colors that are actually plotted seem wrong in places (for example last row should be red but is green)
+
+> If you do figure this out, please shoot me an email. I would love to know the fix!
+
+# Further Resources
+
+### PCA
+
+- [pcaMethods package](http://bioconductor.org/packages/release/bioc/html/pcaMethods.html) from Bioconductor can impute missing values and plot PCA
+
+- [factoExtra package](https://rpkgs.datanovia.com/factoextra/index.html) to customize PCA plots
+
+- [FactoMineR package](https://cran.r-project.org/web/packages/FactoMineR/index.html) for exploratory data analysis for multivariate data
+
+### Dendrograms
+
+- [STHDA](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning) does a great site on creating dendograms using a variety of methods (base R and ggplot2)
+
+- [dendextend package](https://cran.r-project.org/web/packages/dendextend/vignettes/introduction.html) for a fancier, more customizable plot we can use dendextend package (can use the %>%)
+
+- [dendextend with famous datasets](https://cran.r-project.org/web/packages/dendextend/vignettes/Cluster_Analysis.html#the-3-clusters-from-the-complete-method-vs-the-real-species-category) Heatmaps are in here too
+
+### Heatmaps
+
+- [Statquest heatmap](https://www.youtube.com/watch?v=oMtDyOn2TCc)
+
+- [Understanding heatmaps better](http://www.opiniomics.org/you-probably-dont-understand-heatmaps/)
+
+- [ShinyHeatmap](https://omictools.com/shinyheatmap-tool)
+
+### A whole course on data analysis for genomics
+
+- [PennState Stat555](https://newonlinecourses.science.psu.edu/stat555/)
