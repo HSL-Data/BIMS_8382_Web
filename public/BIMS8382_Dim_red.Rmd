@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE, warning = FALSE, message = FALS
 
 Unzip the file and then click on the project file to begin
 
-[Download the Files for Today's Class](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/dimred_files.zip?raw=true)
+[Download the Files for Today's Class](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/Dimred_files.zip?raw=true)
 
 # Dimension Reduction
 
