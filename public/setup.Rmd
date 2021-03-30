@@ -6,19 +6,15 @@ output:
     toc_depth: 2
 ---
 
-Prior to the first class session, please follow the instructions under the **_Core Software_** heading. For future class sessions, you may also need to follow additional setup instructions under each session's heading.
-
-## Core Software
-
-Install the following software in preparation for the first class session.
+Prior to the first class session, please follow the instructions to set-up. Install the following software in preparation for the first class session.
 
 ### R
 
-**Install R.** You'll need R version **3.6.3**.[^rversion] Download and install R for [Windows](http://cran.r-project.org/bin/windows/base/) or [Mac](http://cran.r-project.org/bin/macosx/) (download the latest R-3.x.x.pkg file for your appropriate version of Mac OS).
+**Install R.** You'll need R version **4.0.3**.[^rversion] Download and install R for [Windows](http://cran.r-project.org/bin/windows/base/) or [Mac](http://cran.r-project.org/bin/macosx/) (download the latest R-4.x.x.pkg file for your appropriate version of Mac OS).
 
 ### RStudio
 
-Download and install **[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)** version >= 1.2.xxxx
+Download and install **[RStudio Desktop](https://www.rstudio.com/products/rstudio/download/)** version >= 1.4.xxxx
 
 R and RStudio are separate downloads and installations. **R** is the underlying statistical computing environment, but using R alone is no fun. **RStudio** is a graphical integrated development environment that makes using R much easier. You need R installed before you install RStudio.
 
@@ -38,7 +34,7 @@ _A few notes_:
 - If you're using Windows you might see errors about not having permission to modify the existing libraries -- disregard these. You can avoid this by running RStudio as an administrator (right click the RStudio icon, then click "Run as Administrator").
 - These core packages are part of the "tidyverse" ecosystem (see [tidyverse.org](https://www.tidyverse.org/)). The tidyverse package is a meta-package that automatically installs/loads all of the above packages and several other commonly used packages for data analysis that all play well together.[^tidyverse]
 
-[^rversion]: R version 3.6.3 was released February 2020. If you have not updated your R installation since then, you need to upgrade to a more recent version, since several of the required packages depend on a version at least this recent. You can check your R version with the `sessionInfo()` command.
+[^rversion]: R version 4.0.3 was released Oct 2020. If you have not updated your R installation since then, you need to upgrade to a more recent version, since several of the required packages depend on a version at least this recent. You can check your R version with the `sessionInfo()` command.
 
 [^tidyverse]: Installing/loading the tidyverse **tidyverse** will install/load the core tidyverse packages that you are likely to use in almost every analysis:
 **ggplot2** (for data visualisation), **dplyr** (for data manipulation), **tidyr** (for data tidying), **readr** (for data import), **purrr** (for functional programming), and **tibble** (for tibbles, a modern re-imagining of data frames). It also installs a selection of other tidyverse packages that you're likely to use frequently, but probably not in every analysis (these are installed, but you'll have to load them separately with `library(packageName)`). This includes: **hms** (for times), **stringr** (for strings), **lubridate** (for date/times), **forcats** (for factors), **DBI** (for databases), **haven** (for SPSS, SAS and Stata files), **httr** (for web apis), **jsonlite** (or JSON), **readxl** (for .xls and .xlsx files), **rvest** (for web scraping), **xml2** (for XML), **modelr** (for modelling within a pipeline), and **broom** (for turning models into tidy data). 
@@ -51,12 +47,11 @@ library(tidyverse)
 
 [^masking]: We'll talk about this in class. It's not a concern.
 
-[^oldversion]: This means the version of R you have installed is older than the version that the package author used when they built the package you're trying to use. 99% of the time it isn't a problem, unless your R version is very old (you should be using 3.5.0 or later for this course).
+[^oldversion]: This means the version of R you have installed is older than the version that the package author used when they built the package you're trying to use. 99% of the time it isn't a problem, unless your R version is very old (you should be using 4.0.0 or later for this course).
 
 This may produce some notes or other output, but as long as you don't get an error message, you're good to go. If you get a message that says something like: `Error in library(somePackageName) : there is no package called 'somePackageName'`, then the required packages did not install correctly. Please do not hesitate to [email the instructors](people.html) _prior to class_ if you are still having difficulty. In your email, please copy and paste what you typed in the console, and all of the output that streams by in the console.
 
 After installing tidyverse with `install.packages("tidyverse")` and loading it with `library(tidyverse)`, you can use `tidyverse_update()` to update all the tidyverse packages installed on your system at once.
-
 
 ### RMarkdown
 
@@ -70,37 +65,3 @@ install.packages("rmarkdown")
 ```
 1. Next, launch RStudio (not R). Click File, New File, R Markdown. This may tell you that you need to install additional packages (`knitr`, `yaml`, `htmltools`, `caTools`, `bitops`, `rmarkdown`, and maybe a few others). Click "Yes" to install these.
 1. To render to PDF, you will need to install a **$\LaTeX$** typesetting engine. We have found that the best option with the fewest problems is **tinyTex** available from within R. See the [tinyTex Website](https://yihui.org/tinytex/) for installation instructions. 
-
-## Dealing with Data
-
-tidyverse package
-
-## Data Visualization
-
-tidyverse package
-
-## Essential Statistics
-
-tidyverse package
-broom package
-
-## Regression
-
-Packages:
-
-* tidyverse
-* broom
-* modelr
-* lme4
-* lmerTest
-
-----
-
-## RNA Seq
-
-### Bioconductor
-
-TBD
-
-----
-
