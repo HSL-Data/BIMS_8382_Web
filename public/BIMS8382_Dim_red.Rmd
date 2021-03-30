@@ -36,7 +36,7 @@ library(gplots)       # heatmap2
 
 # PCA basics
 
-PCA stands for *Principal Components Analysis*. It is a technique that results in features called Principal Components (PCs) that are a linear combination of our predictors.
+PCA stands for *Principal Components*. It is a technique that results in features called Principal Components (PCs) that are a linear combination of our predictors.
 
 - The PCs are independent from each other, so PCA can help immensely with collinearity in the predictor space
 - The total number of PCs created will be equal to the number of samples or predictors (whichever is smaller)
