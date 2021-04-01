@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
+[Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/IntroR.zip?raw=true)
+
 # Goal
 
 Today's goal will be to get us all a bit more familiar with R and RStudio. If you are a new user, welcome! If you are a returning user, perhaps there are some new tips or tricks you will learn today that will still make this class session helpful to you.
@@ -239,7 +241,7 @@ Now the output specifies that we have successfully read in a dataset and that th
 
 To `View()` the dataset in spreadsheet form, we can click on the dataset's name in the Environment tab. Notice that this action is accompanied by some code in the console telling us that we could also get there using code. Let's try it both ways
 
-```{r}
+```{r, eval=FALSE}
 View(penguins) #captial letter V
 ```
 
