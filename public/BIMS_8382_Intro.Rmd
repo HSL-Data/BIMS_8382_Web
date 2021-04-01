@@ -84,11 +84,11 @@ myobj
 # MYobj
 ```
 
-The text in green is a code comment. Comments in R are anything after a # _inside_ an R chunk. Using a # outside the R chunks creates headings in our document. 
+The text behind the # is a code comment. Comments in R are anything after a # _inside_ an R chunk. Using a # outside the R chunks creates headings in our document. 
 
 Code comments can be helpful to documenting your code and turning off bits of code that you want to keep but that you do not want to run. I would encourage you to take extra notes during class as code comments using the # or in prose.
 
-We can overwrite the value of object1 by re-assigning it
+We can overwrite the value of myobj by re-assigning it
 
 ```{r}
 myobj <- 70
@@ -167,7 +167,7 @@ hist(myobj2)
 
 ------------------------------------
 
-Look at the environment. What does it tell you about object2?
+Look at the environment. What does it tell you about myobj2?
 
 Let's create some more R objects that are collections of several values. These are called **vectors**. A **vector** is a one-dimensional object. To create a vector of our own, we will use the function `c()`, which stands for concatenate or combine. Usually functions are named with a full word describing what they do but because combining items together is so common, this function gets a very short name.
 
