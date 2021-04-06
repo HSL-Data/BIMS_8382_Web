@@ -7,11 +7,6 @@ output:
     highlight: github
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(cache = TRUE)
-```
-
 [Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/IntroR.zip?raw=true)
 
 # Goal
