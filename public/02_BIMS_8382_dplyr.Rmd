@@ -1,0 +1,479 @@
+---
+title: "Data Manipulation with dplyr"
+date: "4/6/2021"
+output:
+  prettydoc::html_pretty:
+  theme: leonids
+  highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(warnings = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+[Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/dplyr.zip?raw=true)
+
+# Set-up
+
+Let's load the tidyverse library, install and load a new package for statistical summaries, and a dataset about tuberculosis from the World Health Organization that David and I cleaned up.
+
+> Original data source: <https://www.who.int/tb/country/data/download/en/>
+
+```{r}
+library(tidyverse)
+
+#install.packages("skimr")
+library(skimr)
+tb <- read_csv("data/tb.csv")
+```
+
+# Familiarize ourselves with the dataset using functions we saw last week
+
+```{r}
+tb
+
+glimpse(tb)
+
+# new function! From the skimr package
+skim(tb)
+```
+
+# Introducing the dplyr package
+
+dplyr is a package in R that allows you to work with and manipulate your data. It will allow us to focus in on the variables (columns) of interest and the observations (rows) of interest. 
+
+# The Pipe %>% means THEN
+
+The pipe is an operator in R that allows you to chain together functions in dplyr. In base R, to use multiple functions you have to nest your functions inside of each other, but using the pipe allows you to chain the functions together in a more readable format. The pipe character is `%>%` and essentially means "then". You can create the character using `CTRL+SHIFT+M` or `CMD+SHIFT+M` 
+
+The pipe essentially takes whatever is before the pipe as input for whatever is after the pipe. 
+
+Let's find the bottom 50 rows of tb without and with the pipe.
+
+```{r}
+#without the pipe
+tail(tb, n = 50)
+
+#with the pipe
+tb %>% tail(n = 50)
+```
+
+Now let's see what the code looks like if we need 2 functions. Find the unique countries in the bottom 50 rows of tb.
+
+```{r}
+#without the pipe
+unique(tail(tb, n = 50)$country)
+
+# with the pipe
+tb %>% 
+  tail(50) %>%
+  distinct(country)
+```
+
+You will notice that we used different functions to complete our task. The code without the pipe uses functions from base R while the code with the pipe uses a mixture (`tail()` from base R and `distinct()` from dplyr). Not all functions work with the pipe, but we will usually opt for those that do when we have a choice. 
+
+# distinct() and count()
+
+The `distinct()` function will return the distinct values of a column, while `count()` provides both the distinct values of a column and then number of times each value shows up. The following example investigates the different regions (`who_region`) in the `tb` dataset:
+
+```{r}
+tb %>% 
+  distinct(who_region) 
+
+tb %>% 
+  count(who_region)
+```
+
+Notice that there is a new column produced by the count function called `n`.
+
+# arrange()
+
+The `arrange()` function does what it sounds like. It takes a data frame or tbl and arranges (or sorts) by column(s) of interest. The first argument is the data, and subsequent arguments are columns to sort on. Use the `desc()` function to arrange by descending.
+
+The following code would get the number of times each region is in the dataset:
+
+```{r}
+tb %>% 
+  count(who_region) %>% 
+  arrange(n)
+
+# Since the default is ascending order, we are not getting the results that are probably useful, so let's use the desc() function
+tb %>% 
+  count(who_region) %>% 
+  arrange(desc(n))
+
+# shortcut for desc() is -
+tb %>% 
+  count(who_region) %>% 
+  arrange(-n)
+```
+
+# filter()
+
+If you want to return **rows** of the data where some criteria are met, use the `filter()` function. This is how we subset in the tidyverse. (Base R function is `subset()`)
+
+Here are the logical criteria in R:
+- `==`: Equal to
+- `!=`: Not equal to
+- `>`, `>=`: Greater than, greater than or equal to
+- `<`, `<=`: Less than, less than or equal to
+
+If you want to satisfy *all* of multiple conditions, you can use the "and" operator, `&`. 
+
+The "or" operator `|` (the vertical pipe character, shift-backslash) will return a subset that meet *any* of the conditions.
+
+Let's see all the data from 2015 or more recent
+
+```{r}
+tb %>% 
+  filter(year >= 2015)
+```
+
+Let's just see data from Latvia
+
+```{r}
+tb %>% 
+  filter(country == "Latvia")
+```
+
+Both Latvia and 2015 or more recent
+```{r}
+tb %>% 
+  filter(year >= 2015 & country == "Latvia")
+```
+
+Which countries have incidence_100k below 5?
+
+```{r}
+tb %>% 
+  filter(incidence_100k < 5) %>% 
+  distinct(country)
+
+# see them all
+tb %>% 
+  filter(incidence_100k < 5) %>% 
+  distinct(country) %>%
+  print(n = Inf)
+```
+
+### %in%
+
+To `filter()` a categorical variable for only certain levels, we can use the `%in%` operator.
+
+Let's see data from Mexico, USA, and Canada. First we will have to figure out how those are spelled in this dataset. Open the spreadsheet viewer and find out. We'll see a way to find them in code later on in the course.
+
+Ok, so we figured out that they are spelled:
+"Mexico"
+"United States of America"
+"Canada"
+
+Now we'll create a vector of countries we are interested in
+
+```{r}
+noram <- c("Mexico", "United States of America", "Canada")
+```
+
+And use that vector to `filter()` `tb` for countries `%in%` `noram`
+```{r}
+tb %>% filter(country %in% noram)
+```
+
+You can also save the results of a pipeline. Notice that the rows belonging to North American countries are returned in the console. If we wanted to do something with those rows, it might be helpful to save them as their own dataset. To create a new object, we use the `<-` operator.
+
+```{r}
+noramData <- tb %>% filter(country %in% noram)
+```
+
+# drop_na()
+
+The `drop_na()` function is extremely useful for when we need to subset a variable to remove missing values.
+
+Return the tb dataset without rows that were missing on the hiv_incidence_100k variable
+```{r}
+tb %>% drop_na(hiv_incidence_100k)
+```
+
+Return the tb dataset without any rows that had an NA in any column. *Use with caution because this will remove a lot of data
+```{r}
+tb %>% drop_na()
+```
+
+# select()
+
+Whereas the `filter()` function allows you to return only certain _rows_ matching a condition, the `select()` function returns only certain _columns_. The first argument is the data, and subsequent arguments are the columns you want.
+
+See just the country, year, incidence_100k columns
+```{r}
+# list the column names you want to see separated by a comma
+tb %>% 
+  select(country, year, incidence_100k)
+```
+
+Use the - sign to drop these same columns
+```{r}
+tb %>% 
+  select(-country, -year, -incidence_100k)
+```
+
+### select() helper functions
+
+The `starts_with()`, `ends_with()` and `contains()` functions provide very useful tools for dropping/keeping several variables at once without having to list each and every column you want to keep. The function will return columns that either start with a specific string of text, ends with a certain string of text, or contain a certain string of text.
+
+```{r}
+# these functions are all case sensitive
+tb %>%  
+  select(starts_with("percent"))
+
+tb %>% 
+  select(ends_with("r"))
+
+tb %>% 
+  select(contains("_"))
+
+# columns that do not contain -
+tb %>% 
+  select(-contains("_"))
+```
+
+# summarize()
+
+The `summarize()` function summarizes multiple values to a single value. On its own the `summarize()` function doesn't seem to be all that useful. The dplyr package provides a few convenience functions called `n()` and `n_distinct()` that tell you the number of observations or the number of distinct values of a particular variable.
+
+Notice that summarize takes a data frame and returns a data frame. In this case it's a 1x1 data frame with a single row and a single column.
+
+```{r}
+tb %>% 
+  summarize(mean(hiv_percent))
+
+# watch out for nas. Use na.rm = TRUE to run the calculation after excluding nas.
+tb %>% 
+  summarize(mean(hiv_percent, na.rm = TRUE))
+```
+
+The name of the column is the expression used to summarize the data. This usually isn't pretty, and if we wanted to work with this resulting data frame later on, we'd want to name that returned value something better.
+
+```{r}
+tb %>% 
+  summarize(hiv_percent = mean(hiv_percent, na.rm = TRUE))
+```
+
+# group_by()
+
+We saw that `summarize()` isn't that useful on its own. Neither is `group_by()`. All this does is takes an existing data frame and coverts it into a grouped data frame where operations are performed by group.
+
+```{r}
+tb %>% 
+  group_by(year)
+
+tb %>% 
+  group_by(year, who_region)
+```
+
+## group_by() and summarize() together
+
+The real power comes in where `group_by()` and `summarize()` are used together. First, write the `group_by()` statement. Then pipe the result to a call to `summarize()`.
+
+Let's summarize the mean incidence of tb for each year
+```{r}
+tb %>% 
+  group_by(year) %>% 
+  summarize(mean_inc = mean(incidence_100k, na.rm = TRUE))
+
+#sort the output by descending mean_inc
+tb %>% 
+  group_by(year) %>% 
+  summarize(mean_inc = mean(incidence_100k, na.rm = TRUE)) %>% 
+  arrange(desc(mean_inc))
+```
+
+# mutate()
+
+Mutate creates a new variable or modifies an existing one.
+
+Create a new variable called `loginc` that is the log10 of incidence_100k
+```{r}
+tb %>% mutate(loginc = log10(incidence_100k))
+```
+
+With this output, I cannot see my new variable. Let's use the pipeline above and `select()` to see the new variable
+
+```{r}
+tb %>% 
+  mutate(loginc = log10(incidence_100k)) %>% 
+  select(incidence_100k, loginc)
+```
+
+Not very informative. Let's see a random selection of 10 rows to check that this transform worked as intended
+
+```{r}
+tb %>% 
+  mutate(loginc = log10(incidence_100k)) %>% 
+  select(incidence_100k, loginc) %>%
+  sample_n(10)
+```
+
+What did our log transform do to our smallest incidences?
+
+```{r}
+tb %>% 
+  mutate(loginc = log10(incidence_100k)) %>% 
+  select(incidence_100k, loginc) %>%
+  arrange(incidence_100k)
+```
+
+Uh oh! We had some zero incidences so we produced -Inf when we took the log. That will not look great on graphs, so let's take the log10 after adding 1 to the incidence_100k
+
+```{r}
+tb %>% 
+  mutate(loginc = log10(incidence_100k + 1)) %>% 
+  select(incidence_100k, loginc) %>%
+  arrange(incidence_100k)
+```
+
+Great. Notice that the actual tb dataset has not changed. It is important to remember that changes we make with `mutate()` only take place in the console until we tell R to save the changes.
+
+Let's save the new variable onto the dataframe.
+
+```{r}
+tb <- tb %>% 
+  mutate(loginc = log10(incidence_100k + 1))
+```
+
+Yes! Now we have 19 variables.
+
+### case_when()
+
+Very often we would like to modify or create different levels of categorical variables.
+
+Let's use `mutate()` and `case_when()` to create a new column indicating whether or not an observation comes from North America (Mexico, USA, Canada). If the observation is from North America, put a 1, else put a 0.
+
+```{r}
+# use our vector noram that we created before
+tb %>% 
+  mutate(noram = case_when(country %in% noram ~ 1,
+                           TRUE ~ 0))
+
+#can't see new variable, so use select(), sample_n(), and print
+tb %>% 
+  mutate(noram = case_when(country %in% noram ~ 1,
+                           TRUE ~ 0)) %>% 
+  select(country, noram) %>%
+  sample_n(50) %>%
+  print(n = 50)
+
+# seems to have worked. If we want to use the noram variable we would need to save it onto the dataframe. We don't need it so i will not run this line
+
+#tb <- tb %>% 
+#     mutate(noram = case_when(country %in% noram ~ 1, 
+#                             TRUE ~ 0))
+```
+
+Note that you could always substitute a character string (word) instead of the 1/0 if that is what you want.
+
+```{r}
+tb %>% 
+  mutate(noram = case_when(country %in% noram ~ "North America",
+                           TRUE ~ "Other")) %>% 
+  select(country, noram) %>%
+  sample_n(50)
+```
+
+Also note that there is an `if_else()` function that may result in slightly shorter code in the case where you only need to code for 2 options. For more options, nested `if_else()` statements become hard to read and could result in mismatched parentheses so `case_when()` will be a more elegant solution.
+
+As a second example of `case_when()`, let's say we wanted to create a new population variable that is low, medium, or high.
+
+See the pop broken into 3 equally sized portions
+```{r}
+quantile(tb$pop, prob = c(.33, .66))
+```
+
+We'll say:
+
+low pop = 2043237 or less
+med pop = between 2043237 and 11379155
+high pop = above 11379155
+
+```{r}
+tb %>% 
+  mutate(popcat = case_when(pop <= 2043237 ~ "low",
+                            pop > 2043237 & pop <= 11379155 ~ "med",
+                            TRUE ~ "high"))
+
+# or we could have used the quantile() in the code to make our code more flexible
+#tb %>% 
+#  mutate(popcat = case_when(pop <= quantile(pop, prob = .33) ~ "low",
+#                            pop > quantile(pop, prob = .33) & 
+#                               pop <= quantile(pop, prob = .66) ~ "med",
+#                            TRUE ~ "high"))
+
+# check our work
+tb %>% 
+  mutate(popcat = case_when(pop <= 2043237 ~ "low",
+                            pop > 2043237 & pop <= 11379155 ~ "med",
+                            TRUE ~ "high")) %>%
+  select(pop, popcat) %>%
+  sample_n(10)
+```
+
+# EXERCISE
+
+1. In 2007, which 10 countries had the highest incidence_100k? (*Hint: filter() then arrange(), then head()*). Then `select()` only the country and the incidence_100k columns.
+
+```{r}
+tb %>% 
+  filter(year == 2007) %>%
+  arrange(desc(incidence_100k)) %>%
+  head(10) %>%
+  select(country, incidence_100k)
+```
+
+2. Within the South East Asia who_region, which *countries* have incidence_100K > 300?
+
+```{r}
+tb %>% 
+  filter(who_region == "SEA" & incidence_100k > 300) %>%
+  distinct(country)
+```
+
+3. How many countries are in each who_region? Put the output in order from lowest to highest number of countries _Hint: use `n_distinct()` inside `summarize()`_
+
+```{r}
+tb %>% 
+  group_by(who_region) %>% 
+  summarise(n_countries = n_distinct(country)) %>%
+  arrange(n_countries)
+```
+
+4. Recreate the noram variable you created above to see if the average incidence of tb per 100k differs between noram countries and other countries in the AMR who_region.
+
+```{r}
+tb %>%
+  filter(who_region == "AMR") %>%
+  mutate(noram = case_when(country %in% noram ~ "noram",
+                          TRUE ~ "not")) %>%
+  group_by(noram) %>%
+  summarize(mTB = mean(incidence_100k + 1))
+```
+
+5. For each region that does not have missing values on `hiv_incidence_100k`, what is the correlation coefficient (hint: `cor()`) for the relationship between the tb `incidence_100k` and the `hiv_incidence_100k`. Show the output with the highest correlations first
+
+```{r}
+tb %>%
+  drop_na(incidence_100k, hiv_incidence_100k) %>%
+  group_by(who_region) %>% 
+  summarise(r = cor(incidence_100k, hiv_incidence_100k)) %>%
+  arrange(-r)
+```
+
+# Resources for learning more dplyr
+
+- Check out the [Data Wrangling cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf) that covers dplyr and tidyr functions. We will see tidyr functions and the dplyr join functions in 2 weeks.
+
+- Review the [Tibbles](https://r4ds.had.co.nz/tibbles.html) chapter of the excellent, free [**_R for Data Science_ book**](http://r4ds.had.co.nz). Tibbles are data frames, but they tweak some older behaviors to make life a little easier. These sections explain the few key small differences between traditional data.frames and tibbles. 
+
+- Make a free account at RStudio.cloud and work through the ["Work with Data" interactive tutorial](https://rstudio.cloud/learn/primers/2)
+
+- Check out the [Transformations](https://r4ds.had.co.nz/transform.html) chapter to learn more about the dplyr package. Note that this chapter also uses the graphing package ggplot2 which we will introduce next week
