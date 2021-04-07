@@ -1,0 +1,513 @@
+---
+title: "Data Visualization with ggplot2"
+date: "4/8/2020"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
+```
+
+# Data Viz in R
+
+This lesson will cover fundamental concepts for creating effective data visualization and will introduce tools and techniques for visualizing  data using R. We will review fundamental concepts for visually displaying quantitative information, such as using series of small multiples, avoiding "chart-junk," and maximizing the data-ink ratio. We will cover the grammar of graphics (geoms, aesthetics, and faceting) using the ggplot2 package to create plots layer-by-layer.
+
+# Set up
+
+For today's lesson we will need packages in the tidyverse. Today we will be using the `dplyr`, `ggplot`, and `readr` packages. We will also be taking data from the `NHANES` package and using a few other speciality packages, `skimr`, `ggmosaic`, and `ggthemes`.
+
+```{r}
+# Load up the tidyverse
+library(tidyverse)
+
+#install.packages("NHANES")
+library(NHANES)
+library(skimr)
+
+#install.packages("ggthemes")
+library(ggthemes)
+```
+
+# Read in data
+
+We are going to use the NHANES dataset looking at various health outcomes. Use the `read_csv` package to read in the data.
+
+```{r}
+set.seed(482021)
+nh <- NHANES %>% sample_frac(.3) %>% filter(Age >= 18)
+```
+
+
+# Basics of ggplot2
+
+**ggplot2** is a widely used R package that extends R's visualization capabilities. It takes the hassle out of things like creating legends, mapping other variables to scales like color, or faceting plots into small multiples. We'll learn about what all these things mean shortly. 
+
+_Where does the "gg" in ggplot2 come from?_ The **ggplot2** package provides an R implementation of Leland Wilkinson's *Grammar of Graphics* (1999). The *Grammar of Graphics* allows you to think beyond the garden variety plot types (e.g. scatterplot, barplot) and the consider the components that make up a plot or graphic, such as how data are represented on the plot (as lines, points, etc.), how variables are mapped to coordinates or plotting shape or color, what transformation or statistical summary is required, and so on. 
+
+Specifically, **ggplot2** allows you to build a plot layer-by-layer by specifying:
+
+- a **geom**, which specifies how the data are represented on the plot (points, lines, bars, etc.),
+- **aesthetics** that map variables in the data to axes on the plot or to plotting size, shape, color, etc.,
+- **facets**, which we've already seen above, that allow the data to be divided into chunks on the basis of other categorical or continuous variables and the same plot drawn for each chunk.
+
+# Plotting bivariate data: continuous X and continuous Y
+
+The `ggplot` function has two required arguments: the *data* used for creating the plot, and an *aesthetic* mapping to describe how variables in said data are mapped to things we can see on the plot.
+
+First, let's lay out the plot. If we want to plot a continuous Y variable by a continuous X variable we're probably most interested in a scatter plot. Here, we're telling ggplot that we want to use the `nh` dataset, and the aesthetic mapping will map `BMI` onto the x-axis and `Weight` onto the y-axis. Remember that the variable names are case sensitive! 
+
+```{r}
+# The ggplot function creates an initial canvas
+ggplot(nh, aes(x = BMI, y = Weight))
+```
+When we do that we get a blank canvas with no data showing. That's because all we've done is laid out a two-dimensional plot specifying what goes on the x and y axes, but we haven't told it what kind of geometric object to plot. The obvious choice here is a point. Check out [docs.ggplot2.org](http://docs.ggplot2.org/) to see what kind of geoms are available.
+
+Add `geom_point()`
+
+```{r}
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point()
+
+```
+
+Let's add some color by changing all the points to be blue. By looking at the `geom_point` function in the help menu, you can see that their are several arguments/options that you can change within the geom. This is true for every geom that we will explore today and others that you might explore on your own. 
+
+The `colors()` function will provide you all of the colors that are initially available in R.
+
+```{r}
+# Here the color = "blue" argument will make every point blue. This argument will behave differently depending on the type of geom you are using.
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(color = "blue")
+```
+
+Now let's change the shape of the points. `shape = 8` is an *. 
+
+![ggplot shape codes](ggplot_shapes.png)
+
+```{r}
+# We can combine multiple arguments by using a comma
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(color = "blue", shape = 8)
+```
+
+Instead of coloring by a static value, let's color by Gender (`Gender`). Remember that _any time_ you want to map a variable onto the plot, it must be in a call to `aes()`
+
+```{r}
+# Notice that color is no longer a single value (ie: blue), but the value of a given category. This will now create a different color point for each value found in a category. However, the shape argument is still outside of the aes call, making every point the same shape.
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(aes(color = Gender), shape = 8)
+
+```
+
+Let's add another layer showing a smoothed trend line. (and let's go back to the normal geom_point shape). Remember, that each new layer will go on top of the previous one, meaning that the smoothed line will go on top of the points.
+
+```{r}
+# Use a + sign to connect together ggplot elements such as a geom.
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(aes(color = Gender), shape = 8) +
+  geom_smooth()
+```
+
+Notice that `geom_smooth()` is fitting the trend line using a loess Model. We can read more about that by calling the help menu for geom_smooth
+
+```{r}
+# ?geom_smooth
+```
+
+Look at the Arguments section and read the bit about the method argument. We can specify a method, but if we allow the `method = "auto"` then it 
+will fit loess for < 1000 data points and general additive models gam for >= 1000
+
+Let's change the method to be "lm" to fit a straight line using the `method` argument
+
+```{r}
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(aes(color = Gender), shape = 8) +
+  geom_smooth(method = "lm")
+```
+
+Let's fit a smoothed line (allowing the default method = "auto") separately for each continent.  
+
+```{r}
+# Notice that we have aesthetic mappings (aes) in both the point geom and the smooth geom.
+ggplot(nh, aes(x = BMI, y = Weight)) +
+  geom_point(aes(color = Gender), shape = 8) +
+  geom_smooth(aes(color = Gender))
+```
+
+Each genre is fit with method = "loess"
+
+In the above code we now have three calls to `aes()`. One in the canvas layer, one in the `geom_point()` layer, and one in the `geom_smooth()` layer. 
+
+If we want ALL the layers to be colored by Gender, we can just specify `color = Gender` in the top canvas layer and all the subsequent layers will inherit that aesthetic mapping just like they inherit the x and y from the canvas layer.
+
+```{r}
+# I've added lwd = 2 to the geom_smooth() function to create a thicker fitted line.
+ggplot(nh, aes(x = BMI, y = Weight, color = Gender)) +
+  geom_point() +
+  geom_smooth(lwd = 2, se = FALSE)
+```
+
+
+# Time for an exercise
+Create a scatter plot looking at the relationship between Weight and Systolic Blood Pressure (BPSysAve)
+
+Color the points by Gender
+
+Add a smoothed line that fits all of the points
+
+```{r}
+ggplot(data = nh, aes(x = BPSysAve, y = Weight)) + geom_point(aes(color = Gender)) + geom_smooth(se = FALSE)
+
+```
+
+# Facets
+
+Facets display subsets of the data in different panels. There are a couple ways to do this, but `facet_wrap()` tries to sensibly wrap a series of facets into a 2-dimensional grid of small multiples. 
+
+The facet functions take a formula specifying which variables to facet by. If you have a look at the help for `?facet_wrap()` you'll see that we can control how the wrapping is laid out.
+
+Along the way to teaching you about faceting, I'll show a strategy to build up a plot by saving layers you like to an object. This way, we can avoid having to copy-paste long lines of code.
+
+Let's start with a simple plot of `BMI` on x and `Weight` on y. 
+
+Let's create the canvas and then save that to object called `p`.
+
+```{r}
+p <- ggplot(nh, aes(x = BMI, y = Weight))
+
+p
+```
+
+Add `geom_point()` colored darkred and semi-transparent (alpha)
+
+```{r}
+# The alpha argument provides a level of transparency (1 = opaque, 0 = completely transparent). 
+# This is very useful when building several layers of geoms on top of each other.
+p + geom_point(color = "darkred", alpha = .5)
+```
+
+We'll facet by `Gender` to show each Gender in its own plot. Notice that we use the `~` in front of `Gender`. `facet_wrap` uses a formula as input, and the `~` is used when creating a formula. 
+
+```{r}
+# You could put another category in front of the ~ to create factorial graphs
+p + 
+  geom_point(color = "darkred", alpha = .5) +
+  facet_wrap(~Gender)
+
+p + 
+  geom_point(color = "darkred", alpha = .2) +
+  facet_wrap(Gender~Race3)
+
+```
+
+Let's add transparency to `geom_point()` using the argument `alpha`, add a `geom_smooth()` layer colored by `Gender` and remove the standard error bars with `se = FALSE`.
+
+```{r}
+p + 
+  geom_point(color = "darkred", alpha = .2) +
+  geom_smooth(aes(color = Gender), se = FALSE) +
+  facet_wrap(~Gender)
+```
+
+In these plots, the facet and color are redundant mappings of genre. We typically avoid redundant mappings, but there are reasons to do it (ie readability for color-blind) and in this case, I like the added color.
+
+```{r}
+p + 
+  geom_point(aes(color = Gender), alpha = .2) +
+  geom_smooth(aes(color = Gender), se = FALSE) +
+  facet_wrap(~Gender)
+```
+
+# Exercise 2
+
+Create the same plot from the first exercise, but add a facet wrap by Gender
+
+```{r}
+ggplot(data = nh, aes(x = BPSysAve, y = Weight)) + geom_point(aes(color = Gender)) + geom_point(aes(color = Gender)) + geom_smooth(se = FALSE) + facet_wrap(~Gender)
+
+```
+
+# Plotting bivariate data: categorical X and continuous Y
+
+With the last example we examined the relationship between a continuous Y variable against a continuous X variable. A scatter plot was the obvious kind of data visualization. But what if we wanted to visualize a continuous Y variable against a categorical X variable? One example would be `Diabetes` and `Testosterone`
+
+However, before we start plotting, we need to filter our dataset so that we are only looking at male patients.
+
+```{r}
+p <- nh %>% 
+  filter(Gender == "male") %>% 
+  ggplot(aes(Diabetes, Testosterone))
+p
+
+```
+
+Add points to the canvas
+
+```{r}
+p + geom_point()
+
+```
+
+That's not terribly useful. There's a big overplotting problem, indicating that many points may be overlapping each other..
+
+What if we spread things out by adding a little bit of horizontal noise (aka "jitter") to the data.
+
+```{r}
+# The jitter in geom_jitter randomly moves the points horizontally. If you run this plot multiple times, you will notice that the points will not be in the same place after each run.
+p + geom_jitter()
+```
+
+Note that the little bit of horizontal noise that's added to the jitter is random. If you run that command over and over again, each time it will look slightly different. The idea is to visualize the density at eapch vertical position, and spreading out the points horizontally allows you to do that. 
+
+Because there is still overplotting, let's add some transparency by setting the `alpha=` value for the jitter.
+
+```{r}
+p + geom_jitter(alpha = .5)
+```
+
+Probably a more common visualization is to show a box plot:
+
+```{r}
+p + geom_boxplot()
+```
+
+ Let's show the summary and the raw data.
+
+```{r}
+p + 
+  geom_jitter(alpha = .5) +
+  geom_boxplot()
+
+p + 
+  geom_jitter(alpha = .5) +
+  geom_boxplot(outlier.colour = NA) #Removes the duplicate outlier
+```
+
+Here, I added the jitter layer then added the boxplot layer, so the boxplot is plotted on top of the jitter layer. 
+
+
+There's another geom that's useful here, called a violin plot. This plot does not color the outliers and provides the shape of the overall distribution across the different categories.
+
+```{r}
+p + geom_violin()
+
+p + 
+  geom_jitter(alpha = .2) + 
+  geom_violin()
+```
+
+
+Let us go ahead and look at Race and Testosterone levels among male patients. 
+
+```{r}
+ nh  %>% 
+  filter(Gender == "male") %>% 
+  drop_na(Race3, Testosterone) %>% 
+  ggplot(aes(Race3, Testosterone)) + 
+  geom_boxplot()
+ 
+ nh %>% 
+  filter(Gender == "male") %>% 
+  drop_na(Race3) %>% 
+  group_by(Race3) %>% 
+  dplyr::summarize(median_Testosterone = median(Testosterone, na.rm = TRUE)) %>% 
+  arrange(median_Testosterone)
+```
+
+One issue with box plots is that they always order the x axis alphabetically, unless otherwise told to do so.
+
+Most plots are much more effective if the axes are sorted in a more meaningful, informative way. To do that, we'll have to go back to our basic build of the plot again and use the `reorder()` function in our original aesthetic mapping. 
+
+`reorder()` takes the first variable, which is some categorical variable, and ordering it by the level of the mean of the second variable, which is a continuous variable. 
+
+It looks like this.
+
+```{r, eval=TRUE}
+# ?reorder
+p<- nh  %>% 
+  filter(Gender == "male") %>% 
+  drop_na(Race3, Testosterone) %>%  
+  ggplot(aes(reorder(Race3, Testosterone, FUN = median), y = Testosterone)) 
+ 
+p + geom_boxplot()
+#Notice how color works with boxplots
+p + geom_boxplot(aes(color = Race3))
+
+#We may want to use fill instead
+p + geom_boxplot(aes(fill = Race3))
+
+#If you wanted to break down by another factor
+nh$Diabetes <- factor(nh$Diabetes, levels = c("Yes", "No"))
+p + geom_boxplot(aes(fill = Diabetes))
+
+```
+
+# Plotting univariate continuous data
+
+What if we just wanted to visualize distribution of a single continuous variable? A histogram is the usual go-to visualization. Here we only have one aesthetic mapping instead of two.
+
+```{r}
+# Let's investigate the distribution of the Testosterone score variable
+# set this as the canvas
+p <- nh %>%  ggplot(aes(Testosterone))
+p  + geom_histogram()
+
+p <- nh %>% drop_na(Race3) %>% filter(Gender == "male") %>% ggplot(aes(Testosterone))
+p + geom_histogram()
+
+```
+
+We change the number of bins that we have in our histograms. Generally, you want to do this utilizing prior knowledge or research.
+
+```{r}
+# We can either use the bins option to specify the number of bins or you can use the bin.width option to specify the width of the bins.
+p + geom_histogram(bins = 100)
+p + geom_histogram(bins = 10)
+p + geom_histogram(binwidth = 50)
+```
+
+We can also color the bars by our `Race3` variable as we did before.
+
+```{r}
+p + geom_histogram(aes(color = Race3)) 
+```
+
+Well, that is not exactly what I meant. I wanted the inside of the bars colored. That argument is fill instead of color, just like with box plots.
+
+```{r}
+p + geom_histogram(aes(fill = Race3))
+
+```
+
+If you look at the help for `?geom_histogram` you'll see that by default it stacks overlapping data, so if two continents have the same Score, one is plotted on the bottom and the second is plotted stacked on top of the first. 
+This is a misleading visualization for that reason. Let's change the position argument so that each continent has a baseline of 0.
+
+```{r}
+# Here we use position = "identity"
+p + geom_histogram(aes(fill = Race3), position = "identity")
+```
+
+That's better, but still not great. Let's use `alpha` to change the transparancy
+
+```{r}
+p + geom_histogram(aes(fill = Race3), position = "identity", alpha = .5)
+```
+
+Maybe better, but let's try faceting instead. 
+
+```{r}
+p + geom_histogram(aes(fill = Race3), position = "identity") +
+  facet_wrap(~Race3)
+```
+
+Great!
+
+Let's start back at p and plot a smoothed density curve instead of a histogram. 
+
+```{r}
+p + geom_density()
+```
+
+Now color that by the `Race3`
+
+```{r}
+p + geom_density(aes(color = Race3))
+```
+
+This could work for a couple of groups, but with 3 or more, it can get a bit busy. Let's facet
+
+```{r}
+p + 
+  geom_density(aes(color = Race3)) +
+  facet_wrap(~Race3)
+```
+
+Change color to fill and you will see that instead of the outline being colored, the whole curve is filled
+
+```{r}
+p + 
+  geom_density(aes(fill = Race3)) +
+  facet_wrap(~Race3)
+```
+
+# Publication ready graphics
+
+Let's keep using our density plot and add some useful aesthetic elements.
+
+```{r}
+# create the canvas
+p <- nh %>% filter(Gender == "male") %>% ggplot(aes(Testosterone))
+
+# add the layers and save them onto p
+p <- p + 
+  geom_density(aes(fill = Diabetes)) +
+  facet_wrap(~Diabetes)
+
+p
+
+```
+
+Let's add proper axes labels using labs(). Keep adding to create a title, subtitle, and better legend title (color).
+
+```{r}
+# save the labs onto p
+p <- p + labs(x = "Testosterone Level",
+         y = "Density of Values",
+         title = "Density of Testosterone Levels",
+         subtitle = "For Males with and without Diabetes",
+         fill = "Diabetes")
+
+p
+```
+
+The author of ggplot2, Hadley Wickham has chosen the "gray" theme as the default, but there are others that automatically make some aesthetic choices for you.
+
+```{r}
+p + theme_bw()
+p + theme_classic()
+
+
+```
+
+## Creating your own themes
+
+If you wanted to, you can also customize your own plots using the `theme` function. Within this function there are thousands of combinations that you can choose to aesthetically change your graphs, ranging from the color of your titles to the shape of the outline of the legend. I tend to use the a built-in theme, generally `theme_classic` and then make a few additions from there. I will only give a small example of how to do this, but to cover all of the things you could do in this function would take days/weeks.
+
+```{r}
+mytheme <- theme(axis.title.x = element_text(color = "red"), 
+                 panel.background = element_rect(color = "orange", 
+                                                 fill = "turquoise4", 
+                                                 linetype = "longdash")
+                )
+
+p + theme_classic() + mytheme
+```
+
+There are packages out there that fit your plot to given themes (from TV shows, journals, etc). One that I find useful is the `ggthemes` package
+
+```{r}
+p + theme_fivethirtyeight()
+p + theme_calc()
+p + theme_tufte()
+```
+
+Sometimes you may want to go outside of the colors that ggplot provides for you when filling in histograms, coloring points, etc. Fortunately, plenty of tools are provided to customize these color sets.
+
+```{r}
+
+p + scale_fill_viridis_d()
+
+p + scale_fill_brewer(palette = "Greens")
+p + scale_fill_brewer(palette = "Set1")
+
+p + scale_fill_manual(values = c("green", "blue", "pink", "orange")) 
+
+nh %>% filter(Gender == "male") %>% ggplot(aes(x = Testosterone, y = BMI, color = Testosterone)) + 
+  geom_point(size = 4) + 
+  scale_color_gradient(low="blue", high="red")
+
+```
+
