@@ -1,0 +1,495 @@
+---
+title: 'Essential Statistics with R'
+date: '4/22/2021'
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warnings = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+[Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/Stats.zip?raw=true)
+
+Load the packages needed today
+
+# Set-up
+
+```{r, message=FALSE}
+library(skimr)
+library(tidyverse)
+library(broom)
+library(rstatix)
+```
+
+### About NHANES data
+
+The data we're going to work with comes from the National Health and Nutrition Examination Survey (NHANES) program at the CDC. You can read a lot more about NHANES on the [CDC's website](http://www.cdc.gov/nchs/nhanes/) or [Wikipedia](https://en.wikipedia.org/wiki/National_Health_and_Nutrition_Examination_Survey). 
+
+NHANES is a research program designed to assess the health and nutritional status of adults and children in the United States. The survey is one of the only to combine both survey questions and physical examinations. It began in the 1960s and since 1999 examines a nationally representative sample of about 5,000 people each year. The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions. The physical exam includes medical, dental, and physiological measurements, as well as several standard laboratory tests. NHANES is used to determine the prevalence of major diseases and risk factors for those diseases. NHANES data are also the basis for national standards for measurements like height, weight, and blood pressure. Data from this survey is used in epidemiology studies and health sciences research, which help develop public health policy, direct and design health programs and services, and expand the health knowledge for the Nation.
+
+We are using a small slice of this data. We're only using a handful of variables from the 2011-2012 survey years on about 5,000 individuals. The CDC uses a [sampling strategy](http://www.cdc.gov/nchs/data/series/sr_02/sr02_162.pdf) to purposefully oversample certain subpopulations like racial minorities. Naive analysis of the original NHANES data can lead to mistaken conclusions because the percentages of people from each racial group in the data are different from general population. The 5,000 individuals here are resampled from the larger NHANES study population to undo these oversampling effects, so you can treat this as if it were a simple random sample from the American population.
+
+### Import & inspect
+
+Let's load and inspect the data.
+
+```{r loaddata, message=FALSE}
+nh <- read_csv("data/nhanes.csv")
+
+# remove children from future analyses
+nh <- filter(nh, Age >= 18)
+nh
+
+# choose some functions to help us understand the basics of the data
+skim(nh)
+```
+
+# Descriptive statistics
+
+Descriptive statistics begin to help us to understand the distribution shape of our variables. Also, these are the statistics typically reported in the first table of clinical manuscripts describing the study sample.
+
+### Continuous Data
+
+Let's quickly calculate some descriptive stats for the **`Age`** variable. For example, `mean()`, `median()`, `range()`, `sd()`. Also create a histogram of the **`Age`** variable. What do you see?
+
+```{r}
+# Age mean, median, range
+mean(nh$Age)
+median(nh$Age)
+
+range(nh$Age)
+sd(nh$Age)
+
+# 1st and 3rd quartile
+quantile(nh$Age, probs = .25)
+quantile(nh$Age, probs = .75)
+
+summary(nh$Age)
+
+nh %>% ggplot(aes(Age)) + geom_histogram()
+```
+
+You can also calculate these using dplyr, but remember, this returns a single-row, single-column tibble, _not_ a single scalar value like the above. This is only really useful in the context of grouping and summarizing. 
+
+```{r}
+# Compute the mean age
+nh %>% 
+  summarize(mean(Age))
+
+# Now grouped by other variables
+nh %>% 
+  group_by(Race, Gender) %>% 
+  summarize(mean(Age))
+```
+
+### Categorical Data
+
+To summarize a categorical variable like Race, we can create tables of counts or porportions or cross tabulate with a second categorical variable
+
+First, let's see the `distinct` values of Race
+
+```{r}
+nh %>% distinct(Race)
+
+unique(nh$Race)
+```
+
+Now create a table of counts
+```{r}
+nh %>% count(Race) #this returns a tibble, nice!
+
+#proportions
+nh %>% 
+  count(Race) %>% 
+  mutate(prop = n / sum(n))
+
+#2-factor table or cross tabulation
+nh %>% count(Race, Gender) # as a long format tibble
+
+tab <- xtabs(~Race + Gender, data = nh) # as a cross table
+
+# within each Race, what is the Gender breakdown?
+prop.table(tab, margin = 1) #by row
+```
+
+## Missing data
+
+Let's try taking the mean of a continuous variable where there are missing values, either the dplyr way or the simpler `$` way.
+
+```{r}
+# base r method returns a single value
+mean(nh$Income)
+
+# oh right, we need to add the na.rm  =TRUE argument
+mean(nh$Income, na.rm = TRUE)
+```
+
+The `is.na()` function tells you if a value is missing. Get the `sum()` of that vector, which adds up all the `TRUE`s to tell you how many of the values are missing. 
+
+```{r, results="hide"}
+is.na(nh$Income)
+```
+```{r}
+sum(is.na(nh$Income))
+
+# prop missing
+sum(is.na(nh$Income)) / length(nh$Income)
+```
+
+What if we want to know the amount of missing data in each column? There's a function for that! Let's use the `skim()` function in the skimr package to help
+
+```{r}
+skim(nh)
+
+# use dplyr to figure out how which variables have the most missings
+skim(nh) %>% 
+  select(skim_variable, n_missing, complete_rate) %>%
+  arrange(complete_rate)
+```
+
+### What to do about missing data
+
+In general, my advice is to consider your options and the effect of each option on your results. Options include: remove the entire observation (listwise deletion), completing the analyses with the missing data points as NA, or somehow filling in the missing data.
+
+If dropping observations with missing data will not work or produces undesirable results (bias, too few complete rows left), then you may consider imputation. Imputation is the process of replacing missing data with substituted values.
+
+## Single Imputation
+
+If there are few missing data points, you could consider imputing with the median / mean (continuous variable) or with the mode (categorical variable). The `replace_na()` function from the tidyr package (loaded with tidyverse) used with `mutate()` is an easy method of replacing NA with a single value.
+
+```{r}
+# how many missings in BMI
+summary(nh$BMI)
+
+nh %>% 
+  select(BMI) %>% 
+  filter(is.na(BMI))
+
+# Use median imputation to fill in missings in BMI
+# because we are changing a variable, we will need mutate()
+nh %>%
+  mutate(BMI = replace_na(BMI, median(BMI, na.rm = TRUE)))
+
+# check that it worked
+nh %>%
+  mutate(BMI = replace_na(BMI, median(BMI, na.rm = TRUE))) %>% 
+  select(BMI) %>% 
+  filter(is.na(BMI))
+```
+
+## Multiple Imputation
+
+"The idea of imputation is both seductive and dangerous" (R.J.A Little & D.B. Rubin)
+
+Multiple imputation creates models to predict the missing value with all of the other variables in the dataset or with a specified set of variables from the dataset.
+
+MICE (Multivariate Imputation via Chained Equations) is one of the commonly used packages in R. Filling in a dataset using multiple imputation as compared to single imputation will not inflate the frequency at the mean / median.
+
+```{r}
+# install.packages("mice")
+# library(mice)
+```
+
+Importantly, MICE assumes that the missing data are Missing at Random, which means that the probability that a value is missing depends only on the observed value and can be predicted using them.
+
+By default, linear regression is used to predict continuous missing values. Logistic regression is used for categorical missing values. Once this cycle is complete, multiple data sets are generated. These data sets differ only in imputed missing values. Generally, it’s considered to be a good practice to build models on these data sets separately and then combine their results.
+
+# Stats with Continuous variables
+
+### T-tests
+
+Let's do a two-sample t-tests to assess the _difference in means between two groups_. The baseR function for a t-test is `t.test()`, but we will use `t_test()` from the rstatix package because it is compatible with the pipe and so we can run many t-tests at once. See the help using `?t.test`.
+
+1. Are there differences in height for males versus females in this dataset?
+
+To assess this question, first we make sure that a t-test is the correct type of analysis. A t-test tests the difference in 2 means - yes that is what we want to do. Next we need to decide what type of t-test we need to perform by thinking through the assumptions. Domain specific knowledge and exploratory data analyses will help here.
+
+T-test Assumption Flow chart:
+- Random Sampling -- if not met, simple statistics will not serve you well
+- Independent Samples -- if not met, paired t-test
+- Normality -- if not met, Wilcoxon-Mann-Whitney U test
+- Equal variance -- if not met, Welch's t-test
+
+For our question of height differing by gender:
+
+Random sampling -- YES
+
+Independent samples -- YES (men and women are different people - unrelated). Would be paired t-test if we were assessing height of husband-wife pairs or brother-sister pairs
+
+Normality -- ?? well, we need to assess this. We'll discuss this in a few minutes.
+
+Equal variance. Also called homoscedasticity of variances.
+?? we could think about the populations of men and women and what we know about height and conclude reasonably that the variance is equal for height
+
+To answer our questions about the assumptions, let's create some exploratory plots. I like density plots colored by group. I think these help you see the distribution of the variable easily to assess equal variance. This plot also informs you somewhat on normality, and helps you see if there is a noticeable difference in groups.
+
+```{r}
+ggplot(nh, aes(Height, color = Gender, fill = Gender)) +
+  geom_density(alpha = 0.5)
+#looks like there is a significant difference between the populations.
+#looks like we are safe to assume equal variance
+```
+
+The last assumption we need to talk about here is normality. Normality can be assessed graphically or via hypothesis tests. There are pros and cons to either approach. 
+
+Graphically, we could look at a histogram, boxplot, or a more specialized plot to assess normality called a QQ plot (quantile-quantile plot or quantile comparison plot or normal probability plot). A QQ plot graphs the expected data value given a normal distribution on the X axis against the observed data value on the y axis. If the data is normally distributed, we should see a 1:1 ratio between the expected values and the observed values. Let's have a look for height:
+
+```{r normality}
+ggplot(nh, aes(sample = Height)) + 
+  geom_qq() +
+  geom_qq_line() +
+  facet_wrap(~Gender) 
+# both look good
+```
+
+Learning what is a normal QQ plot looks like is a process. I like to generate a sample from a normal distribution and look at qq plots generated from those (definitely normal) data. If mine look similar then I'll assume my data are from a normal distribution
+
+```{r}
+# generate data from normal distribution where n = my sample size
+normal_data <- rnorm(n = 3707/2)
+
+# change vector to dataframe bc ggplot needs dataframe
+normal_data <- as.data.frame(normal_data)
+
+# make qq plot
+ggplot(normal_data, aes(sample = normal_data)) + 
+  geom_qq() +
+  geom_qq_line()
+```
+
+> Note about tests of normality: Certain fields love hypothesis tests of normality and sometimes reviewers will specifically request one. There is a theoretical problem with trying to _prove_ a null hypothesis and these tests reject the null hypothesis when sample sizes are large, even when data are drawn from a normal distribution. 
+> My best advice is to use your brain, subject matter expertise, and graphical assessments as much as possible, but in case you are forced to do a hypothesis test for normality check out `shapiro.test()`, since it seems to be the least awful choice (https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3693611/).
+
+Ok. We've checked our assumptions and are ready to perform a two-sample, pooled variance t-test. Today we will use the `t_test()` function from the rstatix package, but this could also be accomplished using the tidymodels framework we will learn later on today (or the base R `t.test()` function too)
+
+```{r t-test}
+nh %>% t_test(Height ~ Gender, var.equal = TRUE, detailed = TRUE)
+```
+
+One-tailed versus two-tailed tests:
+A two-tailed test is usually more appropriate. In the case of a two-tailed test, we are testing whether the true difference in means is equal to or not equal to 0. When the p-value is very low, you can reject the null hypothesis that there's no difference in means. Because you want to allow the difference in means to be positive _or_ negative, you want to do a two-tailed test. Even in cases when we _only_ want to test one very specific directionality of effect, typically we still opt for a two-tailed test to be conservative. One-tailed tests are more powerful if we "get it right", but much less powerful for the opposite effect. The p-value of a one-tailed test would be half of that of a two-tailed hypothesis test.
+
+# Many t-tests
+
+Choose which variables you would like to test against your grouping variable. We'll use Gender as the grouping variable and `select()` a few variables manually. Remember that you could also `select_if(is.numeric)` or you could use some `select()` helper functions like `contains()` or `starts_with()` or a combination.
+
+```{r}
+myvars <- c("Gender", "Age", "Income", "Poverty", "Weight", "Height", "BMI", "Pulse", "BPSys", "BPDia", "Testosterone", "HDLChol", "TotChol")
+```
+
+Use `pivot_longer()` to create a long-form dataset for the variables you want to test
+
+```{r}
+nh_long <- nh %>% 
+  select(myvars) %>%
+  pivot_longer(Age:TotChol, names_to = "Var", values_to = "Value")
+```
+
+Then `group_by()` the variable and use the `t_test()` function from the rstatix package to run ALL the t-tests for each variable. Make sure to adjust the p-values for multiple testing.
+```{r}
+nh_long %>%
+  group_by(Var) %>%
+  t_test(Value ~ Gender, detailed = TRUE) %>%
+  adjust_pvalue(method = "holm") %>%
+  arrange(p.adj)
+```
+
+If you have 100s or 1000s of variables to test and `pivot_longer()` is struggling to make a long dataset of your size, look into the `map()` function from the purrr package
+
+```{r}
+#create vector of grouping column
+gen <- nh %>% pull(Gender)
+
+nh %>% 
+  select(myvars) %>%
+  select_if(is.numeric) %>% #remove Gender
+  map_df(~ tidy(t.test(. ~ gen)), .id = 'var') %>% # base R t.test() not t_test()
+  mutate(p.adj = p.adjust(p.value, method = "holm")) %>%
+  arrange(p.adj)
+```
+
+### Reporting the results
+
+From the test output, let's discuss which statistics to report. 
+
+It is no longer acceptable to present p-values separate from the test that created them. **No more naked p-values**. Most of this output should be included in the results section, or on the plot showing the results with a plot legend. You would at least report the t-statistic, `tidy(test)$statistic`, degrees of freedom, `tidy(test)$parameter`, and the p-value, `tidy(test)$p.value`.
+
+You may also like to report the mean difference between the groups, given by the `estimate` column, with its confidence interval (`conf.low`, `conf.high`).
+
+For interpretation of your results, it is also good practice to report the mean + standard deviation and / or median and quartiles.
+
+You now know how to generate those descriptive statistics using dplyr
+
+**What to do if normality is not met:** For many biological variables, the normality assumption will not hold true and your qq plot will show deviations from normality. In these cases, an option is the Wilcoxon Mann-Whitney U test using the `wilcox.test()` function in R. The syntax is the same as for the `t.test()` function. The power is almost as good as a t-test when the data are normal and it is a more appropriate technique when the data are not normally distributed. 
+
+However, although normality is an important assumption, t-tests are quite robust to departures in normality, so often are a good choice (and are an especially good choice in the case of unequal variance).
+
+> **A note on paired versus unpaired t-tests:** The t-tests we performed here were unpaired tests. Males and females are different people. The diabetics and nondiabetics are different samples. In these cases, an independent samples (unpaired) test is appropriate. An alternative design might be when data is derived from the same individuals measured at two different time points or locations, e.g., before versus after treatment, left versus right hand, etc. In this case, a _**paired t-test**_ would be more appropriate. A paired test takes into consideration the intra and inter-subject variability, and is more powerful than the unpaired test. Use the `paired = TRUE` argument for both the t-test and the Wilcoxon test.
+
+# ANOVA & Linear models
+
+> Analysis of variance and linear modeling are complex topics that deserve an entire semester dedicated to theory, design, and interpretation. What follows is a necessary over-simplification with more focus on implementation, and less on theory and design. Please see the end of the script for Further Resources.
+
+Where t-tests and their nonparametric substitutes are used for assessing the differences in means between two groups, ANOVA is used to assess the significance of differences in means between multiple groups. In fact, a t-test is just a specific case of ANOVA when you only have two groups. And both t-tests and ANOVA are just specific cases of linear regression, where you're trying to fit a model describing how a continuous outcome (e.g., BMI) changes with some predictor variable (e.g., diabetic status, race, age, etc.). The distinction is largely semantic -- with a linear model you're asking, "do levels of a categorical variable affect the response?" where with ANOVA or t-tests you're asking, "does the mean response differ between levels of a categorical variable?"
+
+## ANOVA
+
+T-tests are for assessing the differences in means between _two_ groups. A t-test is a specific case of ANOVA, which is a specific case of a linear model. Let's run ANOVA, but this time looking for differences in means between more than two groups.
+
+Let's look at the relationship between smoking status (Never, Former, or Current), and BMI.
+
+First let's look at the Smoking Status variable
+
+```{r}
+nh %>% count(SmokingStatus)
+```
+
+`lm()` will ignore the NAs, so let's proceed to fit the model.
+
+```{r}
+mod <- lm(BMI ~ SmokingStatus, data = nh)
+```
+
+The first model output we will look at is the ANOVA style output.
+
+```{r}
+anova(mod)
+```
+
+Here we can see the overall effect of SmokingStatus on BMI. Its effect is significant with an F = 17 and a p-value = 4.54e-08.
+
+To see a little bit more, we can call `summary()` on the model fit object.
+
+```{r}
+summary(mod)
+```
+
+Looking at the `summary(modelfit object)`, we can see that Current smokers are our reference group. The `(Intercept)` line is telling us the average BMI for Current Smokers. The t-statistic and p-value associated with that line are not helpful (telling us the difference between CurrentSmoker BMI and 0).
+
+The `SmokingStatusFormer` line tells us the **difference** in BMI between Current smokers and Former smokers. Former smokers have BMI 1.77 higher than Current smokers. That difference is significant with a t-statistic of 5.4. 
+
+>Note that this is a basic t-test and if you have taken statistics before, you will know that when performing multiple t-tests within a family of tests, their p-values should be corrected for multiple t-testing. More on that a few lines down.
+
+The `SmokingStatusNever` line tells us the **difference** in BMI between Current smokers and Never smokers. Never smokers have BMI 1.46 higher than Current smokers. That difference is significant with a t-statistic of 5.1.
+
+**A note on dummy coding:** If you have a $k$-level factor, R creates $k-1$ dummy variables, or indicator variables, by default, using the alphabetically first level as baseline. For example, the levels of SmokingStatus are "Current", "Former", "Never". R creates 2 dummy variables called "SmokingStatusFormer" that's **1** if you're a former smoker, and **0** otherwise, and "SmokingStatusNever" that's **1** if you're a never smoker, and **0** otherwise. Someone who is a current smoker will show 0 on Former and 0 on Never. 
+
+```{r}
+head(model.matrix(mod))
+
+# back to the model
+summary(mod)
+```
+
+The overall model fit statistics are on the bottom. We can see the R^2 value, telling us that SmokingStatus explained 0.9% of the variance in BMI (pretty low), but that the model explained a significant amount of variance in BMI, F = 17, p-value: 4.54e-08.
+
+The view of our linear model right now has Current smokers as the reference group, just because Current comes first alphabetically. You can change the ordering of the factors to change the interpretation of the model (e.g., treating Never as the reference group). Let's use `factor()` to change the factor levels.
+
+```{r}
+# Let's change the level order of SmokingStatus. I'm showing the dplyr way
+nh <- nh %>% 
+  mutate(SmokingStatus = factor(SmokingStatus, levels = c('Never', 'Former', 'Current')))
+```
+
+Re-fit the model using the newly factored SmokingStatus
+```{r}
+mod <- lm(BMI~SmokingStatus, data=nh)
+
+# Show the ANOVA table
+anova(mod)
+
+# Print the full model statistics
+summary(mod)
+```
+
+Notice that the p-value on the ANOVA/regression didn't change, but the coefficients did. _Never_ smokers are now treated as baseline. The intercept coefficient (28.856) is now the mean for _Never_ smokers. The `SmokingStatusFormer` coefficient of .309 shows the apparent increase in BMI that former smokers have when compared to never smokers, but that difference is not significant (p=.24). The `SmokingStatusCurrent` coefficient of -1.464 shows that current smokers actually have a lower BMI than never smokers, and that this decrease is highly significant.
+
+The `summary()` and `anova()` functions called on a linear model object provide kind of a paragraph of output. The `tidy()` and `glance()` functions in the broom package can help tremendously if you'd like to output the results of an ANOVA or LM into a table for your manuscript. 
+
+Retrieve the coefficients section using `tidy()` and the model fit statistics using `glance()`
+
+```{r}
+tidy(anova(mod))
+
+tidy(mod) #raw t-test p-values should be corrected for multiple testing
+tidy(mod) %>% mutate(p.adj = p.adjust(p.value, method = "holm"))
+
+glance(mod)
+```
+
+Finally, let's visualize the differences in means between these groups. The **NA** category, which is omitted from the ANOVA, contains all the observations who have missing or non-recorded Smoking Status. 
+
+```{r smoking_boxplots}
+# plot results
+nh %>%
+  ggplot(aes(SmokingStatus, BMI)) + geom_boxplot()
+
+# plot results without NA bc ANOVA automatically removed those
+nh %>%
+  drop_na(SmokingStatus) %>%
+  ggplot(aes(SmokingStatus, BMI)) + geom_boxplot()
+```
+
+I don't love a boxplot to visualize results from an ANOVA. Why not?
+
+Let's create a slightly more appropriate visualization
+
+```{r}
+sssum <- nh %>%
+  drop_na(SmokingStatus) %>%
+  group_by(SmokingStatus) %>%
+  summarise(mean = mean(BMI, na.rm = TRUE),
+            n = n(),
+            SE = sd(BMI, na.rm = TRUE) / sqrt(n),
+            lower = mean - SE,
+            upper = mean + SE)
+
+ggplot() + 
+  geom_jitter(data = nh %>% filter(!is.na(SmokingStatus)), 
+              aes(SmokingStatus, BMI, col = SmokingStatus), 
+              width = .1, 
+              alpha = .03) + 
+  geom_pointrange(data = sssum, 
+                  aes(x = SmokingStatus, 
+                      y = mean, 
+                      ymin = lower, 
+                      ymax = upper, 
+                      col = SmokingStatus), 
+                  fatten = 2, size = 1.5) +
+  theme_bw()
+```
+
+# EXERCISE
+
+Use ANOVA to investigate the differences in mean BPSys across the Race variable. 
+
+1. Create a boxplot to visualize the differences
+
+```{r}
+nh %>% 
+  drop_na(BPSys) %>%
+  ggplot(aes(x = reorder(Race, BPSys), y = BPSys)) +
+  geom_boxplot()
+```
+
+2. Create a new model object with the `lm()` function
+
+```{r}
+mod <- lm(BPSys ~ Race, data = nh)
+```
+
+3. Run `anova()` on the lmobject and interpret the output
+
+```{r}
+anova(mod)
+```
+
+4. Interpret the output from `summary(lmobject)`
+
+```{r}
+summary(mod)
+```
