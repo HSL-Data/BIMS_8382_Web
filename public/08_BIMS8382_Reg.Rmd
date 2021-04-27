@@ -1,0 +1,452 @@
+---
+title: "Linear Regression"
+date: "4/27/2021"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warnings = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+[Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/Reg.zip?raw=true)
+
+# Set up
+
+Install and load packages.  
+Packages needed today are tidyverse, broom, and modelr
+
+```{r}
+library(tidyverse)
+library(broom)      #clean up output from models
+library(modelr)     #add predictions and residuals from model
+```
+
+# Evals data
+
+Today we will start with a dataset about teaching evaluation scores. Researchers at the University of Texas at Austin gathered data from end of semester student evaluations for a large sample of courses. In addition, six students rated each professor's physical appearance. The result is a data frame where each row contains a different course and each column has information on either the course or the professor.
+
+More information about these data can be found at [Open Intro](https://www.openintro.org/stat/data/?data=evals)
+
+Let's start by reading in the data file
+
+```{r}
+evals <- read_csv("data/evals.csv")
+```
+
+Take a look at the data. 
+
+```{r}
+glimpse(evals)
+```
+
+Beauty scores range from 1 (lowest) to 10 (highest).
+
+# Linear regression with 1 continuous predictor variable
+
+Let's create a model to explain the evaluation score based on the professor's average beauty score. First we'll perform some quick exploratory data analysis to understand what relationship these variables have
+
+```{r}
+ggplot(evals, aes(bty_avg, score)) + geom_point()
+
+ggplot(evals, aes(bty_avg, score)) + geom_jitter()
+```
+
+Looks like there is a positive association. Let's create a model and then interpret its output. To do this we will be using the lm function. 
+```{r}
+mod1 <- lm(score ~ bty_avg, data = evals)
+mod1
+summary(mod1)
+```
+
+Interpretation:
+
+- Call: this is reminding us of which model we ran
+- Residuals: we will come back to these
+- Coefficients:
+  - (Intercept): The intercept term is not very useful most of the time. Here it shows us what the teaching score would be when bty_avg = 0. The hypothesis test should be ignored. It is simply telling us about the difference between zero and the the teaching score when bty_avg = 0
+  - bty_avg: this coefficient is meaningful -- for each additional point of beauty, the teaching evaluation score increases by 0.067 points. It does seem that increasing beauty score is associated with improved scores on teaching evaluations.
+
+Check out the overall model statistics like the R^2, F and p. The model is highly significant (F = 16.73 and P=$5.083 \times 10^{-5}$) meaning that there is a relationship between bty_avg and the teaching evaluation score.Notice that we are not implying causality here.
+
+The R^2 value tells us the amount of variance in Y that we were able to explain with our model (just X in this case). Because we only have one predictor variable in our model, we should interpret the Multiple R^2. Use the Adjusted when there are many predictors in the model. Our R^2 = 0.0352 so 3% of variability in teaching score is explained by bty_avg. For some questions being able to explain even 3% of the variability would be great but for other questions this would be considered very low.
+
+We can also return the output from the summary function in a dataframe by using some excellent helper functions from the broom package
+
+```{r}
+tidy(mod1)
+
+# just return the p-value for the slope. Row 2, column 5
+tidy(mod1)[2,5]
+
+glance(mod1)
+```
+
+# EXERCISE
+
+1. Your turn! Fit a model to explain the teaching score based on age. Call the model mod2. 
+
+```{r}
+mod2 <- lm(score ~ age, data = evals)
+```
+
+2. Interpret the output from summary(mod2). What is the effect of age on teaching evaluation score?
+
+```{r}
+summary(mod2)
+# for each additional year of age, the teaching eval score decreases by 0.006
+```
+
+## Visualize the bty_avg model
+
+Let's plot the bty_avg model. In this case, we can just use `geom_smooth(method = "lm")` but that will not always be the case, so I'll then show you a method that will work no matter what the model is.
+
+```{r}
+ggplot(evals, aes(bty_avg, score)) + 
+  geom_jitter() + 
+  geom_smooth(method = "lm", se = FALSE)
+```
+
+To visualize the predictions from any model, we'll start by generating an evenly spaced grid of values that covers the region where our data lies. To do this, I'll use the `data_grid()` function from the modelr package.
+
+```{r}
+newdata <-  data_grid(evals, bty_avg)
+newdata
+```
+
+Next we add predictions. We'll use `add_predictions()` which takes a data frame and a model. It adds the predictions from the model to a new column in the data frame
+
+```{r}
+newdata <- add_predictions(newdata, mod1)
+newdata
+```
+
+Great! Now we'll plot the raw data and then the model
+```{r}
+ggplot() + 
+  geom_jitter(data = evals, aes(x = bty_avg, y = score)) +
+  geom_line(data = newdata, aes(x = bty_avg, y = pred), colour = "blue", size = 1)
+```
+
+## Investigate the residuals
+
+Let's also take a moment to investigate the residuals. A residual is defined as the difference between the observed score and the predicted score. Residuals tell us how far off our prediction was from our observed value. In mathematical symbols: $y_i - \hat{y}_i$
+
+Many of the assumptions of a linear model deal with residuals.
+
+Assumptions of linear model:
+
+1. Random Sampling
+2. Equal variance across levels of X
+3. Normality of residuals
+4. Independent residuals
+5. Linear relationship between X and Y
+
+The built in diagnostic plots are a good place to start
+
+```{r}
+plot(mod1)
+```
+
+1. The first plot shows fitted values on x and residuals on y. We would like these centered on 0 and we do not want to see a different pattern on the left and the right. Ours are not bad but we do see more residuals on the bottom (score - pred = Negative), meaning based on their beauty score, we predicted a higher teaching score than they actually had.
+
+2. The second plot shows a qq plot of the residuals. If the residuals were normally distributed, they would follow the 1:1 dotted line. We see deviations from the normal distribution for the upper portion of the distribution.
+
+3. The third plot shows the sqrt(resid) on the y axis so all the residuals (positive and negative) can be assessed together.
+
+4. The fourth plot shows leverage, how much influence each point has on the regression line. 
+
+If we add the residuals onto the original data frame, we can also plot the residuals against other variables from the dataset and maybe new hypotheses will emerge.
+
+```{r}
+evals %>%
+  add_residuals(mod1) %>% 
+  add_predictions(mod1)
+
+# save them with names
+evals <- evals %>%
+  add_residuals(mod1, var = "resid_mod1") %>% 
+  add_predictions(mod1, var = "pred_mod1")
+
+# just see the variables we want
+evals %>%
+  select(bty_avg, score, pred_mod1, resid_mod1)
+```
+
+Next, let's plot the predicted values against the residuals
+
+```{r}
+evals %>%
+  ggplot(aes(pred_mod1, resid_mod1)) + geom_jitter()
+```
+
+Mostly distributed randomly across levels of X. That is good.
+
+There are several points for which the observed score - the predicted score is very negative. Meaning based on the beauty score, we predicted higher teaching scores than we observed. Let's look at the points for which the fit was worst (residuals below -1)
+
+```{r}
+evals %>%
+  filter(resid_mod1 < -1) %>%
+  select(bty_avg, score, pred_mod1, resid_mod1)
+
+# color by gender
+evals %>% 
+  ggplot(aes(pred_mod1, resid_mod1)) + 
+  geom_point(aes(color = gender))
+
+# count gender in the high residuals
+evals %>%
+  filter(resid_mod1 < -1) %>%
+  count(gender)
+```
+
+Hmm, more females had bad predictions. Maybe we should consider gender in our model?
+
+# Linear regression with 1 categorical predictor
+
+AKA one-way ANOVA
+
+Let's start with a little exploratory data analysis for this question. I'd like to see the differences in mean teaching score between males and females in this study.
+
+See a boxplot for this question
+
+```{r}
+evals %>%
+  ggplot(aes(gender, score)) + geom_boxplot()
+```
+
+See a grouped summary
+
+```{r}
+evals %>%
+  group_by(gender) %>%
+  summarize(mean(score))
+
+# what is the difference between these means?
+4.09 - 4.23
+```
+
+Now create a model that predicts the teaching evaluation score just on the professor's gender (coded as binary in this study).
+
+```{r}
+mod3 <- lm(score ~ gender, data = evals)
+summary(mod3)
+```
+
+The output labeled intercept represents the indicator function for male as 0 meaning that the coefficient for male drops out of the equation leaving only the $\beta_0$ left over. $\hat{Y}_{female} = \beta_0$ so $\hat{Y}_{female}$ and $\beta_0$ are the mean teaching score for female instructors. 
+
+Moving down to the coefficient for male, in our equation the indicator function for male is 1 which keeps the $\beta_1$ in the equation. $\hat{Y}_{male} = \beta_0 + \beta_{male} * 1_{male}(X)$
+
+Thus, $\hat{Y}_{male}$ = 4.09282 + 0.14151 = 4.23433
+
+This analysis is equivalent to an ANOVA. Let's quickly prove it by looking at the output using the `anova()` function rather than the `summary()` function.
+
+```{r}
+anova(mod3)
+```
+
+The difference in the output from the two tests is how the information is displayed. In the LM, the model assumes the "baseline" gender level is _female_, whereas in the ANOVA there is no baseline level, we are looking at the overall effect of gender on score If we are interested in pairwise comparisons, we can look at them using the `TukeyHSD(aov(lmobject))` function we learned last week. In the case of 2 levels of a categorical variable, we could have also used a pooled variance t-test to retrieve the same p-value.
+
+### Assess the assumptions
+
+Now that we have learned a bit about the residuals, let's revisit the assumptions of ANOVA
+
+1. Random sampling
+2. Groups are independent (if an observation is in group A it cannot also be in group B)
+3. Equal variance across groups (check with residual plot)
+4. Normality of residuals
+
+Again, the built-in diagnostic plots are a good place to start
+```{r}
+plot(mod3)
+```
+
+The plots will look different now that we have groups. The fitted values on the x axis tell us the predicted mean of each group (females on left and males on right). We are looking for equal variance between groups, which we see is met.
+
+The qq plot shows that the residuals are not quite normally distributed. There is a short tail on the upper end of the distribution - we did not have as many cases of overestimating the professor's teaching score as we would have if the residuals were perfectly normal.
+
+In the third plot we can again assess equal variance. Looks ok
+
+The fourth plot tells us about the influence of each datapoint on the regression. No issues here.
+
+# Linear regression with 2 categorical predictors
+
+AKA 2-way ANOVA
+
+Let's now take a look at a model that uses the instructor's rank and their gender to explain their teaching score. 
+
+The first thing we should always do is make a plot showing the relationships we are interested in. Because these are categorical variables, we will use boxplots for rank filled by gender.
+
+```{r}
+evals %>% 
+  ggplot(aes(rank, score, fill = gender)) + 
+  geom_boxplot()
+```
+
+It looks like the relationship between gender and teaching score depends on the rank. For teaching level instructors, their gender matters greatly in explaining their score whereas for higher rank faculty, their gender doesn't impact their score. This is called an _interaction_ between the two variables - when the level of a predictor variable impacts the relationship of a second predictor with y.
+
+Let's first create a model that does not have the interaction term and see how it performs.
+
+```{r}
+mod4 <- lm(score ~ rank + gender, data = evals)
+anova(mod4)
+```
+
+Overall, the rank variable is not significant. There is a significant effect of gender on teaching score.
+
+Let's get a different view with the `summary()` output.
+
+```{r}
+summary(mod4)
+```
+
+Interpretation:
+
+- female teaching faculty have an average score of 4.19
+- female tenure track faculty have an average score -0.104 lower than female teaching faculty (4.09) and that difference is not significant
+- female tenured faculty have an average score -0.176 lower than female teaching faculty (4.02) and that difference is significant
+- on average male faculty have an average score 0.167 higher than female faculty and that difference is significant
+
+The significance has changed a bit from what we saw in the ANOVA output, because now we are seeing uncorrected t-tests. We saw how to correct the p-values last time, using the `tidy()` function followed by `mutate()` and `p.adjust()` so if you choose to do that in your analyses, you know how to code it.
+
+- Adj R^2 is 0.0266 so 2.66% of teaching score is explained by rank and gender.
+
+The plot showing the raw data and the predictions will not be very informative because the predictions are just the numbers we see in the model output, but we can do it.
+
+```{r}
+newdata <- data_grid(evals, rank, gender)
+newdata <- newdata %>% add_predictions(mod4)
+```
+
+Make a boxplot of the raw data and then dots for the predicted group means.
+
+```{r}
+ggplot() + 
+  geom_boxplot(data = evals, 
+               aes(rank, score, color = gender), 
+               alpha = .5) +
+  geom_point(data = newdata, 
+             aes(rank, pred, color = gender), 
+             size = 5, 
+             position = position_dodge(width = .75))
+```
+
+Looks like the predictions for the teaching faculty are the farthest off. Let's take a look at the residual plot colored by gender to see if we can spot anything.
+
+```{r}
+evals %>% 
+  add_residuals(mod4) %>%
+  add_predictions(mod4) %>%
+  ggplot(aes(pred, resid, color = gender)) + geom_jitter()
+```
+
+We see each of the ranks separated by gender along the x-axis at their predicted group mean. The residuals indicate the distance from the actual data point to their predicted group mean. Remember that we would like residuals to be evenly distributed around 0. We see high residuals (below -1) mainly for female teaching faculty and for male teaching faculty. Remember that it was in that group that we had the greatest difference between male and female faculty.
+
+How many residuals fit the model well?
+
+```{r}
+evals %>% 
+  add_residuals(mod4) %>%
+  filter(resid < .5 & resid > -.5)
+```
+
+282 points have low residuals.
+
+Let's create the model with the interaction to see if we can achieve a better model fit.
+
+# Linear regression with 2 categorical predictors and an interaction
+
+AKA 2-way ANOVA with interaction
+
+```{r}
+mod5 <- lm(score ~ rank * gender, data = evals)
+anova(mod5)
+```
+
+The main effect of rank is not significant, but the interaction of rank and gender is significant. In a case like this, you should keep the main effect and the interaction in the model rather than removing the main effect and keeping the interaction term (that is poor statistical practice and results in misleading coefficients).
+
+We also still conclude that the main effect of gender is significant.
+
+# EXERCISE
+
+With your group, spend a few minutes to look at the regression style output and interpret the coefficients.
+
+```{r}
+summary(mod5)
+```
+
+- for female teaching faculty, the average teaching score is 4.03
+- the average difference between female teaching faculty and female tenure track faculty is +0.059 (ns)
+- the average difference between female teaching faculty and female tenured faculty is +0.087 (ns)
+- the average difference between female teaching faculty and male teaching faculty is 0.48 and that difference is significant
+- the additional difference between female teaching faculty and male tenure track faculty is -0.32 (so the average teaching score for male tenure track = 4.038 + 0.483 - 0.323) and that contribution is significantly different from zero
+- the additional difference between female teaching faculty and male tenured faculty is -0.46 (so the average teaching score for male tenured = 4.038 + 0.483 - 0.463) and that contribution is significantly different from zero
+
+- Now our R^2 is 4.96%, much higher than before.
+
+Let's make a similar plot to that from mod4 to see our new predicted values.
+
+```{r}
+newdata <- data_grid(evals, rank, gender)
+newdata <- newdata %>% add_predictions(mod5)
+```
+
+Make a boxplot of the raw data and then dots for the predicted group means.
+
+```{r}
+ggplot() + 
+  geom_boxplot(data = evals, aes(rank, score, color = gender), alpha = .5) +
+  geom_point(data = newdata, aes(rank, pred, color = gender), 
+             size = 5,
+             position = position_dodge(width = .75))
+```
+
+Ooh, the predictions look much closer. Let's investigate the residual plot too.
+
+```{r}
+evals %>% 
+  add_residuals(mod5) %>%
+  add_predictions(mod5) %>%
+  ggplot(aes(pred, resid, color = gender)) + geom_jitter()
+```
+
+How many residuals are between 0.5 and -0.5
+
+```{r}
+evals %>% 
+  add_residuals(mod5) %>%
+  filter(resid < .5 & resid > -.5)
+```
+
+298, that is more than before, so that is good. 
+
+Let's examine the built in diagnostic plots.
+
+```{r}
+plot(mod5)
+```
+
+- looking for drastically unequal variance across groups. Though the variances are not perfectly equal, these don't look bad enough for me to want to consider a different model
+
+- same short tail as we saw previously where we see few cases of overestimation where we predicted a higher teaching score than we saw.
+
+- again looking for equal variance - looks ok
+
+- looking for high leverage points - don't see any problems
+
+### Model comparison
+
+The last thing we will do is assess whether the model fit is significantly better, meaning whether the R^2 for mod5 is significantly larger than the R^2 for mod4, the model without the interaction term. Because these models are nested, we can use the likelihood ratio test which looks at the differences in R^2 using an F statistic (ratio of variances)
+
+```{r}
+anova(mod5, mod4)
+```
+
+The conclusion is that the more complex model fits the data significantly better than the less complex model, so we should keep the interaction term between rank and gender.
+
+There are other methods of model selection using other criteria than R^2, but this is one method.
+
+### To be continued Thursday
