@@ -1,0 +1,542 @@
+---
+title: "Multivariate Statistics"
+date: "5/6/2021"
+output:
+  prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+[Download materials](https://github.com/HSL-Data/BIMS_8382_Web/blob/master/public/zips/MV_stats.zip?raw=true)
+
+# Principal Components Analysis
+
+Load packages
+
+```{r}
+library(tidyverse)
+library(broom)
+
+library(GGally)       # ggplot2 pairs plot
+library(ggfortify)    # autoplot for PCAs
+
+library(rattle.data)  # for wine data
+
+library(palmerpenguins)
+
+library(pheatmap)
+library(viridis)
+```
+
+# Example 1 Biopsy Data
+
+Today we'll be analyzing the `biopsy` dataset, which originally comes from the MASS package. It is a breast cancer dataset from the University of Wisconsin Hospitals, Madison from Dr. William H. Wolberg. He assessed biopsies of breast tumors for 699 patients; each of nine attributes was scored on a scale of 1 to 10. The true outcome (benign/malignant) is also known. Part of this session was inspired by [Claus Wilke](https://clauswilke.com/), a famous data viz guru, who showed how to use clean up the output from some PCA functions using the broom package.
+
+## Load the data and clean up the column names
+
+Take a look at the original dataset
+
+```{r}
+# original dataset from MASS package
+biopsy <- as_tibble(MASS::biopsy)
+biopsy
+```
+
+Clean up the column names according to the help menu
+
+```{r}
+# rename(new_name = old_name)
+biopsy <- biopsy %>%
+  rename(clump_thickness = V1,
+         uniformity_cell_size = V2,
+         uniformity_cell_shape = V3,
+         marginal_adhesion = V4,
+         single_epithelial_cell_size = V5,
+         bare_nuclei = V6,
+         bland_chromatin = V7,
+         normal_nucleoli = V8,
+         mitoses = V9)
+```
+
+## EDA
+
+Using `ggpairs()` plot from the GGally package. 
+
+```{r}
+biopsy %>%
+  select(-ID) %>%
+  ggpairs(aes(colour = class))
+```
+
+Wow! Most of these variables show great separation between benign and malignant. Also lots of high correlations between variables --> using these as independent variables in a logistic regression model would not be a good idea because of multicollinearity.
+
+This is where PCA can help. PCA will explain 100% of the variation seen in the data by PCs, linear combinations of features. The number of PCs will be equal to the number of samples or the number of original variables, whichever is smallest. We can then investigate the PCs that explained the most variation and see the contribution of the features to each of the PCs. Hopefully our features will help us describe the differences in the tumor class (benign or malignant).
+
+## Missing data
+
+One severe downside of PCA is that it cannot accept missing data at all. You must drop observations with missing data or impute the missings first prior to PCA.
+
+```{r}
+sum(is.na(biopsy))
+```
+
+16 missings
+
+See the rows that have missings. We need to consider all columns, so we'll use `filter_all()`. And we want to allow any value in the row to be NA, so we'll use `any_vars()`. Here is a site where you can read more about these [scoped functions](https://dplyr.tidyverse.org/reference/scoped.html)
+
+```{r}
+biopsy %>% 
+  filter_all(any_vars(is.na(.)))
+```
+
+All 16 are missing on bare nuclei. Because we have so many observations, let's drop the whole observation rather than imputing. If this were your real data and you did not want to drop the observation, you could try single or multiple imputation and compare the results to the analysis where you just drop the row.
+
+```{r}
+biopsy <- biopsy %>% drop_na()
+```
+
+Let's scale and center the data and run the PCA. Remember that scaling is critical for an interpretable PCA. Scaling ensures that just because a variable was measured on a larger scale it doesn't have an outsized impact on the PCA. Centering puts the middle of our data in the center of the plot, ensuring that we can interpret the loadings correctly. 
+
+We fit the PCA on only the numeric columns, not the class column. Also, do not include the ID column.
+
+```{r}
+pca_fit <- biopsy %>% 
+  select(where(is.numeric), -ID) %>%
+  scale() %>% # scale and center
+  prcomp()
+```
+
+Now, we want to plot the data using the PC coordinates. To do this, we will first use the `autoplot()` function from the ggfortify package.
+
+```{r}
+autoplot(pca_fit, data = biopsy, colour = "class")
+```
+
+Nice! Notice by default that the first two PCs are shown, PC1 (highest eigenvalue) is typically shown on the X and PC2 on the Y. Our PC1 separates by tumor class! PC1 has benign with mostly positive loadings and malignant with mostly negative loadings. This autoplot feature also prints the amount of variation that each PC explains and we can already tell that PC1 explains the vast majority of the variance. 
+
+Now I'll show another method to plot by combining the PCs with the original data, so that we can color by the class variable or other categorical variables which are on the original dataframe but not in the pca_fit. We will use the broom package's `augment()` function that takes a model and then the dataset that you would like to add.
+
+```{r}
+pca_fit %>%
+  augment(biopsy)
+
+# good change. Save it onto biopsy
+biopsy <- pca_fit %>%
+  augment(biopsy)
+```
+
+We have 9 new PCs each called `.fittedPC#` attached to our biopsy dataset. Because the first few PCs explain the most variation, let's plot PC1 and PC2 colored by the class of the tumor.
+
+```{r}
+biopsy %>%
+  ggplot(aes(.fittedPC1, .fittedPC2, color = class)) + 
+  geom_point(size = 1.5)
+```
+
+We could add better axes titles here, but overall, this was an easy plot to create and the code is easily extendable if you wanted to investigate other variables.
+
+## Rotation matrix
+
+Next, we will look at the rotation matrix. This will show us the loadings of each feature on each PC - what contribution each variable has to each PC. The rotation matrix is stored as `pca_fit$rotation`, but we can extract it using the `tidy()` function from broom. When applied to `prcomp` objects, the `tidy()` function takes an additional argument, `matrix = `, which we set to `matrix = "rotation"` to extract the rotation matrix.
+
+```{r}
+pca_fit %>%
+  tidy(matrix = "rotation")
+
+# see just the first PC to understand it
+pca_fit %>%
+  tidy(matrix = "rotation") %>%
+  filter(PC == 1)
+```
+
+So malignant tumors have HIGHER levels of all of these variables. So straightforward.
+
+Let's add the loadings from each original variable onto our plot using the `autoplot()` function.
+
+```{r}
+autoplot(pca_fit, data = biopsy, colour = "class", 
+         loadings.colour = 'grey55', 
+         loadings.label = TRUE, 
+         loadings.label.size = 3, 
+         loadings.label.colour = 'grey55')
+```
+
+### Explained variance
+
+Finally, let's plot the variance explained by each PC. We can extract this information using the `tidy()` function from broom again, but this time setting the matrix argument to `matrix = "eigenvalues"`
+
+```{r}
+pca_fit %>%
+  tidy(matrix = "eigenvalues")
+```
+
+Let's create a barplot showing each PC along the x-axis and the percent of explained variance on the y. This is called a scree plot because it tends to look like the geological formation scree on a mountain side. It is also known as an elbow plot.
+
+We will plot using `geom_col()` because we want to directly plot the numbers that we have rather than having the geom function summarize something for us.
+
+```{r}
+pca_fit %>%
+  tidy(matrix = "eigenvalues") %>%
+  ggplot(aes(PC, percent)) + geom_col()
+```
+
+The first component captures 65% of the variation in the data and, as we saw from the first plot, PC1 was able to nicely separate the benign samples from the malignant samples.
+
+If we wanted to, now we could use PC1 as a predictor variable in a logistic regression explaining the tumor class.
+
+# Example 2 wine data
+
+### Load the wine data and take a look
+```{r}
+data(wine)
+wine <- as_tibble(wine)
+```
+
+### EDA
+
+Using ggpairs from the GGally package. Because it is hard to visualize so many variables on the same plot, we'll start with the first 5 columns (excepting Type).
+
+```{r}
+wine %>% ggpairs(aes(color = Type), columns =  2:6)
+```
+
+Looks like Alcohol is able to separate our 3 types of wine. Some separation also in Malic, Alcalinity, and Magnesium. Correlations among these variables are low
+
+```{r}
+wine %>% ggpairs(aes(color = Type), columns =  7:14)
+```
+
+Again 2D separation on some variables and here we are starting to see high correlations between some features. Imagine instead of 13 features, you have 10K like in the case of many -omics studies.
+
+Check for missings
+
+```{r}
+wine %>% 
+  filter_all(any_vars(is.na(.)))
+```
+
+Woohoo. No missing values to worry about.
+
+Remove the Type, scale and center the data, and run PCA.
+
+```{r}
+winePCA <- wine %>% 
+  select(-Type) %>%
+  scale() %>%
+  prcomp()
+```
+
+Create a basic plot
+
+```{r}
+autoplot(winePCA, data = wine, colour = "Type")
+```
+
+PC1 separates by Type! PC1 separates Type 1 and 3. Type 1 has negative loadings on PC1 and Type 3 has positive loadings. PC2 separates Type 1/3 from Type 2. Type1/3 have positive loadings and Type 2 has negative loadings.
+
+Now let's investigate the rotation matrix to find out which variables compose PC1 and PC2.
+
+```{r}
+winePCA %>%
+  tidy(matrix = "rotation")
+
+# how many PCs are there?
+winePCA %>%
+  tidy(matrix = "rotation") %>%
+  distinct(PC)
+```
+
+This shows us the loadings of each original variable on each PC. We see that there are 13 total PCs (equal to the number of variables)
+
+Let's take a look at what features make up PC1
+
+```{r}
+winePCA %>%
+  tidy(matrix = "rotation") %>%
+  filter(PC == 1) %>%
+  arrange(value)
+```
+
+This suggests that Type 1 wine has higher Flavanoids, Phenols, and Dilution. Type 3 wine has higher Alcalinity, Malic acid, and Nonflavanoids.
+
+Let's check on that.
+
+```{r}
+wine %>%
+  group_by(Type) %>%
+  summarize(mean(Flavanoids), mean(Phenols), mean(Dilution))
+
+# or slightly shorter, better code using another scoped dplyr function
+wine %>%
+  group_by(Type) %>%
+  summarize_at(c("Flavanoids", "Phenols", "Dilution"), mean)
+```
+
+Nice! Type 1 is higher.
+
+```{r}
+wine %>%
+  group_by(Type) %>%
+  summarize_at(c("Alcalinity", "Malic", "Nonflavanoids"), mean)
+```
+
+Yes, Type 3 is highest. 
+
+See the loadings on the plot. 
+```{r}
+autoplot(winePCA, data = wine, colour = "Type", 
+         loadings.colour = 'grey55', 
+         loadings.label = TRUE, 
+         loadings.label.size = 3, 
+         loadings.label.colour = 'grey55')
+```
+
+Type 2 has lowest levels of Ash. Check this
+```{r}
+wine %>%
+  group_by(Type) %>%
+  summarize(mean(Ash))
+```
+
+Finally, see the explained variance plot (aka scree plot or elbow plot) to understand how many PCs we need to adequately explain our data
+
+```{r}
+winePCA %>%
+  tidy(matrix = "eigenvalues") %>%
+  ggplot(aes(PC, percent)) + geom_col()
+```
+
+Seems like 4 PCs will explain most of the variance. Adding a 5th PC does not help much.
+
+We could then use these important PCs in a regression analysis if we wanted.
+
+# Hierarchical Clustering
+
+The technique we will examine today is hierarchical clustering. This is another unsupervised technique (it tells you where the groups are) and we will use it to see if we can tell species and sex apart for the penguins dataset.
+
+
+### Simple example
+
+First let's look at a simple example using simulated data:
+
+```{r}
+set.seed(1234)
+x <- rnorm(12, mean = rep(1:3, each = 4), sd = 0.2)
+y <- rnorm(12, mean = rep(c(1, 2, 1), each = 4), sd = 0.2)
+mydat <- tibble(x = x, y = y)
+
+#check out a plot
+mydat %>%
+  ggplot(aes(x, y)) + geom_point(col = "blue", size = 3) +
+  annotate("text", x + 0.05, y + 0.05, label = as.character(1:12))
+```
+
+Now we'll use the pheatmap package and function to see a dendrogram and heatmap for these data.
+
+```{r}
+pheatmap(mydat)
+```
+
+Our dendrogram was easily able to tell that the cloud 9-12 was tightest and 8 was least like its cluster. Excellent!
+
+The default for pheatmap is to use Euclidean distance between all of the points. According to the heatmap, points 5&6, 9&12 and 10&11 are the most similar (lowest distance). Let's check on that with the distance matrix by just calling the `dist()` function with its defaults. 
+
+```{r}
+#calculate distances using Euclidean distance as a default
+dist(mydat)
+```
+
+After those pairs are merged into a superpair, hierarchical clustering searches for the next point or pair that is most similar to group next. There are options for how to determine the distance between clusters of multiple points and the default is called **complete linkage** where the distance between clusters is calculated as the distance between the 2 furthest points.
+
+Let's see what the clusters look like after the 1st merge
+
+```{r}
+pheatmap(mydat, cutree_rows = 11)
+
+# second merge, with 10 groups
+pheatmap(mydat, cutree_rows = 10)
+
+# third merge, with 9 groups
+pheatmap(mydat, cutree_rows = 9)
+
+# fourth merge, with 8 groups
+pheatmap(mydat, cutree_rows = 8)
+```
+
+Note that the choice of distance measure is important. To make this choice, think about the type of data that you have - some distance metrics are better for certain types of data (eg binary data works well with Manhattan distance) and think about what you would like to call similar. For example, for data like gene expression where we would like to identify genes that have a similar pattern of expression regardless of magnitude, distance measures like correlation or cosine similarity will work better to show genes that are coexpressed.
+
+Now on to a real dataset
+
+### Load the penguins data
+
+Save the penguins dataset as an object. Then use `ggpairs()` to take a look at all the variables.
+```{r}
+data("penguins")
+
+penguins %>% 
+  select(-year) %>% 
+  ggpairs(aes(color = species))
+```
+
+Using our 4 continuous variables, it looks possible to distinguish individuals by species and sex.
+
+### Missing values
+
+How many rows have missing data and which are they?
+
+```{r}
+penguins %>% 
+  filter_all(any_vars(is.na(.))) 
+# 2 are missing all the numeric variables, but 11 are missing the sex
+```
+
+Again we could impute the missing values, or we could drop them out. If you choose to impute, you should perform the analysis with the values dropped as well and compare the results to make sure that your imputation does not change the results too much. Because it is only 11 datapoints out of 344, we will drop them out.
+
+```{r}
+penguins <- penguins %>% drop_na()
+```
+
+Next, we will drop the year variable. Then we will add an ID number so we can match the demographic data to the heatmap later. Also create a variable that has both the species and the sex together then make that column a factor column (because it needs to be a factor to annotate the heatmap with this variable). Finally, change the order of the columns.
+```{r}
+penguins <- penguins %>%
+  select(-year) %>%
+  mutate(ID = 1:333) %>%
+  mutate(speciessex = paste0(species, sex)) %>%
+  mutate(speciessex = as.factor(speciessex)) %>%
+  select(ID, species, sex, speciessex, island, everything()) 
+penguins
+```
+
+Create a dataset of just the numeric variables that we will use to calculate the distances. Then scale and center the numeric variables so that variables with a larger scale will not be too powerful.
+
+```{r}
+penguins_num <- penguins %>%
+  select_if(is.numeric) %>%
+  select(-ID) %>%
+  scale() #notice that scale changes the object type to matrix
+
+# add the ID column as the rownames of the matrix. Rownames are the default row annotation in later plots
+rownames(penguins_num) <- penguins$ID
+```
+
+Use pheatmap to create the dendrogram and the heatmap.
+
+```{r}
+pheatmap(penguins_num)
+
+# turn off clustering of the columns so that we only cluster on rows (samples)
+pheatmap(penguins_num,
+         cluster_cols = FALSE)
+```
+
+Change the color scale to some from the viridis package.
+
+```{r}
+pheatmap(penguins_num,
+         cluster_cols = FALSE,
+         color = viridis(20))
+
+pheatmap(penguins_num,
+         cluster_cols = FALSE,
+         color = magma(20))
+```
+
+We'll keep the default color scheme. Now let's add the speciessex variable in as an annotation bar.
+
+```{r}
+ann_df <- penguins %>%
+  select(speciessex, species)
+
+# set the ID as the rowname so that the annotations are matched up with the right sample in the heatmap
+rownames(ann_df) <- penguins$ID
+
+# set the colors we want to use for the annotations
+#sets annotation colors
+ann_colors = list(species = c(Adelie = 'chocolate3',
+                              Chinstrap = 'darkorchid4',
+                              Gentoo = 'darkcyan'),
+                  speciessex = c(Adeliemale = 'chocolate3', 
+                                 Adeliefemale = 'chocolate1',
+                                 Chinstrapmale = 'darkorchid4', 
+                                 Chinstrapfemale = 'darkorchid1',
+                                 Gentoomale = 'darkcyan', 
+                                 Gentoofemale = 'cyan3'))
+
+pheatmap(penguins_num,
+         cluster_cols = FALSE,
+         show_rownames = FALSE,
+         annotation_row = as.data.frame(ann_df),
+         annotation_colors = ann_colors)
+```
+
+Because we have 3 species groups, let's cut the tree where there are 3 groups and then see which observations were not classified correctly and see if we can determine why.
+
+```{r}
+ph <- pheatmap(penguins_num,
+         cluster_cols = FALSE,
+         show_rownames = FALSE,
+         annotation_row = as.data.frame(ann_df),
+         annotation_colors = ann_colors,
+         cutree_rows = 3, #create 3 clusters
+         treeheight_row = 100) # make the dendrogram more pronounced
+```
+
+Looks like most of our penguins were classified correctly into their species. Let's extract the cluster that the model classified them into and put that together with an ID column so that we can match them up
+
+```{r}
+# return the classification
+cutree(ph$tree_row, k=3)
+# oh good! They are in order by penguin ID!
+
+# put the classification in a dataset with an ID column
+preds <- tibble(ID = 1:333, pred_group = cutree(ph$tree_row, k=3))
+```
+
+Change the pred_group variable to have intelligent names
+```{r}
+preds <- preds %>%
+  mutate(pred_group = case_when(pred_group == 1 ~ "Adelie",
+                                pred_group == 2 ~ "Chinstrap",
+                                pred_group == 3 ~ "Gentoo"))
+
+penguins <- penguins %>% inner_join(preds, by = "ID") %>%
+  select(ID, species, sex, pred_group, where(is.numeric))
+
+# see the ones that were misclassified by species and try to tell why
+penguins %>%
+  filter(species != pred_group)
+```
+
+Seven observations where the species was not correct. Let's see if we can tell why by creating a grouped summary of our 4 numeric variables across species and sex.
+
+```{r}
+penguins %>% 
+  group_by(species, sex) %>%
+  summarize(across(bill_length_mm:body_mass_g, mean))
+```
+
+For the first observation where an Adelie male was classified with the Chinstrap penguins, this male has a bill length that is larger than the average Adelie male, longer flipper length, and larger body mass. The others were all Chinstrap females who were misclassified as Adelie penguins. Penguin #274 has a bill depth and flipper length larger than the Chinstrap female average but smaller than the Chinstrap male average. Her body mass is larger than both the female and male Chinstrap average, resulting in a missclassification as an Adelie.
+
+# Further Resources
+
+### PCA:
+
+- [pcaMethods package](http://bioconductor.org/packages/release/bioc/html/pcaMethods.html) from Bioconductor can impute missing values and plot PCA
+- [factoExtra package](https://rpkgs.datanovia.com/factoextra/index.html) to customize PCA plots
+
+### Dendrograms:
+
+- [STHDA](http://www.sthda.com/english/wiki/beautiful-dendrogram-visualizations-in-r-5-must-known-methods-unsupervised-machine-learning) does a great site on creating dendograms using a variety of methods (base R and ggplot2)
+- [dendextend package](https://cran.r-project.org/web/packages/dendextend/vignettes/introduction.html) for a fancier, more customizable plot we can use dendextend package (can use the %>%)
+- [dendextend with famous datasets](https://cran.r-project.org/web/packages/dendextend/vignettes/Cluster_Analysis.html#the-3-clusters-from-the-complete-method-vs-the-real-species-category) Heatmaps are in here too
+
+### Heatmaps:
+
+- [Statquest heatmap](https://www.youtube.com/watch?v=oMtDyOn2TCc)
+- [Understanding heatmaps better](http://www.opiniomics.org/you-probably-dont-understand-heatmaps/)
+- [ShinyHeatmap](https://omictools.com/shinyheatmap-tool)
