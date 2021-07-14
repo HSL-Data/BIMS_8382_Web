@@ -19,7 +19,7 @@ This is the course content for students enrolled in BIMS8382 at The University o
 
 - GitHub: [github.com/dnm5ca](https://github.com/dnm5ca)
 
-<small>David is the Clinical Data Research Specialist at the Health Sciences Library where he consults with clinicians, nurses, and students on data analysis and programming in a number of languages. With Marieke, he co-teaches the BIMS8380 statistics course. He is also a PhD candidate in the Curry School of Education researching the impacts of the No Child Left Behind policy.</small>
+<small>David is the Clinical Data Research Specialist at the Health Sciences Library where he consults with clinicians, nurses, and students on data analysis and programming in a number of languages. With Marieke, he co-teaches the BIMS8380 statistics course. He has his PhD from the Curry School of Education in Educational Research, Statistics and Evaluation.</small>
 
 **Marieke K Jones**
 
@@ -27,13 +27,13 @@ This is the course content for students enrolled in BIMS8382 at The University o
 
 - GitHub: [github.com/mariekekjones](https://github.com/mariekekjones)
 
-<small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and co-teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology and endocrinology.</small>
+<small>Marieke is the Research Data Specialist in the Health Sciences Library. She teaches open enrollment workshops in R, consults with researchers about statistics and data analysis, and co-teaches the BIMS8380 statistics course. Her PhD is in Environmental Science and Policy and she conducted her dissertation research on reproductive physiology, endocrinology, and metabolomics.</small>
 
-**_Where:_** This course will be taught synchronously online using videoconferencing tools, this course website, and email
+**_Where:_** This course will be taught synchronously online using videoconferencing tools, this course website, UVA Collab, and email
 
 **_When:_**  
-Spring 2020 Module S2 
-March 26 – May 7 <small>_(No exam -- final class period will be held May 7)_</small>  
+Spring 2021 Module S2 
+April 1 – May 11 <small>_(No exam -- final class period will be held May 11)_</small>  
 9:00 - 10:30am Tuesdays and Thursdays  
 
 
@@ -61,69 +61,61 @@ Because of this course's format as an online module, here we provide best option
 
 ## Course Schedule
 
-### March 26: Intro to R
+### April 1: Intro to R
 
 This novice-level introduction is directed toward life scientists with little to no experience with statistical computing or bioinformatics. This interactive introduction will introduce the R statistical computing environment. The first part of this session will demonstrate very basic functionality in R, including functions, vectors, creating variables, getting help, and reading/writing files. 
 
-### March 31: RMarkdown and dplyr
+### April 6: RMarkdown and dplyr
 
 This session covers some of the barriers to reproducible research and how to start to address some of those problems. We will cover using RMarkdown and RStudio to combine text and executable code to create readable and shareable reports. In the process of writing RMarkdown documents we will also explore the _dplyr_ package. The _dplyr_ package in R will help us to effectively manipulate and conditionally compute summary statistics over subsets of a "big" dataset containing many observations.
 
-### April 2: Exploratory Data Analysis (David)
-
-This session will introduce the idea of "tidy data", and will introduce R packages that enable data manipulation and plotting to explore a dataset and understand what steps must be taken to clean the data. 
-
-### April 7: Data Visualization with ggplot2 (David)
+### April 8: Data Visualization with ggplot2 
 
 This session will cover fundamental concepts for creating effective data visualization and will introduce tools and techniques for visualizing large, high-dimensional data using R. We will review fundamental concepts for visually displaying quantitative information, such as using series of small multiples, avoiding "chart-junk," and maximizing the data-ink ratio. After briefly covering data visualization using base R graphics, we will introduce the _ggplot2_ package for advanced high-dimensional visualization. We will cover the grammar of graphics (geoms, aesthetics, stats, and faceting), and using ggplot2 to create plots layer-by-layer. Upon completing this lesson, students will be able to use R to explore a high-dimensional dataset by faceting and scaling arbitrarily complex plots in small multiples.
 
-### April 9: Advanced Exploratory Analysis (David)
+### April 13: Exploratory Data Analysis
+
+This session will introduce the idea of “tidy data”, and will introduce R packages that enable data manipulation and plotting to explore a dataset and understand what steps must be taken to clean the data.
+
+### April 15: Advanced Exploratory Analysis
 
 Riffing off of Tolstoy, Hadley Wickham, the writer of many of the R packages we will use, says "Like families, tidy datasets are all alike but every messy dataset is messy in its own way". Upon completing this lesson, students will be able to use the _tidyr_, _stringr_, _dplyr_, and _ggplot2_ packages in R to clean and explore their data.
 
-### April 14: TidyTuesday Challenge 1
+### April 20: TidyTuesday Challenge 1
 
 Each week RStudio releases a new dataset in a TidyTuesday challenge so we will each load the dataset, manipulate it as needed, and create a data visualization that tells a story. At the end of the session we will share our viz with each other and look at some other coders' contributions on Twitter to get some fresh ideas.
 
-### April 16: Essential Statistics (Marieke)
+### April 22: Essential Statistics
 
 This workshop will provide hands-on instruction and exercises covering basic statistical analyses in R. This will cover descriptive statistics, exploratory data analysis, t-tests, ANOVA, linear models, and methods for discrete variable analysis. We will cover hypothesis testing and assessing the assumptions of the tests.
 
-### April 21: Regression (Marieke)
+### April 27: Linear Regression
 
 This session will focus solely on conducting regression analyses in R. It will begin with an overview of regression analysis and then move on to specific techniques which include: linear models, logistic regression, and multiple regression. We will also focus on methods to check model assumptions and to select the "best" model.
 
-### April 23: Dimension Reduction (Marieke)
+### April 29: Multiple Regression
+
+Here we will expand our knowledge of regression models by considering models with several predictors and learning how to choose the "best fit" model.
+
+### May 4: Logistic Regression and Predictive Analytics
+
+For this session we will learn to model binary outcomes and utilize data science principles to create predictive models. We will follow the train, test, validate method to develop the best predictive model.
+
+### May 6: Dimension Reduction
 
 In this session we will investigate techniques for inspecting, visualizing, and reducing dimensions for high-dimensional data. We will examine techniques like PCA, clustering, and heatmaps that are useful for any number of large datasets.
 
-### April 28: Intro to High Performance Computing (Jackie Huband)
+### May 11: Intro to Single cell RNAseq and High Performance Computing (guest instructors from Research Computing)
 
-In this session we will explore how to move our programs onto Rivanna, UVA's high performance computing cluster. Topics will include how to log onto Rivanna, setting up an R environment for running our codes, and submitting our jobs to run in the background.  We also will look at how to use multiple cores to parallelize R programs.
+In this session, Will Rosenow and Gladys Andino Bautista will help us explore how to perform single cell RNAseq on Rivanna, UVA's high performance computing cluster. They will demonstrate how to log onto Rivanna, setting up an R environment for running R code, and submitting jobs to run in the background. Then they will lead us through an analysis that requires the computing power of the HPC, single cell RNAseq using the Seurat package in R.
 
-Further Resources:
-- [Parallel R](http://detritus.fundacioace.com/pub/books/Oreilly.Parallel.R.Oct.2011.pdf) -- a good foundation, but a bit dated
-- [HPC for parallel R](https://jstaf.github.io/hpc-r/parallel/)
-- In the Fall semester, keep your eyes open for a [Research Computing workshop](https://www.rc.virginia.edu/education/workshops/) on parallel R
+### Student Presentations
 
-### April 30: RNASeq (Gladys Andino Bautista)
-
-In this session we will focus on high throughput RNA sequencing data analysis, and we will explore examples drawn from genomics and bioinformatics applications. I will provide an overview of how to check the quality of RNA-Seq data, how to determine if the data contain adaptor sequences and other contaminants and how to remove them. The primary focus will be on the analysis of differential gene expression with RNA-Seq data using RStudio, and specialized R package (DESeq2).
-
-Further Resources:
-- [DESeq2 Package Vignette](http://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html)
-- [Comprehensive evaluation of de novo transcriptome assembly programs and their effects on differential gene expression analysis](https://academic.oup.com/bioinformatics/article/33/3/327/2580374)
-- [Trimmomatic: a flexible trimmer for Illumina sequence data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4103590/pdf/btu170.pdf)
-- [Beginner's Guide to Analysis of RNA Sequencing Data](https://www.atsjournals.org/doi/pdf/10.1165/rcmb.2017-0430TR)
-- [A Survey of Best Practices for RNA-Seq Data Analysis](https://genomebiology.biomedcentral.com/track/pdf/10.1186/s13059-016-0881-8)
-
-### May 5 & 7: Student Presentations
-
-So much of learning biomedical datascience will be up to you. You each are studying a different topic with varying computational needs. As such, we would like you to choose a package we did not cover at length in class and create a vignette demoing for the class what the package is for and a few of its functions. You will turn in a rendered PDF of your vignette and will provide a 15min presentation with a partner, allowing time for audience questions. This assignment is worth 20% of your course grade. As an example of a vignette, please see UVA Library's Clay Ford's vignette of the [pwr package](https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html)
+So much of learning biomedical datascience will be up to you. You each are studying a different topic with varying computational needs. As such, we would like you to choose a package we did not cover at length in class and create a vignette demoing for the class what the package is for and a few of its functions. You will turn in a rendered PDF of your vignette, provide a 10min recorded presentation with a partner, and critique presentations of your peers. This assignment is worth 20% of your course grade. As an example of a vignette, please see UVA Library's Clay Ford's vignette of the [pwr package](https://cran.r-project.org/web/packages/pwr/vignettes/pwr-vignette.html)
 
 ## Homework
 
-Each week's lesson will be followed by an independent homework assignment that will be posted to our course's Collab site. The HW will be due the following Monday at 11:59pm. Homework assignments should be completed in RMarkdown and should be submitted as a single PDF file to our course's Collab site. In total there will be 5 homework assignments due April 6, April 13, April 20, April 27, and May 4.
+Each week’s lesson will be followed by an independent homework assignment that will be posted to our course’s Collab site. The HW will be due the following Monday at 11:59pm. Homework assignments should be completed in RMarkdown and should be submitted as a single PDF file to our course’s Collab site. In total there will be 5 homework assignments due April 12, April 19, April 26, May 3, and May 10.
 
 ## Grading Policy
 
